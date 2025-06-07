@@ -5,6 +5,8 @@
 		public LabelStyle TitleStyle { get; set; }
 		public ImageButtonStyle CloseButtonStyle { get; set; }
 
+		public IBrush ResizableBackground { get; set; }
+
 		public WindowStyle()
 		{
 		}

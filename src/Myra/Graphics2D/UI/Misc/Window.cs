@@ -146,7 +146,7 @@ namespace Myra.Graphics2D.UI
 		[DefaultValue(Keys.Escape)]
 		public Keys? CloseKey { get; set; }
 
-		private bool IsWindowPlaced { get; set; }
+        private bool IsWindowPlaced { get; set; }
 
 		public event EventHandler<CancellableEventArgs> Closing;
 		public event EventHandler Closed;

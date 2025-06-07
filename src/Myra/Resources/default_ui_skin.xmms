@@ -138,7 +138,7 @@
 		</VerticalMenuStyle>
 	</VerticalMenuStyles>
 	<WindowStyles>
-		<WindowStyle Background="window" Padding="5">
+		<WindowStyle Background="window" ResizableBackground="window-resizable" Padding="5">
 			<TitleStyle Font="default-font" TextColor="white" />
 			<CloseButtonStyle OverBackground="button-over" Padding="5, 0" PressedBackground="button-red">
 				<ImageStyle Image="icon-close" />
