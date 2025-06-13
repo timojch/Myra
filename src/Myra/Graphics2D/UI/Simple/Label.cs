@@ -216,7 +216,12 @@ namespace Myra.Graphics2D.UI
 			textToDraw.IgnoreColorCommand = !useChunkColor;
 			var bounds = ActualBounds;
 
-			var x = bounds.X;
+            textToDraw.Width = bounds.Width;
+			textToDraw.Height = bounds.Height;
+			textToDraw.AutoEllipsisMethod = AutoEllipsisMethod.Character;
+			textToDraw.AutoEllipsisString = "…";
+
+            var x = bounds.X;
 			if (TextAlign == TextHorizontalAlignment.Center)
 			{
 				x += bounds.Width / 2;

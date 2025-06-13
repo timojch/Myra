@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Myra.Graphics2D.UI.Misc
+namespace Myra.Graphics2D.UI
 {
     public class ResizableWindow : Window
     {
@@ -59,6 +59,15 @@ namespace Myra.Graphics2D.UI.Misc
             }
         }
 
+        public ResizableWindow(string styleName = Stylesheet.DefaultStyleName)
+            : base(styleName)
+        {
+            this.MinHeight = 32;
+            this.MinWidth = 80;
+
+            this.SetStyle(styleName);
+        }
+
         public override void OnTouchDown()
         {
             base.OnTouchDown();
@@ -66,7 +75,7 @@ namespace Myra.Graphics2D.UI.Misc
             var touchPosition = this.Desktop.TouchPosition ?? throw new InvalidOperationException("A ResizeableWindow received an OnTouchDown event without a touch position");
             if (this.ResizeRegion.Contains(this.ToLocal(touchPosition)))
             {
-
+                this.IsResizing = true;
             }
         }
 
@@ -111,8 +120,20 @@ namespace Myra.Graphics2D.UI.Misc
                 var newPos = this.Desktop.ToLocal(new Vector2(Desktop.TouchPosition.Value.X, Desktop.TouchPosition.Value.Y));
                 var delta = newPos - this.ResizeStartPosition.Value;
 
-                this.Width = this.ResizeStartSize.Value.X + (int)delta.X;
-                this.Height = this.ResizeStartSize.Value.Y + (int)delta.Y;
+                var targetSize = this.ResizeStartSize.Value + delta.ToPoint();
+
+                if (targetSize.X < this.MinWidth)
+                {
+                    targetSize.X = this.MinWidth.Value;
+                }
+
+                if( targetSize.Y < this.MinHeight)
+                {
+                    targetSize.Y = this.MinHeight.Value;
+                }
+
+                this.Width = targetSize.X;
+                this.Height = targetSize.Y;
             }
         }
 
