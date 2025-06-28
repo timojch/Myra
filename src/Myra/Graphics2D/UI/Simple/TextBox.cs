@@ -744,15 +744,30 @@ namespace Myra.Graphics2D.UI
 				case Keys.Left:
 					if (CursorPosition > 0)
 					{
-						UserSetCursorPosition(CursorPosition - 1);
+						if (Desktop.IsControlDown)
+                        {
+                            ScanWordBackward();
+                        }
+						else
+						{
+							UserSetCursorPosition(CursorPosition - 1);
+						}
+
 						UpdateSelectionIfShiftDown();
 					}
 					break;
 
 				case Keys.Right:
 					if (CursorPosition < Length)
-					{
-						UserSetCursorPosition(CursorPosition + 1);
+                    {
+						if (Desktop.IsControlDown)
+						{
+							ScanWordForward();
+						}
+						else
+						{
+							UserSetCursorPosition(CursorPosition + 1);
+						}
 						UpdateSelectionIfShiftDown();
 					}
 					break;
@@ -1371,6 +1386,52 @@ namespace Myra.Graphics2D.UI
 				i = _richTextLayout.Lines[lineIndex].TextStartIndex;
 			}
 		}
+
+		private void ScanWordForward()
+		{
+			var newPosition = this.CursorPosition;
+			for(; ;)
+			{
+				newPosition++;
+				if(newPosition == this.Text.Length)
+				{
+					break;
+				}
+
+				if (char.IsLetterOrDigit(this.Text[newPosition-1]) != char.IsLetterOrDigit(this.Text[newPosition]))
+				{
+					if (!char.IsWhiteSpace(this.Text[newPosition]))
+					{
+						break;
+					}
+				}
+			}
+
+			UserSetCursorPosition(newPosition);
+		}
+
+		private void ScanWordBackward()
+        {
+            var newPosition = this.CursorPosition;
+            for (; ; )
+            {
+                newPosition--;
+                if (newPosition == 0)
+                {
+                    break;
+                }
+
+                if (char.IsLetterOrDigit(this.Text[newPosition - 1]) != char.IsLetterOrDigit(this.Text[newPosition]))
+                {
+                    if (!char.IsWhiteSpace(this.Text[newPosition]))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            UserSetCursorPosition(newPosition);
+        }
 
 		public override void InternalRender(RenderContext context)
 		{
