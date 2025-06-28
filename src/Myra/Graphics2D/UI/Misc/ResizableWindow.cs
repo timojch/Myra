@@ -62,9 +62,6 @@ namespace Myra.Graphics2D.UI
         public ResizableWindow(string styleName = Stylesheet.DefaultStyleName)
             : base(styleName)
         {
-            this.MinHeight = 32;
-            this.MinWidth = 80;
-
             this.SetStyle(styleName);
         }
 
@@ -84,6 +81,9 @@ namespace Myra.Graphics2D.UI
             base.InternalSetStyle(stylesheet, name);
             var style = stylesheet.WindowStyles.SafelyGetStyle(name);
             this.Background = style.ResizableBackground;
+
+            this.MinHeight ??= 54;
+            this.MinWidth ??= 80;
         }
 
         private void UnsubscribeDesktop()
