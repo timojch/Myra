@@ -23,61 +23,11 @@ namespace Myra.Graphics2D.UI
 {
 	public class FloatingFrame : ContentControl
 	{
-		private readonly StackPanelLayout _layout = new StackPanelLayout(Orientation.Vertical);
-		private readonly Label _titleLabel;
 		private Widget _content;
 		private Widget _previousKeyboardFocus;
+        private readonly StackPanelLayout _layout = new StackPanelLayout(Orientation.Vertical);
 
-		[Category("Appearance")]
-		public string Title
-		{
-			get
-			{
-				return _titleLabel.Text;
-			}
-
-			set
-			{
-				_titleLabel.Text = value;
-			}
-		}
-
-		[Category("Appearance")]
-		[StylePropertyPath("TitleStyle/TextColor")]
-		public Color TitleTextColor
-		{
-			get
-			{
-				return _titleLabel.TextColor;
-			}
-			set
-			{
-				_titleLabel.TextColor = value;
-			}
-		}
-
-		[Category("Appearance")]
-		public SpriteFontBase TitleFont
-		{
-			get
-			{
-				return _titleLabel.Font;
-			}
-			set
-			{
-				_titleLabel.Font = value;
-			}
-		}
-
-		[Browsable(false)]
-		[XmlIgnore]
-		public HorizontalStackPanel TitlePanel { get; private set; }
-
-		[Browsable(false)]
-		[XmlIgnore]
-		public Button CloseButton { get; private set; }
-
-		[Browsable(false)]
+        [Browsable(false)]
 		[Content]
 		public override Widget Content
 		{
@@ -152,44 +102,15 @@ namespace Myra.Graphics2D.UI
 		public event EventHandler Closed;
 
 		public FloatingFrame(string styleName = Stylesheet.DefaultStyleName)
-		{
-			_layout.Spacing = 8;
-			ChildrenLayout = _layout;
+        {
+            _layout.Spacing = 8;
+            ChildrenLayout = _layout;
 
-			AcceptsKeyboardFocus = true;
-			CloseKey = Keys.Escape;
-
-			DragDirection = DragDirection.Both;
-
-			Result = false;
-			HorizontalAlignment = HorizontalAlignment.Left;
-			VerticalAlignment = VerticalAlignment.Top;
-
-			TitlePanel = new HorizontalStackPanel
+			// Set style if we are not a derived class.
+			if (this.GetType() == typeof(FloatingFrame))
 			{
-				Spacing = 8
-			};
-			DragHandle = TitlePanel;
-
-			_titleLabel = new Label();
-			StackPanel.SetProportionType(_titleLabel, ProportionType.Fill);
-			TitlePanel.Widgets.Add(_titleLabel);
-
-			CloseButton = new Button
-			{
-				Content = new Image()
-			};
-
-			CloseButton.Click += (sender, args) =>
-			{
-				Close();
-			};
-
-			TitlePanel.Widgets.Add(CloseButton);
-
-			Children.Add(TitlePanel);
-
-			SetStyle(styleName);
+				SetStyle(styleName);
+			}
 		}
 
 		protected override void InternalArrange()
@@ -223,26 +144,6 @@ namespace Myra.Graphics2D.UI
 			if (k == CloseKey)
 			{
 				Close();
-			}
-		}
-
-		public void ApplyWindowStyle(WindowStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			if (style.TitleStyle != null)
-			{
-				_titleLabel.ApplyLabelStyle(style.TitleStyle);
-			}
-
-			if (style.CloseButtonStyle != null)
-			{
-				CloseButton.ApplyButtonStyle(style.CloseButtonStyle);
-				if (style.CloseButtonStyle.ImageStyle != null)
-				{
-					var image = (Image)CloseButton.Content;
-					image.ApplyPressableImageStyle(style.CloseButtonStyle.ImageStyle);
-				}
 			}
 		}
 
@@ -315,23 +216,11 @@ namespace Myra.Graphics2D.UI
 			}
 
 			Closed.Invoke(this);
-		}
+        }
 
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyWindowStyle(stylesheet.WindowStyles.SafelyGetStyle(name));
-		}
-
-		protected internal override void CopyFrom(Widget w)
-		{
-			base.CopyFrom(w);
-
-			var window = (FloatingFrame)w;
-
-			Title = window.Title;
-			TitleTextColor = window.TitleTextColor;
-			TitleFont = window.TitleFont;
-			CloseKey = window.CloseKey;
-		}
-	}
+        protected override void InternalSetStyle(Stylesheet stylesheet, string name)
+        {
+            ApplyWidgetStyle(stylesheet.WindowStyles.SafelyGetStyle(name));
+        }
+    }
 }
