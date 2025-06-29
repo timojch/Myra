@@ -746,7 +746,7 @@ namespace Myra.Graphics2D.UI
 					{
 						if (Desktop.IsControlDown)
                         {
-                            ScanWordBackward();
+                            UserSetCursorPosition(ScanWord(-1));
                         }
 						else
 						{
@@ -762,7 +762,7 @@ namespace Myra.Graphics2D.UI
                     {
 						if (Desktop.IsControlDown)
 						{
-							ScanWordForward();
+							UserSetCursorPosition(ScanWord(1));
 						}
 						else
 						{
@@ -785,13 +785,24 @@ namespace Myra.Graphics2D.UI
 					{
 						if (SelectStart == SelectEnd)
 						{
-							int deleted = Delete(CursorPosition - 1, 1);
-							if (deleted > 0)
+							int deleted = 0;
+
+							if (Desktop.IsControlDown)
 							{
-								UserSetCursorPosition(CursorPosition - deleted);
-								ResetSelection();
+								var deleteTo = ScanWord(-1);
+								deleted = Delete(deleteTo, this.CursorPosition - deleteTo);
 							}
-						}
+							else
+							{
+								deleted = Delete(CursorPosition - 1, 1);
+							}
+
+                            if (deleted > 0)
+                            {
+                                UserSetCursorPosition(CursorPosition - deleted);
+                                ResetSelection();
+                            }
+                        }
 						else
 						{
 							DeleteSelection();
@@ -1387,40 +1398,11 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
-		private void ScanWordForward()
-		{
-			var newPosition = this.CursorPosition;
-			for(; ;)
-			{
-				newPosition++;
-				if(newPosition == this.Text.Length)
-				{
-					break;
-				}
-
-				if (char.IsLetterOrDigit(this.Text[newPosition-1]) != char.IsLetterOrDigit(this.Text[newPosition]))
-				{
-					if (!char.IsWhiteSpace(this.Text[newPosition]))
-					{
-						break;
-					}
-				}
-			}
-
-			UserSetCursorPosition(newPosition);
-		}
-
-		private void ScanWordBackward()
+		private int ScanWord(int increment)
         {
-            var newPosition = this.CursorPosition;
-            for (; ; )
+			int newPosition;
+            for (newPosition = this.CursorPosition + increment; newPosition > 0 && newPosition < this.Text.Length ; newPosition += increment )
             {
-                newPosition--;
-                if (newPosition == 0)
-                {
-                    break;
-                }
-
                 if (char.IsLetterOrDigit(this.Text[newPosition - 1]) != char.IsLetterOrDigit(this.Text[newPosition]))
                 {
                     if (!char.IsWhiteSpace(this.Text[newPosition]))
@@ -1430,7 +1412,7 @@ namespace Myra.Graphics2D.UI
                 }
             }
 
-            UserSetCursorPosition(newPosition);
+			return newPosition;
         }
 
 		public override void InternalRender(RenderContext context)
