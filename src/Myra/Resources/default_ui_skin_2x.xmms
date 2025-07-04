@@ -3,6 +3,7 @@
 	<Fonts UsedSpace="0, 0, 1024, 320">
 		<Font Id="default-font" File="Inter-Regular.ttf" Size="40"/>
 		<Font Id="tooltip-font" File="Inter-Regular.ttf" Size="32"/>
+		<Font Id="monospace-font" File="Consolas.ttf" Size="36" />
 	</Fonts>
 	<LabelStyles>
 		<LabelStyle Font="default-font" TextColor="white" DisabledTextColor="gray" />
