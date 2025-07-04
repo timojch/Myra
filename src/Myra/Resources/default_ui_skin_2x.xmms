@@ -14,7 +14,7 @@
 		<TextBoxStyle Background="textfield" TextColor="white" DisabledTextColor="gray" Font="default-font" Cursor="cursor" Selection="selection" />
 	</TextBoxStyles>
 	<ScrollViewerStyles>
-		<ScrollViewerStyle HorizontalScrollBackground="scroll-horizontal" HorizontalScrollKnob="scroll-knob-horizontal" VerticalScrollBackground="scroll" VerticalScrollKnob="scroll-knob-vertical" />
+		<ScrollViewerStyle HorizontalScrollBackground="scroll-horizontal" HorizontalScrollKnob="scroll-knob-horizontal" VerticalScrollBackground="scroll" VerticalScrollKnob="scroll-knob-vertical" CornerBackgroun="white" />
 	</ScrollViewerStyles>
 	<ButtonStyles>
 		<ButtonStyle Background="button" OverBackground="button-over" PressedBackground="button-down">
@@ -135,7 +135,7 @@
 		</VerticalMenuStyle>
 	</VerticalMenuStyles>
 	<WindowStyles>
-		<WindowStyle Background="window" Padding="10">
+		<WindowStyle Background="window" ResizableBackground="window-resizable" Padding="10">
 			<TitleStyle Font="default-font" TextColor="white" />
 			<CloseButtonStyle OverBackground="button-over" Padding="10, 0" PressedBackground="button-red">
 				<ImageStyle Image="icon-close" />

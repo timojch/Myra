@@ -23,6 +23,7 @@ namespace Myra.Graphics2D.UI
 		private bool _showHorizontalScrollBar, _showVerticalScrollBar;
 		internal Rectangle _horizontalScrollbarFrame, _horizontalScrollbarThumb;
 		internal Rectangle _verticalScrollbarFrame, _verticalScrollbarThumb;
+		internal Rectangle _corner;
 		private int? _startBoundsPos;
 		private int _thumbMaximumX, _thumbMaximumY;
 
@@ -134,6 +135,9 @@ namespace Myra.Graphics2D.UI
 		{
 			get; set;
 		}
+
+        [Category("Appearance")]
+        public IImage CornerBackground { get; set; }
 
 		[Category("Appearance")]
 		public int ScrollMultiplier
@@ -448,6 +452,12 @@ namespace Myra.Graphics2D.UI
 				r.Y += thumbPosition.Y;
 				VerticalScrollKnob.Draw(context, r);
 			}
+
+			if (_verticalScrollingOn && _horizontalScrollingOn
+				&& ShowHorizontalScrollBar && ShowVerticalScrollBar)
+			{
+
+			}
 		}
 
 		public void ApplyScrollViewerStyle(ScrollViewerStyle style)
@@ -456,6 +466,7 @@ namespace Myra.Graphics2D.UI
 			HorizontalScrollKnob = style.HorizontalScrollKnob;
 			VerticalScrollBackground = style.VerticalScrollBackground;
 			VerticalScrollKnob = style.VerticalScrollKnob;
+			CornerBackground = style.CornerBackground;
 
 			ApplyWidgetStyle(style);
 		}

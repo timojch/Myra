@@ -6,6 +6,7 @@
 		public IImage HorizontalScrollKnob { get; set; }
 		public IImage VerticalScrollBackground { get; set; }
 		public IImage VerticalScrollKnob { get; set; }
+		public IImage CornerBackground { get; set; }
 
 		public ScrollViewerStyle()
 		{
@@ -17,6 +18,7 @@
 			HorizontalScrollKnob = style.HorizontalScrollKnob;
 			VerticalScrollBackground = style.VerticalScrollBackground;
 			VerticalScrollKnob = style.VerticalScrollKnob;
+			CornerBackground = style.CornerBackground;
 		}
 
 		public override WidgetStyle Clone()

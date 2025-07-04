@@ -62,6 +62,7 @@
   <NinePatchRegion Id="scroll-knob-horizontal" Left="954" Top="0" Width="6" Height="17" NinePatchLeft="2" NinePatchTop="0" NinePatchRight="2" NinePatchBottom="17" />
   <NinePatchRegion Id="scroll-knob-vertical" Left="960" Top="0" Width="17" Height="6" NinePatchLeft="6" NinePatchTop="2" NinePatchRight="6" NinePatchBottom="2" />
   <NinePatchRegion Id="scroll" Left="977" Top="0" Width="17" Height="6" NinePatchLeft="2" NinePatchTop="2" NinePatchRight="2" NinePatchBottom="2" />
+  <NinePatchRegion Id="scroll-corner" Left="1012" Top="22" Width="7" Height="7" NinePatchLeft="2" NinePatchTop="2" NinePatchRight="2" NinePatchBottom="2" />
   <TextureRegion Id="select-box-list-bg" Left="994" Top="0" Width="1" Height="1" />
   <TextureRegion Id="select-down" Left="995" Top="0" Width="7" Height="4" />
   <TextureRegion Id="select-up" Left="1002" Top="0" Width="7" Height="4" />

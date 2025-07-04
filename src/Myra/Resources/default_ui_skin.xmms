@@ -14,7 +14,7 @@
 		<TextBoxStyle Background="textfield" TextColor="white" DisabledTextColor="gray" Font="default-font" Cursor="cursor" Selection="selection" />
 	</TextBoxStyles>
 	<ScrollViewerStyles>
-		<ScrollViewerStyle HorizontalScrollBackground="scroll-horizontal" HorizontalScrollKnob="scroll-knob-horizontal" VerticalScrollBackground="scroll" VerticalScrollKnob="scroll-knob-vertical" />
+		<ScrollViewerStyle HorizontalScrollBackground="scroll-horizontal" HorizontalScrollKnob="scroll-knob-horizontal" VerticalScrollBackground="scroll" VerticalScrollKnob="scroll-knob-vertical" CornerBackground="scroll-corner" />
 	</ScrollViewerStyles>
 	<ButtonStyles>
 		<ButtonStyle Background="button" OverBackground="button-over" PressedBackground="button-down">
@@ -23,7 +23,7 @@
 		<ButtonStyle Id="blue" Background="button-blue" OverBackground="button-blue-down" PressedBackground="button-blue-down">
 			<LabelStyle Font="default-font" TextColor="white" DisabledTextColor="gray" />
 		</ButtonStyle>
-	</ButtonStyles>
+	</ButtonStyles
 	<CheckBoxStyles>
 		<CheckBoxStyle>
 			<LabelStyle Font="default-font" TextColor="white" />
