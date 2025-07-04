@@ -217,9 +217,15 @@ namespace Myra.Graphics2D.UI
 			var bounds = ActualBounds;
 
             textToDraw.Width = bounds.Width;
-			textToDraw.Height = bounds.Height;
-			textToDraw.AutoEllipsisMethod = AutoEllipsisMethod.Character;
-			textToDraw.AutoEllipsisString = "…";
+
+			if(this.AutoEllipsisMethod == AutoEllipsisMethod.None)
+			{
+				textToDraw.Height = int.MaxValue;
+			}
+			else
+			{
+                textToDraw.Height = bounds.Height;
+            }
 
             var x = bounds.X;
 			if (TextAlign == TextHorizontalAlignment.Center)

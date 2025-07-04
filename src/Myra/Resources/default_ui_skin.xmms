@@ -23,7 +23,7 @@
 		<ButtonStyle Id="blue" Background="button-blue" OverBackground="button-blue-down" PressedBackground="button-blue-down">
 			<LabelStyle Font="default-font" TextColor="white" DisabledTextColor="gray" />
 		</ButtonStyle>
-	</ButtonStyles
+	</ButtonStyles>
 	<CheckBoxStyles>
 		<CheckBoxStyle>
 			<LabelStyle Font="default-font" TextColor="white" />

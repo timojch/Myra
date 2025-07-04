@@ -456,7 +456,7 @@ namespace Myra.Graphics2D.UI
 			if (_verticalScrollingOn && _horizontalScrollingOn
 				&& ShowHorizontalScrollBar && ShowVerticalScrollBar)
 			{
-
+				CornerBackground.Draw(context, _corner);
 			}
 		}
 
@@ -606,6 +606,9 @@ namespace Myra.Graphics2D.UI
 				{
 					bounds.Height = availableSize.Y;
 				}
+
+				_corner = new Rectangle(_verticalScrollbarFrame.X, _horizontalScrollbarFrame.Y,
+					_verticalScrollbarFrame.Width, _horizontalScrollbarFrame.Height);
 			}
 
 			Content.Arrange(bounds);

@@ -93,6 +93,8 @@ namespace Myra.Graphics2D.UI
             DragHandle = TitlePanel;
 
             _titleLabel = new Label();
+            _titleLabel.AutoEllipsisMethod = FontStashSharp.RichText.AutoEllipsisMethod.Character;
+            _titleLabel.AutoEllipsisString = "…";
             StackPanel.SetProportionType(_titleLabel, ProportionType.Fill);
             TitlePanel.Widgets.Add(_titleLabel);
 
