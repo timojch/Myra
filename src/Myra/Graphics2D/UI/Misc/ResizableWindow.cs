@@ -47,6 +47,8 @@ namespace Myra.Graphics2D.UI
 
         private Point? ResizeStartSize;
 
+        private ScrollViewer ContentScrollViewer;
+
         public virtual Rectangle ResizeRegion
         {
             get
@@ -59,9 +61,18 @@ namespace Myra.Graphics2D.UI
             }
         }
 
+        public override Widget Content
+        {
+            get => this.ContentScrollViewer.Content;
+            set => this.ContentScrollViewer.Content = value;
+        }
+
         public ResizableWindow(string styleName = Stylesheet.DefaultStyleName)
             : base(styleName)
         {
+            this.ContentScrollViewer = new ScrollViewer(styleName);
+            base.Content = this.ContentScrollViewer;
+
             this.SetStyle(styleName);
         }
 
