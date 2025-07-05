@@ -1,6 +1,5 @@
 ﻿using Myra.Attributes;
 using Myra.Graphics2D.UI.ColorPicker;
-using Myra.Graphics2D.UI.Layouts;
 using Myra.Graphics2D.UI.Styles;
 using System;
 using System.Collections;
@@ -11,7 +10,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace Myra.Graphics2D.UI.Containers
+namespace Myra.Graphics2D.UI
 {
     public class FlowContainer : Container
     {

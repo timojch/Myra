@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Myra.Graphics2D.UI.Containers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Myra.Graphics2D.UI.Layouts
+namespace Myra.Graphics2D.UI
 {
     public class FlowLayout : ILayout
     {
