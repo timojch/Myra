@@ -21,6 +21,41 @@ namespace Myra.Graphics2D.UI.Containers
         [Browsable(false)]
         public override ObservableCollection<Widget> Widgets => _widgets;
 
+        [Category("Appearance")]
+        public int IndentSize
+        {
+            get => this._layout.IndentSize;
+            set => this._layout.IndentSize = value;
+        }
+
+        [Category("Appearance")]
+        public int LineSpacing
+        {
+            get => this._layout.LineSpacing;
+            set => this._layout.LineSpacing = value;
+        }
+
+        [Category("Appearance")]
+        public int HorizontalSpacing
+        {
+            get => this._layout.HorizontalSpacing;
+            set => this._layout.HorizontalSpacing = value;
+        }
+
+        [Category("Appearance")]
+        public int MinLineHeight
+        {
+            get => this._layout.MinLineHeight;
+            set => this._layout.MinLineHeight = value;
+        }
+
+        [Category("Appearance")]
+        public int MaxLineHeight
+        {
+            get => this._layout.MaxLineHeight;
+            set => this._layout.MaxLineHeight = value;
+        }
+
         public List<ControlPoint> ControlPoints { get => this._layout.ControlPoints; }
 
         public FlowContainer()
