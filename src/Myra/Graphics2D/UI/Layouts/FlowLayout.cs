@@ -11,11 +11,11 @@ namespace Myra.Graphics2D.UI.Layouts
     {
         public List<FlowContainer.ControlPoint> ControlPoints { get; } = new List<FlowContainer.ControlPoint>();
 
-        public int IndentSize = 80;
+        public int IndentSize = 28;
 
         public int LineSpacing = 4;
 
-        public int HorizontalSpacing = 4;
+        public int HorizontalSpacing = 7;
 
         public int MinLineHeight = 0;
 

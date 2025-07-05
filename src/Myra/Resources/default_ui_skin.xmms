@@ -92,6 +92,9 @@
 			<SeparatorStyle Padding="0, 2" Image="separator-menu" Thickness="4" />
 		</ListBoxStyle>
 	</ListBoxStyles>
+	<FlowContainerStyles>
+		<FlowContainerStyle IndentSize="28" LineSpacing="4" HorizontalSpacing="7" MinLineHeight="0" Wrap="true"/>
+	</FlowContainerStyles>
 	<TabControlStyles>
 		<TabControlStyle ButtonSpacing="0">
 			<TabItemStyle OverBackground="button-over" Padding="5, 0" PressedBackground="list-selection">

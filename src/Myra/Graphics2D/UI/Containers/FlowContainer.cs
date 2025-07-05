@@ -1,5 +1,7 @@
 ﻿using Myra.Attributes;
+using Myra.Graphics2D.UI.ColorPicker;
 using Myra.Graphics2D.UI.Layouts;
+using Myra.Graphics2D.UI.Styles;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -65,10 +67,12 @@ namespace Myra.Graphics2D.UI.Containers
 
         public List<ControlPoint> ControlPoints { get => this._layout.ControlPoints; }
 
-        public FlowContainer()
+        public FlowContainer(string styleName = Stylesheet.DefaultStyleName)
         {
             this._widgets.CollectionChanged += OnWidgetsChanged;
             this.ChildrenLayout = _layout;
+
+            this.SetStyle(styleName);
         }
 
         public ControlPoint AddLineBreak(int indent = 0)
@@ -177,6 +181,23 @@ namespace Myra.Graphics2D.UI.Containers
                 }
             }
 
+        }
+
+        public void ApplyFlowContainerStyle(FlowContainerStyle style)
+        {
+            this.ApplyWidgetStyle(style);
+
+            this.IndentSize = style.IndentSize;
+            this.LineSpacing = style.LineSpacing;
+            this.HorizontalSpacing = style.HorizontalSpacing;
+            this.MinLineHeight = style.MinLineHeight;
+            this.MaxLineHeight = style.MaxLineHeight;
+            this.Wrap = style.Wrap;
+        }
+
+        protected override void InternalSetStyle(Stylesheet stylesheet, string name)
+        {
+            ApplyFlowContainerStyle(stylesheet.FlowContainerStyles.SafelyGetStyle(name));
         }
 
         public class ControlPoint
