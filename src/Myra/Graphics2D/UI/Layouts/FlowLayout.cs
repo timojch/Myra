@@ -21,6 +21,8 @@ namespace Myra.Graphics2D.UI.Layouts
 
         public int MaxLineHeight = int.MaxValue;
 
+        public bool Wrap = true;
+
         public IEnumerable<Tuple<Widget, Rectangle>> GetArrangedRectangles(IEnumerable<Widget> widgets, Point availableSize)
         {
             var cursorPos = Point.Zero;
@@ -63,7 +65,7 @@ namespace Myra.Graphics2D.UI.Layouts
 
                 var measure = widget.Measure(new Point(availableSize.X - cursorPos.X, MaxLineHeight));
 
-                if (cursorPos.X + measure.X > availableSize.X)
+                if (this.Wrap && cursorPos.X + measure.X > availableSize.X)
                 {
                     // Doesn't fit. If we aren't already at the start of a new line, move to a new line.
                     if (itemsOnCurrentLine > 0)

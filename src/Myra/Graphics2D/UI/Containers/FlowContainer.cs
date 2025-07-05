@@ -56,6 +56,13 @@ namespace Myra.Graphics2D.UI.Containers
             set => this._layout.MaxLineHeight = value;
         }
 
+        [Category("Appearance")]
+        public bool Wrap
+        {
+            get => this._layout.Wrap;
+            set => this._layout.Wrap = value;
+        }
+
         public List<ControlPoint> ControlPoints { get => this._layout.ControlPoints; }
 
         public FlowContainer()
