@@ -10,17 +10,17 @@ namespace Myra.Graphics2D.UI.Styles
 {
     public class FlowContainerStyle : WidgetStyle
     {
-        public int IndentSize;
+        public int IndentSize { get; set; }
 
-        public int LineSpacing;
+        public int LineSpacing { get; set; }
 
-        public int HorizontalSpacing;
+        public int HorizontalSpacing { get; set; }
 
-        public int MinLineHeight;
+        public int MinLineHeight { get; set; }
 
-        public int MaxLineHeight;
+        public int MaxLineHeight { get; set; } = int.MaxValue;
 
-        public bool Wrap;
+        public bool Wrap { get; set; }
 
         public FlowContainerStyle()
         {
