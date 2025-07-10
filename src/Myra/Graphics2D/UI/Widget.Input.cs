@@ -383,16 +383,15 @@ namespace Myra.Graphics2D.UI
                 case InputEventType.TouchUp:
                     if (this.Desktop?.HeldWidgets.Any() ?? false)
                     {
-                        foreach(var widget in this.Desktop.HeldWidgets)
+                        var removedWidgets = new List<Widget>();
+                        foreach (var widget in this.Desktop.HeldWidgets.Where(w => this.ShouldReceiveDragDrop(w)))
                         {
-                            var removedWidgets = new List<Widget>();
-                            if (this.ShouldReceiveDragDrop(widget))
-                            {
-                                this.DragReceived?.Invoke(this, new DragReceivedEventArgs(widget));
-                            }
-
-                            this.Desktop.HeldWidgets.RemoveAll(w => removedWidgets.Contains(w));
+                            this.DragReceived?.Invoke(this, new DragReceivedEventArgs(widget));
+                            widget.InvokeDropped(new DragDroppedEventArgs(this));
+                            removedWidgets.Add(widget);
                         }
+
+                        this.Desktop.HeldWidgets.RemoveAll(w => removedWidgets.Contains(w));
                     }
                     OnTouchUp();
                     TouchUp.Invoke(this);

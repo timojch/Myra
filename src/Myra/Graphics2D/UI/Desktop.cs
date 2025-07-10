@@ -30,7 +30,6 @@ namespace Myra.Graphics2D.UI
         private Transform? _transform;
         private Matrix _inverseMatrix;
         private bool _inverseMatrixDirty = true;
-        private Widget _heldWidget;
 
         private readonly InputContext _inputContext = new InputContext();
         private readonly RenderContext _renderContext = new RenderContext();
