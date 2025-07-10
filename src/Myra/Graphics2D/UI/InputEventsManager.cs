@@ -35,18 +35,18 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
-		private static readonly Queue<InputEvent> _events = new Queue<InputEvent>();
+		private static readonly Stack<InputEvent> _events = new Stack<InputEvent>();
 
 		public static void Queue(IInputEventsProcessor processor, InputEventType type)
 		{
-			_events.Enqueue(new InputEvent(processor, type));
+			_events.Push(new InputEvent(processor, type));
 		}
 
 		public static void ProcessEvents()
 		{
 			while(_events.Count > 0)
 			{
-				var ev = _events.Dequeue();
+				var ev = _events.Pop();
 
 				ev.Processor.ProcessEvent(ev.Type);
 			}

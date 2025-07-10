@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using Myra.Events;
 using System.Linq;
+using System.Collections.Generic;
+
 
 
 #if MONOGAME || FNA
@@ -127,7 +129,7 @@ namespace Myra.Graphics2D.UI
         [XmlIgnore]
         public bool IsDragDropHeld
         {
-            get => this.Desktop.HeldWidgets.Contains(this);
+            get => this.Desktop?.HeldWidgets.Contains(this) ?? false;
         }
 
         protected internal virtual bool AcceptsMouseWheel => false;
@@ -153,8 +155,9 @@ namespace Myra.Graphics2D.UI
 
         public event EventHandler KeyboardFocusChanged;
 
-        public event EventHandler DragPickup;
-        public event EventHandler<DragDroppedEventArgs> DragDropped;
+        public event EventHandler DragStarted;
+        public event EventHandler DragMoved;
+        public event EventHandler<DragDroppedEventArgs> DragEnded;
         public event EventHandler<DragReceivedEventArgs> DragReceived;
 
         public event EventHandler<GenericEventArgs<float>> MouseWheelChanged;
@@ -371,14 +374,6 @@ namespace Myra.Graphics2D.UI
 
                         if (DragHandle != null && DragHandle.IsTouchInside)
                         {
-                            var parent = Parent != null ? (ITransformable)Parent : Desktop;
-                            _startPos = parent.ToLocal(new Vector2(Desktop.TouchPosition.Value.X, Desktop.TouchPosition.Value.Y));
-                            _startLeftTop = new Point(Left, Top);
-
-                            if (this.CanBePickedUp)
-                            {
-                                this.Desktop.HeldWidgets.Add(this);
-                            }
                         }
                     }
 
@@ -390,7 +385,13 @@ namespace Myra.Graphics2D.UI
                     {
                         foreach(var widget in this.Desktop.HeldWidgets)
                         {
-                            this.DragReceived?.Invoke(this, new DragReceivedEventArgs(widget));
+                            var removedWidgets = new List<Widget>();
+                            if (this.ShouldReceiveDragDrop(widget))
+                            {
+                                this.DragReceived?.Invoke(this, new DragReceivedEventArgs(widget));
+                            }
+
+                            this.Desktop.HeldWidgets.RemoveAll(w => removedWidgets.Contains(w));
                         }
                     }
                     OnTouchUp();
@@ -405,7 +406,24 @@ namespace Myra.Graphics2D.UI
 
         internal void InvokeDropped(Events.DragDroppedEventArgs e)
         {
-            this.DragDropped?.Invoke(this, e);
+            this.DragEnded?.Invoke(this, e);
+        }
+
+        internal void InvokeDragMoved(EventArgs e)
+        {
+            this.DragMoved?.Invoke(this, e);
+        }
+
+        private void OnDragHandleTouchDown(object sender, EventArgs e)
+        {
+            var parent = Parent != null ? (ITransformable)Parent : Desktop;
+            _startPos = parent.ToLocal(new Vector2(Desktop.TouchPosition.Value.X, Desktop.TouchPosition.Value.Y));
+            _startLeftTop = new Point(Left, Top);
+
+            if (this.CanBePickedUp)
+            {
+                this.Pickup();
+            }
         }
 
         public virtual void OnMouseLeft()

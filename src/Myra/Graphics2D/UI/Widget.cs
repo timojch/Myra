@@ -520,7 +520,27 @@ namespace Myra.Graphics2D.UI
 
         [XmlIgnore]
         [Browsable(false)]
-        public Widget DragHandle { get; set; }
+        public Widget DragHandle
+        {
+            get;
+            set
+            {
+                if (field != value)
+                {
+                    if (field is not null)
+                    {
+                        field.TouchDown -= this.OnDragHandleTouchDown;
+                    }
+
+                    field = value;
+
+                    if(value is not null)
+                    {
+                        value.TouchDown += this.OnDragHandleTouchDown;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Determines whether the widget had been placed on Desktop
@@ -1384,6 +1404,17 @@ namespace Myra.Graphics2D.UI
         private void DesktopTouchUp(object sender, EventArgs args)
         {
             _startPos = null;
+        }
+
+        public void Pickup()
+        {
+            this.Desktop.HeldWidgets.Add(this);
+            this.DragStarted?.Invoke(this, new EventArgs());
+        }
+
+        public virtual bool ShouldReceiveDragDrop(Widget held)
+        {
+            return false;
         }
 
         public virtual Widget HitTest(Point p)

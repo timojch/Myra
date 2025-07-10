@@ -302,6 +302,10 @@ namespace Myra.Graphics2D.UI
                     break;
                 case InputEventType.TouchMoved:
                     TouchMoved.Invoke(this);
+                    foreach(var heldWidget in this.HeldWidgets)
+                    {
+                        heldWidget.InvokeDragMoved(new EventArgs());
+                    }
                     break;
                 case InputEventType.TouchDown:
                     InputOnTouchDown();
@@ -309,6 +313,7 @@ namespace Myra.Graphics2D.UI
                     break;
                 case InputEventType.TouchUp:
                     TouchUp.Invoke(this);
+                    this.DropHeldWidgets();
                     break;
                 case InputEventType.TouchDoubleClick:
                     TouchDoubleClick.Invoke(this);
