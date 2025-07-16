@@ -551,6 +551,29 @@ namespace Myra.Graphics2D.UI
             RenderVisual();
         }
 
+        public Widget PredictDropTargetFor(Widget held)
+            => this.PredictDropTargetFor(held, this.MousePosition);
+
+        public Widget PredictDropTargetFor(Widget held, Point dropPoint)
+        {
+            var topmostTarget = this.HitTest(dropPoint);
+            var target = topmostTarget;
+
+            while (target != null)
+            {
+                if(target.ShouldReceiveDragDrop(held))
+                {
+                    return target;
+                }
+                else
+                {
+                    target = target.Parent;
+                }
+            }
+
+            return target;
+        }
+
         public void DropHeldWidgets()
         {
             foreach (var heldWidget in this.HeldWidgets)
@@ -865,18 +888,24 @@ namespace Myra.Graphics2D.UI
             _widgetsDirty = false;
         }
 
-        public bool IsPointOverGUI(Point p)
+        public Widget HitTest(Point p)
         {
             foreach (var widget in ChildrenCopy)
             {
                 var result = widget.HitTest(p);
                 if (result != null)
                 {
-                    return true;
+                    return result;
                 }
             }
 
-            return false;
+            return null;
+        }
+
+        public bool IsPointOverGUI(Point p)
+        {
+            var widget = this.HitTest(p);
+            return widget != null;
         }
 
         public static Rectangle DefaultBoundsFetcher()
