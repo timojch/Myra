@@ -13,7 +13,8 @@ namespace Myra.Graphics2D.UI
 		TouchMoved,
 		TouchDown,
 		TouchUp,
-		TouchDoubleClick
+		TouchDoubleClick,
+		MouseButtonDown
 	}
 
 	internal interface IInputEventsProcessor
