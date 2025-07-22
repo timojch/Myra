@@ -72,6 +72,13 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		[DefaultValue(null)]
+		public string Tooltip
+		{
+			get => this.Label.Tooltip;
+			set => this.Label.Tooltip = value;
+		}
+
 		internal string DisplayText
 		{
 			get
