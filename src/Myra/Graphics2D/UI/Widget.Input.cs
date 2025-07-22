@@ -382,14 +382,13 @@ namespace Myra.Graphics2D.UI
 
                     OnTouchDown();
                     TouchDown.Invoke(this);
-                    MouseClick.Invoke(this, new PointerEventArgs(0));
                     break;
                 case InputEventType.MouseClick:
                     if (Desktop != null)
                     {
                         foreach (var click in this.Desktop.LastMouseInfo.GetClickedButtons())
                         {
-                            MouseClick.Invoke(this, new PointerEventArgs(click));
+                            MouseClick?.Invoke(this, new PointerEventArgs(click));
                         }
                     }
                     break;

@@ -45,11 +45,21 @@ namespace Myra.Graphics2D.UI
 
 		public static void ProcessEvents()
 		{
+			var localStack = new Stack<InputEvent>();
 			while(_events.Count > 0)
 			{
 				var ev = _events.Pop();
+				localStack.Push(ev);
+				while (_events.TryPeek(out var nextEv) && nextEv.Processor == ev.Processor)
+				{
+					localStack.Push(_events.Pop());
+				}
 
-				ev.Processor.ProcessEvent(ev.Type);
+				while(localStack.Count > 0)
+				{
+					ev = localStack.Pop();
+					ev.Processor.ProcessEvent(ev.Type);
+                }
 			}
 		}
 	}
