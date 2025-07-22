@@ -153,6 +153,8 @@ namespace Myra.Graphics2D.UI
         public event EventHandler TouchUp;
         public event EventHandler TouchDoubleClick;
 
+        public event EventHandler<PointerEventArgs> MouseClick;
+
         public event EventHandler KeyboardFocusChanged;
 
         public event EventHandler DragStarted;
@@ -220,6 +222,11 @@ namespace Myra.Graphics2D.UI
                     if (ContainsGlobalPoint(Desktop.TouchPosition.Value))
                     {
                         LocalTouchPosition = ToLocal(Desktop.TouchPosition.Value);
+
+                        if (Desktop.LastMouseInfo.GetClickedButtons().Any())
+                        {
+                            InputEventsManager.Queue(this, InputEventType.MouseClick);
+                        }
                     }
                     else
                     {
@@ -371,14 +378,20 @@ namespace Myra.Graphics2D.UI
                         {
                             Desktop.FocusedKeyboardWidget = this;
                         }
-
-                        if (DragHandle != null && DragHandle.IsTouchInside)
-                        {
-                        }
                     }
 
                     OnTouchDown();
                     TouchDown.Invoke(this);
+                    MouseClick.Invoke(this, new PointerEventArgs(0));
+                    break;
+                case InputEventType.MouseClick:
+                    if (Desktop != null)
+                    {
+                        foreach (var click in this.Desktop.LastMouseInfo.GetClickedButtons())
+                        {
+                            MouseClick.Invoke(this, new PointerEventArgs(click));
+                        }
+                    }
                     break;
                 case InputEventType.TouchUp:
                     if (this.Desktop?.HeldWidgets.Any() ?? false)

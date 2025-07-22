@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System.Linq;
+using System.Collections.Generic;
+
 
 #if MONOGAME
 using MonoGame.Framework.Utilities;
@@ -28,6 +30,7 @@ namespace Myra.Graphics2D.UI
         public Point Position;
         public float Wheel;
         public uint ButtonField;
+        public uint PreviousButtonField;
 
         public bool IsLeftButtonDown
         {
@@ -45,11 +48,34 @@ namespace Myra.Graphics2D.UI
             set => this.SetButton(1, value);
         }
 
+        public IEnumerable<int> GetClickedButtons()
+        {
+            int i = 0;
+            uint remainingField = this.ButtonField & (~this.PreviousButtonField);
+            while (remainingField > 0)
+            {
+                if ((remainingField & 0x01) > 0)
+                {
+                    yield return i;
+                }
+
+                remainingField >>= 1;
+                i++;
+            }
+        }
+
         public bool IsButtonDown(int index)
         {
             uint mask = 0x01;
             mask <<= index;
             return (this.ButtonField & mask) > 0;
+        }
+
+        public bool IsButtonClicked(int index)
+        {
+            uint mask = 0x01;
+            mask <<= index;
+            return (this.ButtonField & mask) > 0 && (this.PreviousButtonField & mask) == 0;
         }
 
         public void SetButton(int index, bool value)
@@ -160,12 +186,16 @@ namespace Myra.Graphics2D.UI
             }
         }
 
+        internal MouseInfo LastMouseInfo { get => this._lastMouseInfo; }
+
         public event EventHandler MouseMoved;
 
         public event EventHandler TouchMoved;
         public event EventHandler TouchDown;
         public event EventHandler TouchUp;
         public event EventHandler TouchDoubleClick;
+
+        public event EventHandler<PointerEventArgs> MouseClick;
 
         public event EventHandler<GenericEventArgs<float>> MouseWheelChanged;
 
@@ -181,6 +211,7 @@ namespace Myra.Graphics2D.UI
             }
 
             var mouseInfo = MyraEnvironment.MouseInfoGetter();
+            mouseInfo.PreviousButtonField = _lastMouseInfo.ButtonField;
 
             // Mouse Position
             MousePosition = mouseInfo.Position;
@@ -212,6 +243,11 @@ namespace Myra.Graphics2D.UI
             else
             {
                 MouseWheelDelta = 0;
+            }
+
+            if (mouseInfo.GetClickedButtons().Any())
+            {
+                InputEventsManager.Queue(this, InputEventType.MouseClick);
             }
 
             _lastMouseInfo = mouseInfo;
@@ -337,7 +373,7 @@ namespace Myra.Graphics2D.UI
                     break;
                 case InputEventType.TouchMoved:
                     TouchMoved.Invoke(this);
-                    foreach(var heldWidget in this.HeldWidgets)
+                    foreach (var heldWidget in this.HeldWidgets)
                     {
                         heldWidget.InvokeDragMoved(new EventArgs());
                     }
@@ -352,6 +388,12 @@ namespace Myra.Graphics2D.UI
                     break;
                 case InputEventType.TouchDoubleClick:
                     TouchDoubleClick.Invoke(this);
+                    break;
+                case InputEventType.MouseClick:
+                    foreach (var click in this.LastMouseInfo.GetClickedButtons())
+                    {
+                        MouseClick.Invoke(this, new PointerEventArgs(click));
+                    }
                     break;
             }
         }
