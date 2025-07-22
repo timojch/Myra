@@ -290,13 +290,17 @@ namespace Myra
 		{
 #if MONOGAME || FNA
 			var state = Mouse.GetState();
+			uint buttons = BitPacking.UnsignedIntFromBools(
+				state.LeftButton == ButtonState.Pressed,
+				state.RightButton == ButtonState.Pressed,
+				state.MiddleButton == ButtonState.Pressed,
+				state.XButton1 == ButtonState.Pressed,
+				state.XButton2 == ButtonState.Pressed);
 
 			return new MouseInfo
 			{
 				Position = new Point(state.X, state.Y),
-				IsLeftButtonDown = Game.IsActive && state.LeftButton == ButtonState.Pressed,
-				IsMiddleButtonDown = Game.IsActive && state.MiddleButton == ButtonState.Pressed,
-				IsRightButtonDown = Game.IsActive && state.RightButton == ButtonState.Pressed,
+				ButtonField = buttons,
 				Wheel = state.ScrollWheelValue
 			};
 #elif STRIDE

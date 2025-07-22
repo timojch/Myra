@@ -26,10 +26,45 @@ namespace Myra.Graphics2D.UI
     public struct MouseInfo
     {
         public Point Position;
-        public bool IsLeftButtonDown;
-        public bool IsMiddleButtonDown;
-        public bool IsRightButtonDown;
         public float Wheel;
+        public uint ButtonField;
+
+        public bool IsLeftButtonDown
+        {
+            get => this.IsButtonDown(0);
+            set => this.SetButton(0, value);
+        }
+        public bool IsMiddleButtonDown
+        {
+            get => this.IsButtonDown(2);
+            set => this.SetButton(2, value);
+        }
+        public bool IsRightButtonDown
+        {
+            get => this.IsButtonDown(1);
+            set => this.SetButton(1, value);
+        }
+
+        public bool IsButtonDown(int index)
+        {
+            uint mask = 0x01;
+            mask <<= index;
+            return (this.ButtonField & mask) > 0;
+        }
+
+        public void SetButton(int index, bool value)
+        {
+            uint mask = 0x01;
+            mask <<= index;
+            if (value)
+            {
+                this.ButtonField |= mask;
+            }
+            else
+            {
+                this.ButtonField &= ~mask;
+            }
+        }
     }
 
     partial class Desktop : IInputEventsProcessor
