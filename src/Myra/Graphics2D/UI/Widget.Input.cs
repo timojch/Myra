@@ -210,6 +210,11 @@ namespace Myra.Graphics2D.UI
                             LocalMousePosition = null;
                             inputContext.ParentContainsMouse = false;
                         }
+
+                        if (Desktop.LastMouseInfo.GetClickedButtons().Any())
+                        {
+                            InputEventsManager.Queue(this, InputEventType.MouseClick);
+                        }
                     }
                     else
                     {
@@ -222,11 +227,6 @@ namespace Myra.Graphics2D.UI
                     if (ContainsGlobalPoint(Desktop.TouchPosition.Value))
                     {
                         LocalTouchPosition = ToLocal(Desktop.TouchPosition.Value);
-
-                        if (Desktop.LastMouseInfo.GetClickedButtons().Any())
-                        {
-                            InputEventsManager.Queue(this, InputEventType.MouseClick);
-                        }
                     }
                     else
                     {
