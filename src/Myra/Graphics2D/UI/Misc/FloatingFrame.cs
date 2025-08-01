@@ -21,201 +21,233 @@ using Color = FontStashSharp.FSColor;
 
 namespace Myra.Graphics2D.UI
 {
-	public class FloatingFrame : ContentControl
-	{
-		private Widget _content;
-		private Widget _previousKeyboardFocus;
+    public class FloatingFrame : ContentControl
+    {
+        private Widget _content;
+        private Widget _previousKeyboardFocus;
         private readonly StackPanelLayout _layout = new StackPanelLayout(Orientation.Vertical);
+        private Desktop _subscribedDesktop;
 
         [Browsable(false)]
-		[Content]
-		public override Widget Content
-		{
-			get
-			{
-				return _content;
-			}
+        [Content]
+        public override Widget Content
+        {
+            get
+            {
+                return _content;
+            }
 
-			set
-			{
-				if (value == Content)
-				{
-					return;
-				}
+            set
+            {
+                if (value == Content)
+                {
+                    return;
+                }
 
-				// Remove existing
-				if (_content != null)
-				{
-					Children.Remove(_content);
-				}
+                // Remove existing
+                if (_content != null)
+                {
+                    Children.Remove(_content);
+                }
 
-				if (value != null)
-				{
-					StackPanel.SetProportionType(value, ProportionType.Fill);
-					Children.Insert(1, value);
-				}
+                if (value != null)
+                {
+                    StackPanel.SetProportionType(value, ProportionType.Fill);
+                    Children.Insert(1, value);
+                }
 
-				_content = value;
-			}
-		}
+                _content = value;
+            }
+        }
 
-		[Browsable(false)]
-		[XmlIgnore]
-		public bool Result { get; set; }
+        [Browsable(false)]
+        [XmlIgnore]
+        public bool Result { get; set; }
 
-		[DefaultValue(HorizontalAlignment.Left)]
-		public override HorizontalAlignment HorizontalAlignment
-		{
-			get
-			{
-				return base.HorizontalAlignment;
-			}
-			set
-			{
-				base.HorizontalAlignment = value;
-			}
-		}
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        public bool IsLightDismiss { get; set; }
 
-		[DefaultValue(VerticalAlignment.Top)]
-		public override VerticalAlignment VerticalAlignment
-		{
-			get
-			{
-				return base.VerticalAlignment;
-			}
-			set
-			{
-				base.VerticalAlignment = value;
-			}
-		}
+        [DefaultValue(HorizontalAlignment.Left)]
+        public override HorizontalAlignment HorizontalAlignment
+        {
+            get
+            {
+                return base.HorizontalAlignment;
+            }
+            set
+            {
+                base.HorizontalAlignment = value;
+            }
+        }
 
-		[DefaultValue(DragDirection.Both)]
-		public override DragDirection DragDirection { get => base.DragDirection; set => base.DragDirection = value; }
+        [DefaultValue(VerticalAlignment.Top)]
+        public override VerticalAlignment VerticalAlignment
+        {
+            get
+            {
+                return base.VerticalAlignment;
+            }
+            set
+            {
+                base.VerticalAlignment = value;
+            }
+        }
 
-		[Category("Behavior")]
-		[DefaultValue(Keys.Escape)]
-		public Keys? CloseKey { get; set; }
+        [DefaultValue(DragDirection.Both)]
+        public override DragDirection DragDirection { get => base.DragDirection; set => base.DragDirection = value; }
+
+        [Category("Behavior")]
+        [DefaultValue(Keys.Escape)]
+        public Keys? CloseKey { get; set; }
 
         private bool IsWindowPlaced { get; set; }
 
-		public event EventHandler<CancellableEventArgs> Closing;
-		public event EventHandler Closed;
+        public event EventHandler<CancellableEventArgs> Closing;
+        public event EventHandler Closed;
 
-		public FloatingFrame(string styleName = Stylesheet.DefaultStyleName)
+        public FloatingFrame(string styleName = Stylesheet.DefaultStyleName)
         {
             _layout.Spacing = 8;
             ChildrenLayout = _layout;
 
-			// Set style if we are not a derived class.
-			if (this.GetType() == typeof(FloatingFrame))
-			{
-				SetStyle(styleName);
-			}
-		}
+            // Set style if we are not a derived class.
+            if (this.GetType() == typeof(FloatingFrame))
+            {
+                SetStyle(styleName);
+            }
+        }
 
-		protected override void InternalArrange()
-		{
-			base.InternalArrange();
+        protected override void InternalArrange()
+        {
+            base.InternalArrange();
 
-			if (!IsWindowPlaced)
-			{
-				CenterOnDesktop();
-				IsWindowPlaced = true;
-			}
-		}
+            if (!IsWindowPlaced)
+            {
+                CenterOnDesktop();
+                IsWindowPlaced = true;
+            }
+        }
 
-		public void CenterOnDesktop()
-		{
-			var size = Bounds.Size();
-			Left = (ContainerBounds.Width - size.X) / 2;
-			Top = (ContainerBounds.Height - size.Y) / 2;
-		}
+        public void CenterOnDesktop()
+        {
+            var size = Bounds.Size();
+            Left = (ContainerBounds.Width - size.X) / 2;
+            Top = (ContainerBounds.Height - size.Y) / 2;
+        }
 
-		public override void OnTouchDown()
-		{
-			BringToFront();
-			base.OnTouchDown();
-		}
+        public override void OnTouchDown()
+        {
+            BringToFront();
+            base.OnTouchDown();
+        }
 
-		public override void OnKeyDown(Keys k)
-		{
-			base.OnKeyDown(k);
+        public override void OnKeyDown(Keys k)
+        {
+            base.OnKeyDown(k);
 
-			if (k == CloseKey)
-			{
-				Close();
-			}
-		}
+            if (k == CloseKey)
+            {
+                Close();
+            }
+        }
 
-		private void InternalShow(Desktop desktop, Point? position = null)
-		{
-			Visible = true;
-			Desktop = desktop;
-			Desktop.Widgets.Add(this);
+        protected override void OnPlacedChanged()
+        {
+            base.OnPlacedChanged();
 
-			if (position != null)
-			{
-				Left = position.Value.X;
-				Top = position.Value.Y;
-				IsWindowPlaced = true;
-			}
-		}
+            if (this.Desktop is not null)
+            {
+                this._subscribedDesktop = this.Desktop;
+                this._subscribedDesktop.TouchDown += this.Desktop_TouchDown;
+            }
+            else
+            {
+                this._subscribedDesktop.TouchDown -= this.Desktop_TouchDown;
+                this._subscribedDesktop = null;
+            }
+        }
 
-		public void Show(Desktop desktop, Point? position = null)
-		{
-			IsModal = false;
-			InternalShow(desktop, position);
-		}
+        private void Desktop_TouchDown(object sender, EventArgs e)
+        {
+            if (this.IsLightDismiss)
+            {
+                if (!this.Bounds.Contains(this.ToLocal(this.Desktop.MousePosition)))
+                {
+                    this.Close();
+                }
+            }
+        }
 
-		public void ShowModal(Desktop desktop, Point? position = null)
-		{
-			IsModal = true;
-			InternalShow(desktop, position);
+        private void InternalShow(Desktop desktop, Point? position = null)
+        {
+            Visible = true;
+            Desktop = desktop;
+            Desktop.Widgets.Add(this);
 
-			_previousKeyboardFocus = desktop.FocusedKeyboardWidget;
+            if (position != null)
+            {
+                Left = position.Value.X;
+                Top = position.Value.Y;
+                IsWindowPlaced = true;
+            }
+        }
 
-			// Force mouse wheel focused to be set to the first appropriate widget in the next Desktop.UpdateLayout
-			if (AcceptsKeyboardFocus)
-			{
-				Desktop.FocusedKeyboardWidget = this;
-			}
-		}
+        public void Show(Desktop desktop, Point? position = null)
+        {
+            IsModal = false;
+            InternalShow(desktop, position);
+        }
 
-		public virtual void Close()
-		{
-			if (Desktop == null)
-			{
-				// Is closed already
-				return;
-			}
+        public void ShowModal(Desktop desktop, Point? position = null)
+        {
+            IsModal = true;
+            InternalShow(desktop, position);
 
-			var ev = Closing;
-			if (ev != null)
-			{
-				var args = new CancellableEventArgs();
-				ev(this, args);
-				if (args.Cancel)
-				{
-					return;
-				}
-			}
+            _previousKeyboardFocus = desktop.FocusedKeyboardWidget;
 
-			if (IsModal)
-			{
-				Desktop.FocusedKeyboardWidget = _previousKeyboardFocus;
-			}
+            // Force mouse wheel focused to be set to the first appropriate widget in the next Desktop.UpdateLayout
+            if (AcceptsKeyboardFocus)
+            {
+                Desktop.FocusedKeyboardWidget = this;
+            }
+        }
 
-			if (Desktop.Widgets.Contains(this))
-			{
-				RemoveFromDesktop();
-			}
-			else
-			{
-				//todo fix remove error. DONE
-				RemoveFromParent();
-			}
+        public virtual void Close()
+        {
+            if (Desktop == null)
+            {
+                // Is closed already
+                return;
+            }
 
-			Closed.Invoke(this);
+            var ev = Closing;
+            if (ev != null)
+            {
+                var args = new CancellableEventArgs();
+                ev(this, args);
+                if (args.Cancel)
+                {
+                    return;
+                }
+            }
+
+            if (IsModal)
+            {
+                Desktop.FocusedKeyboardWidget = _previousKeyboardFocus;
+            }
+
+            if (Desktop.Widgets.Contains(this))
+            {
+                RemoveFromDesktop();
+            }
+            else
+            {
+                //todo fix remove error. DONE
+                RemoveFromParent();
+            }
+
+            Closed.Invoke(this);
         }
 
         protected override void InternalSetStyle(Stylesheet stylesheet, string name)
