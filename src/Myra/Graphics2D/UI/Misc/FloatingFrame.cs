@@ -53,7 +53,7 @@ namespace Myra.Graphics2D.UI
                 if (value != null)
                 {
                     StackPanel.SetProportionType(value, ProportionType.Fill);
-                    Children.Insert(1, value);
+                    Children.Insert(Children.Count, value);
                 }
 
                 _content = value;
@@ -170,7 +170,7 @@ namespace Myra.Graphics2D.UI
 
         private void Desktop_TouchDown(object sender, EventArgs e)
         {
-            if (this.IsLightDismiss)
+            if (this.IsLightDismiss && this.Desktop is not null)
             {
                 if (!this.Bounds.Contains(this.ToLocal(this.Desktop.MousePosition)))
                 {
