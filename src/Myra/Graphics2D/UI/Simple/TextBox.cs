@@ -322,6 +322,8 @@ namespace Myra.Graphics2D.UI
         /// </summary>
         public event EventHandler<TextDeletedEventArgs> TextDeleted;
 
+        public event EventHandler<CancellableEventArgs<Keys>> KeyEntered;
+
         public event EventHandler CursorPositionChanged;
 
         public TextBox(string styleName = Stylesheet.DefaultStyleName)
@@ -638,6 +640,13 @@ namespace Myra.Graphics2D.UI
         {
             base.OnKeyDown(k);
             if (!Enabled)
+            {
+                return;
+            }
+
+            var ev = new CancellableEventArgs<Keys>(k);
+            this.KeyEntered?.Invoke(this, ev);
+            if(ev.Cancel)
             {
                 return;
             }
