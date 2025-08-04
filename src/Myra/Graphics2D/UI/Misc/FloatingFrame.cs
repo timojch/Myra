@@ -159,20 +159,20 @@ namespace Myra.Graphics2D.UI
             if (this.Desktop is not null)
             {
                 this._subscribedDesktop = this.Desktop;
-                this._subscribedDesktop.TouchDown += this.Desktop_TouchDown;
+                this._subscribedDesktop.MouseClick += this.Desktop_MouseClick;
             }
             else
             {
-                this._subscribedDesktop.TouchDown -= this.Desktop_TouchDown;
+                this._subscribedDesktop.MouseClick -= this.Desktop_MouseClick;
                 this._subscribedDesktop = null;
             }
         }
 
-        private void Desktop_TouchDown(object sender, EventArgs e)
+        private void Desktop_MouseClick(object sender, PointerEventArgs e)
         {
             if (this.IsLightDismiss && this.Desktop is not null)
             {
-                if (!this.Bounds.Contains(this.ToLocal(this.Desktop.MousePosition)))
+                if (this.Bounds.Size.X > 0 && this.Bounds.Size.Y > 0 && !this.Bounds.Contains(this.ToLocal(this.Desktop.MousePosition)))
                 {
                     this.Close();
                 }
