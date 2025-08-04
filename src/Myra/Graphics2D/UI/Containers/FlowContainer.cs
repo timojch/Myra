@@ -1,4 +1,5 @@
-﻿using Myra.Attributes;
+﻿using Microsoft.Xna.Framework;
+using Myra.Attributes;
 using Myra.Graphics2D.UI.ColorPicker;
 using Myra.Graphics2D.UI.Styles;
 using System;
@@ -94,6 +95,7 @@ namespace Myra.Graphics2D.UI
                 Indent = indent,
                 LineBreak = true
             };
+            this.InvalidateMeasure();
             this.ControlPoints.Add(cp);
             return cp;
         }
@@ -129,11 +131,14 @@ namespace Myra.Graphics2D.UI
                 }
             }
 
-            _childrenDirty = true;
-            this.InvalidateMeasure();
+            if (!this._childrenDirty)
+            {
+                this._childrenDirty = true;
+                this.InvalidateMeasure();
+            }
         }
 
-        protected override void InternalArrange()
+        protected override Point InternalMeasure(Point availableSize)
         {
             if (this._childrenDirty)
             {
@@ -146,7 +151,7 @@ namespace Myra.Graphics2D.UI
                 this._childrenDirty = false;
             }
 
-            base.InternalArrange();
+            return base.InternalMeasure(availableSize);
         }
 
         private void OnWidgetsRemoved(int startIndex, IList removedItems)

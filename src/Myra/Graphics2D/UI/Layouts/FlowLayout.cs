@@ -24,64 +24,77 @@ namespace Myra.Graphics2D.UI
 
         public IEnumerable<Tuple<Widget, Rectangle>> GetArrangedRectangles(IEnumerable<Widget> widgets, Point availableSize)
         {
-            var cursorPos = Point.Zero;
-            var lineStart = Point.Zero;
-            int currentLineHeight = this.MinLineHeight;
-            int currentIndent = 0;
-            int itemsOnCurrentLine = 0;
-            bool isHorizontalSpaceSkipped = true;
-
-            Action funcNewLine = () =>
+            if (!widgets.Any())
             {
-                isHorizontalSpaceSkipped = true;
-                lineStart = lineStart + new Point(0, currentLineHeight + this.LineSpacing);
-                cursorPos = lineStart + new Point(this.IndentSize * currentIndent, 0);
-                currentLineHeight = this.MinLineHeight;
-                itemsOnCurrentLine = 0;
-            };
-
-            Action<FlowContainer.ControlPoint> funcHandleControlPoint = (FlowContainer.ControlPoint cp) =>
+                yield break;
+            }
+            else if (widgets.Count() == 1)
             {
-                currentIndent += cp.Indent;
-                if (cp.LineBreak)
-                {
-                    funcNewLine();
-                }
+                var widget = widgets.First();
+                var measure = widget.Measure(availableSize);
+                yield return new Tuple<Widget, Rectangle>(widget, new Rectangle(Point.Zero, measure));
+            }
+            else
+            {
+                var cursorPos = Point.Zero;
+                var lineStart = Point.Zero;
+                int currentLineHeight = this.MinLineHeight;
+                int currentIndent = 0;
+                int itemsOnCurrentLine = 0;
+                bool isHorizontalSpaceSkipped = true;
 
-                if (cp.SkipHorizontalSpacing && !isHorizontalSpaceSkipped)
+                Action funcNewLine = () =>
                 {
-                    cursorPos += new Point(-this.HorizontalSpacing, 0);
                     isHorizontalSpaceSkipped = true;
-                }
-            };
+                    lineStart = lineStart + new Point(0, currentLineHeight + this.LineSpacing);
+                    cursorPos = lineStart + new Point(this.IndentSize * currentIndent, 0);
+                    currentLineHeight = this.MinLineHeight;
+                    itemsOnCurrentLine = 0;
+                };
 
-            foreach (var widget in widgets)
-            {
-                foreach (var cp in this.ControlPoints.Where(cp => cp.AnchorWidget == widget && cp.IsBeforeAnchor))
+                Action<FlowContainer.ControlPoint> funcHandleControlPoint = (FlowContainer.ControlPoint cp) =>
                 {
-                    funcHandleControlPoint(cp);
-                }
-
-                var measure = widget.Measure(new Point(availableSize.X - cursorPos.X, MaxLineHeight));
-
-                if (this.Wrap && cursorPos.X + measure.X > availableSize.X)
-                {
-                    // Doesn't fit. If we aren't already at the start of a new line, move to a new line.
-                    if (itemsOnCurrentLine > 0)
+                    currentIndent += cp.Indent;
+                    if (cp.LineBreak)
                     {
                         funcNewLine();
                     }
-                }
 
-                yield return new Tuple<Widget, Rectangle>(widget, new Rectangle(cursorPos, measure));
-                cursorPos += new Point(measure.X + this.HorizontalSpacing, 0);
-                isHorizontalSpaceSkipped = false;
-                currentLineHeight = Math.Min(Math.Max(currentLineHeight, measure.Y), this.MaxLineHeight);
-                itemsOnCurrentLine++;
+                    if (cp.SkipHorizontalSpacing && !isHorizontalSpaceSkipped)
+                    {
+                        cursorPos += new Point(-this.HorizontalSpacing, 0);
+                        isHorizontalSpaceSkipped = true;
+                    }
+                };
 
-                foreach (var cp in this.ControlPoints.Where(cp => cp.AnchorWidget == widget && !cp.IsBeforeAnchor))
+                foreach (var widget in widgets)
                 {
-                    funcHandleControlPoint(cp);
+                    foreach (var cp in this.ControlPoints.Where(cp => cp.AnchorWidget == widget && cp.IsBeforeAnchor))
+                    {
+                        funcHandleControlPoint(cp);
+                    }
+
+                    var measure = widget.Measure(new Point(availableSize.X - cursorPos.X, MaxLineHeight));
+
+                    if (this.Wrap && cursorPos.X + measure.X > availableSize.X)
+                    {
+                        // Doesn't fit. If we aren't already at the start of a new line, move to a new line.
+                        if (itemsOnCurrentLine > 0)
+                        {
+                            funcNewLine();
+                        }
+                    }
+
+                    yield return new Tuple<Widget, Rectangle>(widget, new Rectangle(cursorPos, measure));
+                    cursorPos += new Point(measure.X + this.HorizontalSpacing, 0);
+                    isHorizontalSpaceSkipped = false;
+                    currentLineHeight = Math.Min(Math.Max(currentLineHeight, measure.Y), this.MaxLineHeight);
+                    itemsOnCurrentLine++;
+
+                    foreach (var cp in this.ControlPoints.Where(cp => cp.AnchorWidget == widget && !cp.IsBeforeAnchor))
+                    {
+                        funcHandleControlPoint(cp);
+                    }
                 }
             }
         }
