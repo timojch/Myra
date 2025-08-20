@@ -509,8 +509,8 @@ namespace Myra.Graphics2D.UI
 			var availableSize = bounds.Size();
 			var oldMeasureSize = Content.Measure(availableSize);
 
-			_horizontalScrollingOn = oldMeasureSize.X > bounds.Width;
-			_verticalScrollingOn = oldMeasureSize.Y > bounds.Height;
+			_horizontalScrollingOn = ShowHorizontalScrollBar && oldMeasureSize.X > bounds.Width;
+			_verticalScrollingOn = ShowVerticalScrollBar && oldMeasureSize.Y > bounds.Height;
 			if (_horizontalScrollingOn || _verticalScrollingOn)
 			{
 				var vsWidth = VerticalScrollbarWidth;
