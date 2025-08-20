@@ -241,7 +241,7 @@ namespace Myra.Graphics2D.UI
             }
         }
 
-        internal bool IsShiftDown
+        public bool IsShiftDown
         {
             get
             {
@@ -249,7 +249,7 @@ namespace Myra.Graphics2D.UI
             }
         }
 
-        internal bool IsControlDown
+        public bool IsControlDown
         {
             get
             {
@@ -261,7 +261,7 @@ namespace Myra.Graphics2D.UI
             }
         }
 
-        internal bool IsAltDown
+        public bool IsAltDown
         {
             get
             {
