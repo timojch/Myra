@@ -561,7 +561,7 @@ namespace Myra.Graphics2D.UI
 
             while (target != null)
             {
-                if(target.ShouldReceiveDragDrop(held))
+                if (target.ShouldReceiveDragDrop(held))
                 {
                     return target;
                 }
@@ -578,7 +578,15 @@ namespace Myra.Graphics2D.UI
         {
             foreach (var heldWidget in this.HeldWidgets)
             {
-                heldWidget.InvokeDropped(new DragDroppedEventArgs(null));
+                var target = this.PredictDropTargetFor(heldWidget);
+                if (target is not null)
+                {
+                    target.ReceiveDrop(heldWidget);
+                }
+                else
+                {
+                    heldWidget.InvokeDropped(new DragDroppedEventArgs(null));
+                }
             }
 
             this.HeldWidgets.Clear();

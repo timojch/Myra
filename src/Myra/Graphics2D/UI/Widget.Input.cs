@@ -425,6 +425,12 @@ namespace Myra.Graphics2D.UI
             this.DragMoved?.Invoke(this, e);
         }
 
+        internal void ReceiveDrop(Widget widget)
+        {
+            this.DragReceived?.Invoke(this, new DragReceivedEventArgs(widget));
+            widget.InvokeDropped(new DragDroppedEventArgs(this));
+        }
+
         private void OnDragHandleTouchDown(object sender, EventArgs e)
         {
             var parent = Parent != null ? (ITransformable)Parent : Desktop;
