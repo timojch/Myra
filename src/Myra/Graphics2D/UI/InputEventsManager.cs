@@ -36,31 +36,38 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
-		private static readonly Stack<InputEvent> _events = new Stack<InputEvent>();
+		private static readonly Queue<InputEvent> _events = new Queue<InputEvent>();
 
 		public static void Queue(IInputEventsProcessor processor, InputEventType type)
 		{
-			_events.Push(new InputEvent(processor, type));
-		}
+			_events.Enqueue(new InputEvent(processor, type));
+            //_events.Push(new InputEvent(processor, type));
+        }
 
 		public static void ProcessEvents()
 		{
-			var localStack = new Stack<InputEvent>();
-			while(_events.Count > 0)
+			while (_events.Count > 0)
 			{
-				var ev = _events.Pop();
-				localStack.Push(ev);
-				while (_events.TryPeek(out var nextEv) && nextEv.Processor == ev.Processor)
-				{
-					localStack.Push(_events.Pop());
-				}
-
-				while(localStack.Count > 0)
-				{
-					ev = localStack.Pop();
-					ev.Processor.ProcessEvent(ev.Type);
-                }
+				var ev = _events.Dequeue();
+				ev.Processor.ProcessEvent(ev.Type);
 			}
+
+			// var localStack = new Stack<InputEvent>();
+			// while(_events.Count > 0)
+			// {
+			// 	var ev = _events.Pop();
+			// 	localStack.Push(ev);
+			// 	while (_events.TryPeek(out var nextEv) && nextEv.Processor == ev.Processor)
+			// 	{
+			// 		localStack.Push(_events.Pop());
+			// 	}
+			// 
+			// 	while(localStack.Count > 0)
+			// 	{
+			// 		ev = localStack.Pop();
+			// 		ev.Processor.ProcessEvent(ev.Type);
+            //     }
+			// }
 		}
 	}
 }
