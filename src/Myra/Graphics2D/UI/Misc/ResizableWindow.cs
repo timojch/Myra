@@ -23,6 +23,18 @@ namespace Myra.Graphics2D.UI
             }
         }
 
+        public bool ShowHorizontalScrollBar
+        {
+            get => this.ContentScrollViewer.ShowHorizontalScrollBar;
+            set => this.ContentScrollViewer.ShowHorizontalScrollBar = value;
+        }
+
+        public bool ShowVerticalScrollBar
+        {
+            get => this.ContentScrollViewer.ShowVerticalScrollBar;
+            set => this.ContentScrollViewer.ShowVerticalScrollBar = value;
+        }
+
         private bool IsSubscribed = false;
 
         private bool IsResizing
@@ -138,7 +150,7 @@ namespace Myra.Graphics2D.UI
                     targetSize.X = this.MinWidth.Value;
                 }
 
-                if( targetSize.Y < this.MinHeight)
+                if (targetSize.Y < this.MinHeight)
                 {
                     targetSize.Y = this.MinHeight.Value;
                 }
