@@ -342,6 +342,40 @@ namespace Myra.Graphics2D.UI.Styles
             LegacyPropertyNames["ScrollPaneStyles"] = "ScrollViewerStyles";
         }
 
+        public void CombineWith(Stylesheet other)
+        {
+            // Clone all dictionary properties
+            other.CombineStylesTo(this, s => s.HorizontalSliderStyles);
+            other.CombineStylesTo(this, s => s.VerticalSliderStyles);
+            other.CombineStylesTo(this, s => s.HorizontalProgressBarStyles);
+            other.CombineStylesTo(this, s => s.VerticalProgressBarStyles);
+            other.CombineStylesTo(this, s => s.HorizontalSeparatorStyles);
+            other.CombineStylesTo(this, s => s.VerticalSeparatorStyles);
+            other.CombineStylesTo(this, s => s.HorizontalSplitPaneStyles);
+            other.CombineStylesTo(this, s => s.VerticalSplitPaneStyles);
+            other.CombineStylesTo(this, s => s.FlowContainerStyles);
+            other.CombineStylesTo(this, s => s.HorizontalMenuStyles);
+            other.CombineStylesTo(this, s => s.VerticalMenuStyles);
+
+            other.CombineStylesTo(this, s => s.LabelStyles);
+            other.CombineStylesTo(this, s => s.TextBoxStyles);
+            other.CombineStylesTo(this, s => s.ButtonStyles);
+            other.CombineStylesTo(this, s => s.CheckBoxStyles);
+            other.CombineStylesTo(this, s => s.RadioButtonStyles);
+            other.CombineStylesTo(this, s => s.SpinButtonStyles);
+            other.CombineStylesTo(this, s => s.ComboBoxStyles);
+            other.CombineStylesTo(this, s => s.ListBoxStyles);
+            other.CombineStylesTo(this, s => s.TabControlStyles);
+            other.CombineStylesTo(this, s => s.TreeStyles);
+            other.CombineStylesTo(this, s => s.ScrollViewerStyles);
+            other.CombineStylesTo(this, s => s.WindowStyles);
+
+            foreach (var pair in other.Fonts)
+            {
+                this.Fonts[pair.Key] = pair.Value;
+            }
+        }
+
         private static T GetDefaultStyle<T>(Dictionary<string, T> styles) where T : WidgetStyle
         {
             T result = null;
@@ -468,6 +502,17 @@ namespace Myra.Graphics2D.UI.Styles
                 dest[pair.Key] = (T)pair.Value.Clone();
             }
         }
+        private void CombineStylesTo<T>(Stylesheet destStylesheet, Func<Stylesheet, Dictionary<string, T>> stylesGetter) where T : WidgetStyle
+        {
+            var src = stylesGetter(this);
+            var dest = stylesGetter(destStylesheet);
+
+            foreach (var pair in src)
+            {
+                dest[pair.Key] = (T)pair.Value.Clone();
+            }
+        }
+
 
         public Stylesheet Clone()
         {
@@ -486,6 +531,7 @@ namespace Myra.Graphics2D.UI.Styles
             CloneStylesTo(result, s => s.VerticalSeparatorStyles);
             CloneStylesTo(result, s => s.HorizontalSplitPaneStyles);
             CloneStylesTo(result, s => s.VerticalSplitPaneStyles);
+            CloneStylesTo(result, s => s.FlowContainerStyles);
             CloneStylesTo(result, s => s.HorizontalMenuStyles);
             CloneStylesTo(result, s => s.VerticalMenuStyles);
 
