@@ -212,6 +212,8 @@ namespace Myra.Graphics2D.UI
             }
         }
 
+        public event EventHandler Closed;
+
         private MenuItem SelectedMenuItem
         {
             get
@@ -499,6 +501,8 @@ namespace Myra.Graphics2D.UI
             {
                 SelectedIndex = HoverIndex = null;
             }
+
+            this.Closed?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnHoverIndexChanged(object sender, EventArgs eventArgs)
