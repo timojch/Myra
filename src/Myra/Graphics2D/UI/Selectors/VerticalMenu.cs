@@ -165,6 +165,8 @@ namespace Myra.Graphics2D.UI
 
             HasImage = hasImage;
             HasShortcut = hasShortcut;
+
+            base.UpdateWidgets();
         }
 
         protected override void PlaceMenuItemInGrid(IMenuItem item, int index)
