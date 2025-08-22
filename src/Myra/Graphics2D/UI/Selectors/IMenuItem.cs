@@ -16,6 +16,8 @@ namespace Myra.Graphics2D.UI
 
 		void Invoke();
 
-		bool ShouldCloseAfterInvoke { get; }
+		bool CloseAfterInvoke { get; }
+
+		bool CanInteract { get; }
 	}
 }

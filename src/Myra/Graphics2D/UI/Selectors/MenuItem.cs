@@ -226,9 +226,13 @@ namespace Myra.Graphics2D.UI
 
 		[Browsable(false)]
 		[XmlIgnore]
-		public bool ShouldCloseAfterInvoke { get => !this.CanOpen; }
+		public bool CloseAfterInvoke { get => !this.CanOpen; }
 
-		public event EventHandler Selected;
+        [Browsable(false)]
+		[XmlIgnore]
+		public bool CanInteract { get => true; }
+
+        public event EventHandler Selected;
 		public event EventHandler Changed;
 
 		public MenuItem(string id, string text, Color? color, object tag)

@@ -26,9 +26,13 @@ namespace Myra.Graphics2D.UI
 
         [Browsable(false)]
         [XmlIgnore]
-        public bool ShouldCloseAfterInvoke { get => false; }
+        public bool CloseAfterInvoke { get => false; }
 
-		public void Invoke()
+        [Browsable(false)]
+		[XmlIgnore]
+		public bool CanInteract { get => true; }
+
+        public void Invoke()
 		{
 		}
 	}

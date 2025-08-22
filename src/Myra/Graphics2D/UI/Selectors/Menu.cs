@@ -508,7 +508,7 @@ namespace Myra.Graphics2D.UI
         private void OnHoverIndexChanged(object sender, EventArgs eventArgs)
         {
             var menuItem = GetMenuItem(HoverIndex);
-            if (menuItem == null && HoverIndexCanBeNull)
+            if ((menuItem is null || !menuItem.CanInteract) && HoverIndexCanBeNull)
             {
                 // Separators couldn't be selected
                 HoverIndex = null;
@@ -572,6 +572,10 @@ namespace Myra.Graphics2D.UI
             if (menuItem != null)
             {
                 menuItem.Invoke();
+                if(menuItem.CloseAfterInvoke)
+                {
+                    Close();
+                }
             }
         }
 
@@ -594,7 +598,7 @@ namespace Myra.Graphics2D.UI
             }
 
             menuItem.Invoke();
-            if (menuItem.ShouldCloseAfterInvoke)
+            if (menuItem.CloseAfterInvoke)
             {
                 Close();
             }
@@ -682,7 +686,7 @@ namespace Myra.Graphics2D.UI
                     hoverIndex = 0;
                 }
 
-                if (Items[hoverIndex] is MenuItem)
+                if (Items[hoverIndex].CanInteract)
                 {
                     break;
                 }

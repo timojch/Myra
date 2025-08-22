@@ -63,7 +63,11 @@ public class AdvancedMenuItem
 
     [Browsable(false)]
     [XmlIgnore]
-    public bool ShouldCloseAfterInvoke { get; set; }
+    public bool CloseAfterInvoke { get; set; }
+
+    [Browsable(false)]
+    [XmlIgnore]
+    public bool CanInteract { get; set; } = true;
 
     public event EventHandler Selected;
     public event EventHandler Changed;
