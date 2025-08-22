@@ -61,6 +61,10 @@ public class AdvancedMenuItem
         }
     }
 
+    [Browsable(false)]
+    [XmlIgnore]
+    public bool ShouldCloseAfterInvoke { get; set; }
+
     public event EventHandler Selected;
     public event EventHandler Changed;
 
@@ -79,16 +83,11 @@ public class AdvancedMenuItem
         this.RightMargin = rightMargin;
     }
 
-    public bool TryInvoke()
+    public void Invoke()
     {
         if (this.Selected is not null)
         {
             this.Selected(this, EventArgs.Empty);
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 

@@ -214,11 +214,11 @@ namespace Myra.Graphics2D.UI
 
         public event EventHandler Closed;
 
-        private MenuItem SelectedMenuItem
+        private IMenuItem SelectedMenuItem
         {
             get
             {
-                return GetMenuItem(SelectedIndex) as MenuItem;
+                return GetMenuItem(SelectedIndex);
             }
         }
 
@@ -230,7 +230,7 @@ namespace Myra.Graphics2D.UI
             {
                 Child = new Grid
                 {
-                    CanSelectNothing = true
+                    CanSelectNothing = false
                 }
             };
             ChildrenLayout = _layout;
@@ -559,7 +559,7 @@ namespace Myra.Graphics2D.UI
                 }
             }
 
-            var menuItem = SelectedMenuItem;
+            var menuItem = SelectedMenuItem as MenuItem;
             if (menuItem != null && menuItem.CanOpen)
             {
                 ShowSubMenu(menuItem);
@@ -569,10 +569,9 @@ namespace Myra.Graphics2D.UI
         private void InternalChild_TouchUp(object sender, EventArgs e)
         {
             var menuItem = SelectedMenuItem;
-            if (menuItem != null && !menuItem.CanOpen)
+            if (menuItem != null)
             {
-                Close();
-                menuItem.FireSelected();
+                menuItem.Invoke();
             }
         }
 
@@ -594,8 +593,15 @@ namespace Myra.Graphics2D.UI
                 return;
             }
 
-            menuItem.TryInvoke();
-            SelectedIndex = HoverIndex = index;
+            menuItem.Invoke();
+            if (menuItem.ShouldCloseAfterInvoke)
+            {
+                Close();
+            }
+            else
+            {
+                SelectedIndex = HoverIndex = index;
+            }
         }
 
         public override void OnKeyDown(Keys k)

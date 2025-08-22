@@ -224,6 +224,10 @@ namespace Myra.Graphics2D.UI
 		[XmlIgnore]
 		public int Index { get; set; }
 
+		[Browsable(false)]
+		[XmlIgnore]
+		public bool ShouldCloseAfterInvoke { get => !this.CanOpen; }
+
 		public event EventHandler Selected;
 		public event EventHandler Changed;
 
@@ -251,17 +255,15 @@ namespace Myra.Graphics2D.UI
 		{
 		}
 
-		public bool TryInvoke()
+		public void Invoke()
 		{
-			if (this.CanOpen)
+			if (!this.CanOpen)
 			{
-				return false;
-			}
-			else 
-			{
-				this.Menu.Clone();
 				this.FireSelected();
-				return true;
+			}
+			else if (this.SubMenu.IsOpen)
+			{
+				this.SubMenu.Close();
 			}
 		}
 

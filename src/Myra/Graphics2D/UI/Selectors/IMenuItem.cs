@@ -14,6 +14,8 @@ namespace Myra.Graphics2D.UI
 		[XmlIgnore]
 		int Index { get; set; }
 
-		bool TryInvoke();
+		void Invoke();
+
+		bool ShouldCloseAfterInvoke { get; }
 	}
 }
