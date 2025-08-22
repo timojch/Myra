@@ -216,7 +216,7 @@ namespace Myra.Graphics2D.UI
         {
             get
             {
-                return GetMenuItem(SelectedIndex);
+                return GetMenuItem(SelectedIndex) as MenuItem;
             }
         }
 
@@ -516,9 +516,12 @@ namespace Myra.Graphics2D.UI
                 return;
             }
 
-            if (Desktop.ContextMenu != this && menuItem.CanOpen && OpenMenuItem != menuItem)
+            if (menuItem is MenuItem maybeSubmenu)
             {
-                SelectedIndex = HoverIndex;
+                if (Desktop.ContextMenu != this && maybeSubmenu.CanOpen && OpenMenuItem != maybeSubmenu)
+                {
+                    SelectedIndex = HoverIndex;
+                }
             }
         }
 
@@ -569,14 +572,14 @@ namespace Myra.Graphics2D.UI
             }
         }
 
-        private MenuItem GetMenuItem(int? index)
+        private IMenuItem GetMenuItem(int? index)
         {
             if (index == null)
             {
                 return null;
             }
 
-            return Items[index.Value] as MenuItem;
+            return Items[index.Value];
         }
 
         private void Click(int? index)
@@ -587,15 +590,8 @@ namespace Myra.Graphics2D.UI
                 return;
             }
 
-            if (!menuItem.CanOpen)
-            {
-                Close();
-                menuItem.FireSelected();
-            }
-            else
-            {
-                SelectedIndex = HoverIndex = index;
-            }
+            menuItem.TryInvoke();
+            SelectedIndex = HoverIndex = index;
         }
 
         public override void OnKeyDown(Keys k)

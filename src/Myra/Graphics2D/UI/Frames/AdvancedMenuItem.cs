@@ -68,6 +68,19 @@ public class AdvancedMenuItem
     internal readonly ContentPanel BodyContentPanel = new();
     internal readonly ContentPanel RightContentPanel = new();
 
+    public bool TryInvoke()
+    {
+        if (this.Selected is not null)
+        {
+            this.Selected(this, EventArgs.Empty);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public void FireSelected()
     {
         this.Selected?.Invoke(this, EventArgs.Empty);

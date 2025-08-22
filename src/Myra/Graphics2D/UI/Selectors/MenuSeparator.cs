@@ -23,5 +23,10 @@ namespace Myra.Graphics2D.UI
 		[Browsable(false)]
 		[XmlIgnore]
 		public int Index { get; set; }
+
+		public bool TryInvoke()
+		{
+			return false;
+		}
 	}
 }

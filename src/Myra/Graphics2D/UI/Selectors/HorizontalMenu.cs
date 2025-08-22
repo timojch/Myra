@@ -54,14 +54,17 @@ namespace Myra.Graphics2D.UI
         {
             base.OnKeyDown(k);
 
-            switch (k)
+            if (OpenMenuItem is null)
             {
-                case Keys.Left:
-                    MoveHover(-1);
-                    break;
-                case Keys.Right:
-                    MoveHover(1);
-                    break;
+                switch (k)
+                {
+                    case Keys.Left:
+                        MoveHover(-1);
+                        break;
+                    case Keys.Right:
+                        MoveHover(1);
+                        break;
+                }
             }
         }
 

@@ -251,6 +251,20 @@ namespace Myra.Graphics2D.UI
 		{
 		}
 
+		public bool TryInvoke()
+		{
+			if (this.CanOpen)
+			{
+				return false;
+			}
+			else 
+			{
+				this.Menu.Clone();
+				this.FireSelected();
+				return true;
+			}
+		}
+
 		private void UpdateDisplayText()
 		{
 			if (!_displayTextDirty)
