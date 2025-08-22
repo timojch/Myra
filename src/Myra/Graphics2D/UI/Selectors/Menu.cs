@@ -370,20 +370,20 @@ namespace Myra.Graphics2D.UI
         {
             if (menuItem.LeftMargin is not null && !InternalChild.Widgets.Contains(menuItem.LeftMargin))
             {
-                InternalChild.Widgets.Add(menuItem.LeftMargin);
+                InternalChild.Widgets.Add(menuItem.LeftContentPanel);
             }
             else if (menuItem.LeftMargin is null && InternalChild.Widgets.Contains(menuItem.LeftMargin))
             {
-                InternalChild.Widgets.Remove(menuItem.LeftMargin);
+                InternalChild.Widgets.Remove(menuItem.LeftContentPanel);
             }
 
             if (menuItem.RightMargin is not null && !InternalChild.Widgets.Contains(menuItem.RightMargin))
             {
-                InternalChild.Widgets.Add(menuItem.RightMargin);
+                InternalChild.Widgets.Add(menuItem.RightContentPanel);
             }
             else if (menuItem.LeftMargin is null && InternalChild.Widgets.Contains(menuItem.RightMargin))
             {
-                InternalChild.Widgets.Remove(menuItem.RightMargin);
+                InternalChild.Widgets.Remove(menuItem.RightContentPanel);
             }
 
             UpdateWidgets();
@@ -428,7 +428,7 @@ namespace Myra.Graphics2D.UI
             {
                 advancedItem.Changed += MenuItemOnChanged;
 
-                InternalChild.Widgets.Add(advancedItem.Body);
+                InternalChild.Widgets.Add(advancedItem.BodyContentPanel);
                 SetAdvancedMenuItem(advancedItem);
             }
             else if (item is MenuSeparator separatorItem)

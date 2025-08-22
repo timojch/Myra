@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using Myra.Graphics2D.UI.Styles;
 using System.Xml.Serialization;
+using Myra.Graphics2D.UI.Frames;
+
 
 
 #if MONOGAME || FNA
@@ -184,8 +186,7 @@ namespace Myra.Graphics2D.UI
                 ++separatorSpan;
             }
 
-            var menuItem = item as MenuItem;
-            if (menuItem != null)
+            if (item is MenuItem menuItem)
             {
                 var colIndex = 0;
                 if (this.HasImage)
@@ -201,6 +202,24 @@ namespace Myra.Graphics2D.UI
                 {
                     Grid.SetColumn(menuItem.Shortcut, colIndex++);
                     Grid.SetRow(menuItem.Shortcut, index);
+                }
+            }
+            else if (item is AdvancedMenuItem advancedItem)
+            {
+                var colIndex = 0;
+                if (this.HasImage)
+                {
+                    Grid.SetColumn(advancedItem.LeftContentPanel, colIndex++);
+                    Grid.SetRow(advancedItem.LeftContentPanel, index);
+                }
+
+                Grid.SetColumn(advancedItem.BodyContentPanel, colIndex++);
+                Grid.SetRow(advancedItem.BodyContentPanel, index);
+
+                if (this.HasShortcut)
+                {
+                    Grid.SetColumn(advancedItem.LeftContentPanel, colIndex++);
+                    Grid.SetRow(advancedItem.LeftContentPanel, index);
                 }
             }
             else

@@ -68,6 +68,17 @@ public class AdvancedMenuItem
     internal readonly ContentPanel BodyContentPanel = new();
     internal readonly ContentPanel RightContentPanel = new();
 
+    public AdvancedMenuItem()
+    {
+    }
+
+    public AdvancedMenuItem(Widget body, Widget leftMargin = null, Widget rightMargin = null)
+    {
+        this.Body = body;
+        this.LeftMargin = leftMargin;
+        this.RightMargin = rightMargin;
+    }
+
     public bool TryInvoke()
     {
         if (this.Selected is not null)

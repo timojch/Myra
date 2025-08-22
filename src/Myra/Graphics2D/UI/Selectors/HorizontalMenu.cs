@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using Myra.Graphics2D.UI.Styles;
+using Myra.Graphics2D.UI.Frames;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework.Input;
@@ -70,11 +72,15 @@ namespace Myra.Graphics2D.UI
 
         protected override void PlaceMenuItemInGrid(IMenuItem item, int index)
         {
-            var menuItem = item as MenuItem;
-            if (menuItem != null)
+            if (item is MenuItem menuItem)
             {
                 Grid.SetColumn(menuItem.Label, index);
                 Grid.SetRow(menuItem.Label, 0);
+            }
+            else if (item is AdvancedMenuItem advancedItem)
+            {
+                Grid.SetColumn(advancedItem.BodyContentPanel, index);
+                Grid.SetRow(advancedItem.BodyContentPanel, 0);
             }
             else
             {
