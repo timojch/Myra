@@ -26,7 +26,6 @@ namespace Myra.Graphics2D.UI
 	public abstract class Menu : Widget
 	{
 		private readonly SingleItemLayout<Grid> _layout;
-		private Proportion _imageProportion = Proportion.Auto, _shortcutProportion = Proportion.Auto;
 		private bool _dirty = true;
 		private bool _internalSetSelectedIndex = false;
 
@@ -219,82 +218,6 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
-		private bool HasImage
-		{
-			get
-			{
-				if (Orientation == Orientation.Horizontal)
-				{
-					return false;
-				}
-
-				return InternalChild.ColumnsProportions[0] == _imageProportion;
-			}
-
-			set
-			{
-				if (Orientation == Orientation.Horizontal)
-				{
-					return;
-				}
-
-				var hasImage = HasImage;
-				if (hasImage == value)
-				{
-					return;
-				}
-
-				if (hasImage && !value)
-				{
-					InternalChild.ColumnsProportions.RemoveAt(0);
-				}
-				else if (!hasImage && value)
-				{
-					InternalChild.ColumnsProportions.Insert(0, _imageProportion);
-				}
-
-				_dirty = true;
-			}
-		}
-
-		private bool HasShortcut
-		{
-			get
-			{
-				if (Orientation == Orientation.Horizontal)
-				{
-					return false;
-				}
-
-				return InternalChild.ColumnsProportions[InternalChild.ColumnsProportions.Count - 1] == _shortcutProportion;
-			}
-
-			set
-			{
-				if (Orientation == Orientation.Horizontal)
-				{
-					return;
-				}
-
-				var hasShortcut = HasShortcut;
-				if (hasShortcut == value)
-				{
-					return;
-				}
-
-				if (hasShortcut && !value)
-				{
-					InternalChild.ColumnsProportions.RemoveAt(InternalChild.ColumnsProportions.Count - 1);
-				}
-				else if (!hasShortcut && value)
-				{
-					InternalChild.ColumnsProportions.Add(_shortcutProportion);
-				}
-
-				_dirty = true;
-			}
-		}
-
 		protected Grid InternalChild => _layout.Child;
 
 		protected Menu(string styleName)
@@ -389,31 +312,8 @@ namespace Myra.Graphics2D.UI
 			return null;
 		}
 
-		private void UpdateWidgets()
+		protected virtual void UpdateWidgets()
 		{
-			var hasImage = false;
-			var hasShortcut = false;
-			foreach (var item in Items)
-			{
-				var menuItem = item as MenuItem;
-				if (menuItem == null)
-				{
-					continue;
-				}
-
-				if (menuItem.Image != null)
-				{
-					hasImage = true;
-				}
-
-				if (!string.IsNullOrEmpty(menuItem.ShortcutText))
-				{
-					hasShortcut = true;
-				}
-			}
-
-			HasImage = hasImage;
-			HasShortcut = hasShortcut;
 		}
 
 		private void SetMenuItem(MenuItem menuItem)
@@ -489,7 +389,7 @@ namespace Myra.Graphics2D.UI
 
 				// Add only label, as other widgets(image and shortcut) would be optionally added by SetMenuItem
 				InternalChild.Widgets.Add(menuItem.Label);
-				SetMenuItem((MenuItem)item);
+				SetMenuItem(menuItem);
 			}
 			else
 			{
@@ -753,6 +653,8 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		protected abstract void PlaceMenuItemInGrid(IMenuItem item, int index);
+
 		private void UpdateGrid()
 		{
 			if (!_dirty)
@@ -761,66 +663,10 @@ namespace Myra.Graphics2D.UI
 			}
 
 			var index = 0;
-			var hasImage = HasImage;
-			var hasShortcut = HasShortcut;
-
-			var separatorSpan = 1;
-			if (hasImage)
-			{
-				++separatorSpan;
-			}
-			if (hasShortcut)
-			{
-				++separatorSpan;
-			}
 
 			foreach (var item in Items)
 			{
-				var menuItem = item as MenuItem;
-				if (menuItem != null)
-				{
-					if (Orientation == Orientation.Horizontal)
-					{
-						Grid.SetColumn(menuItem.Label, index);
-						Grid.SetRow(menuItem.Label, 0);
-					}
-					else
-					{
-						var colIndex = 0;
-						if (hasImage)
-						{
-							Grid.SetColumn(menuItem.ImageWidget, colIndex++);
-							Grid.SetRow(menuItem.ImageWidget, index);
-						}
-
-						Grid.SetColumn(menuItem.Label, colIndex++);
-						Grid.SetRow(menuItem.Label, index);
-
-						if (hasShortcut)
-						{
-							Grid.SetColumn(menuItem.Shortcut, colIndex++);
-							Grid.SetRow(menuItem.Shortcut, index);
-						}
-					}
-				}
-				else
-				{
-					var separator = (MenuSeparator)item;
-					if (Orientation == Orientation.Horizontal)
-					{
-						Grid.SetColumn(separator.Separator, index);
-						Grid.SetRow(separator.Separator, 0);
-					}
-					else
-					{
-						Grid.SetColumn(separator.Separator, 0);
-						Grid.SetRow(separator.Separator, index);
-						Grid.SetColumnSpan(separator.Separator, separatorSpan);
-					}
-				}
-
-				item.Index = index;
-
+				PlaceMenuItemInGrid(item, index);
 				++index;
 			}
 
@@ -831,6 +677,11 @@ namespace Myra.Graphics2D.UI
 		{
 			UpdateGrid();
 			return base.InternalMeasure(availableSize);
+		}
+
+		public void InvalidateMenuContent()
+		{
+			_dirty = true;
 		}
 
 		public void ApplyMenuStyle(MenuStyle style)

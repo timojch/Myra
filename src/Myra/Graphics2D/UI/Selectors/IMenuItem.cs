@@ -12,10 +12,6 @@ namespace Myra.Graphics2D.UI
 
 		[Browsable(false)]
 		[XmlIgnore]
-		char? UnderscoreChar { get; }
-
-		[Browsable(false)]
-		[XmlIgnore]
 		int Index { get; set; }
 	}
 }
