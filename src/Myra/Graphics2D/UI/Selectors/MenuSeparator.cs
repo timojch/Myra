@@ -30,7 +30,7 @@ namespace Myra.Graphics2D.UI
 
         [Browsable(false)]
 		[XmlIgnore]
-		public bool CanInteract { get => true; }
+		public bool CanInteract { get => false; }
 
         public void Invoke()
 		{
