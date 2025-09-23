@@ -5,6 +5,8 @@ using System.Collections.Specialized;
 using Myra.Graphics2D.UI.Styles;
 using Myra.Utility;
 using Myra.Events;
+using System.Linq;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -367,13 +369,21 @@ namespace Myra.Graphics2D.UI
             ContextMenu.Visible = false;
 
             ContextMenuClosed.Invoke(ContextMenu);
-            ContextMenu = null;
 
-            if (_previousKeyboardFocus != null)
+            if (ContextMenu.GetChildren(true).Contains(FocusedKeyboardWidget))
             {
-                FocusedKeyboardWidget = _previousKeyboardFocus;
-                _previousKeyboardFocus = null;
+                if (_previousKeyboardFocus != null)
+                {
+                    FocusedKeyboardWidget = _previousKeyboardFocus;
+                    _previousKeyboardFocus = null;
+                }
+                else
+                {
+                    _previousKeyboardFocus = null;
+                }
             }
+
+            ContextMenu = null;
         }
 
         private void FixOverWidgetPosition(Widget widget, Point position)
