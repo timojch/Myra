@@ -145,6 +145,11 @@ namespace Myra.Graphics2D.UI
                 if (Desktop != null)
                 {
                     Desktop.ContextMenuClosed -= DesktopOnContextMenuClosed;
+
+                    if (Desktop.ContextMenu == this)
+                    {
+                        this.Closed?.Invoke(this, EventArgs.Empty);
+                    }
                 }
 
                 base.Desktop = value;

@@ -360,17 +360,18 @@ namespace Myra.Graphics2D.UI
 
         public void HideContextMenu()
         {
-            if (ContextMenu == null)
+            var currentContextMenu = ContextMenu;
+            if (currentContextMenu == null)
             {
                 return;
             }
 
-            Widgets.Remove(ContextMenu);
-            ContextMenu.Visible = false;
+            Widgets.Remove(currentContextMenu);
+            currentContextMenu.Visible = false;
 
-            ContextMenuClosed.Invoke(ContextMenu);
+            ContextMenuClosed.Invoke(currentContextMenu);
 
-            if (ContextMenu.GetChildren(true).Contains(FocusedKeyboardWidget))
+            if (currentContextMenu.GetChildren(true).Contains(FocusedKeyboardWidget))
             {
                 if (_previousKeyboardFocus != null)
                 {
