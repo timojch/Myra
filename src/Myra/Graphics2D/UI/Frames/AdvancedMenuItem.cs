@@ -78,9 +78,13 @@ public class AdvancedMenuItem
 
     public AdvancedMenuItem()
     {
+        this.LeftContentPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+        this.BodyContentPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+        this.RightContentPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
     }
 
     public AdvancedMenuItem(Widget body, Widget leftMargin = null, Widget rightMargin = null)
+        : this()
     {
         this.Body = body;
         this.LeftMargin = leftMargin;
