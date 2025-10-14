@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="XNAssets.MonoGame" Version="$(XNAssetsVersion)" />
-    <PackageReference Include="FontStashSharp.MonoGame" Version="1.3.10" />
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.4.1" />
     <PackageReference Include="info.lundin.math.dll" Version="$(InfoLundinMathVersion)" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="All" Version="$(MonoGameVersion)" />
   </ItemGroup>
