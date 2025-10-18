@@ -66,6 +66,13 @@ namespace Myra.Graphics2D.UI
             }
         }
 
+        [Category("Behavior")]
+        public bool CanBeClosed
+        {
+            get => this.CloseButton.Visible;
+            set => this.CloseButton.Visible = value;
+        }
+
         [Browsable(false)]
         [XmlIgnore]
         public HorizontalStackPanel TitlePanel { get; private set; }

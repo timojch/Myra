@@ -35,6 +35,17 @@ namespace Myra.Graphics2D.UI
             set => this.ContentScrollViewer.ShowVerticalScrollBar = value;
         }
 
+        public Point ScrollAmount
+        {
+            get => this.ContentScrollViewer.ScrollPosition;
+            set => this.ContentScrollViewer.ScrollPosition = value;
+        }
+
+        public Point ScrollMaximum
+        {
+            get => this.ContentScrollViewer.ScrollMaximum;
+        }
+
         private bool IsSubscribed = false;
 
         private bool IsResizing
