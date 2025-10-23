@@ -10,10 +10,11 @@ using System.Xml.Serialization;
 namespace Myra.Graphics2D.UI.Misc;
 public class CollapseableFrame : ContentControl
 {
-    private TreeView _treeView;
-    private TreeViewNode _upperNode;
-    private TreeViewNode _lowerNode;
     private ContentPanel _content;
+    private Image _expandToggle;
+    private Widget _titleBar;
+    private Widget _spacer;
+    private Widget _contentRow;
     private Label _titleLabel;
 
     public override Widget Content
@@ -24,8 +25,12 @@ public class CollapseableFrame : ContentControl
 
     public bool IsExpanded
     {
-        get => _upperNode.IsExpanded;
-        set => _upperNode.IsExpanded = value;
+        get;
+        set
+        {
+            field = value;
+            UpdateContentVisible();
+        }
     }
 
     public string Title
@@ -46,30 +51,83 @@ public class CollapseableFrame : ContentControl
         set => _titleLabel.OverTextColor = value;
     }
 
-    public Widget TitleBar
+    public int SpacerWidth
     {
-        get => _upperNode;
+        get => _spacer.MinWidth ?? 0;
+        set => _spacer.MinWidth = value;
+    }
+
+    public IBrush TitleBackground
+    {
+        get => _titleBar.Background;
+        set => _titleBar.Background = value;
+    }
+
+    public IBrush TitleOverBackground
+    {
+        get => _titleBar.OverBackground;
+        set => _titleBar.OverBackground = value;
     }
 
     public CollapseableFrame(string styleName = Stylesheet.DefaultStyleName)
     {
-        _treeView = new TreeView(styleName);
-        _titleLabel = new Label(styleName);
-        _content = new ContentPanel();
-        _upperNode = _treeView.AddSubNode(_titleLabel);
-        _lowerNode = _upperNode.AddSubNode(_content);
+        var stack = new VerticalStackPanel();
+        var upperStack = new HorizontalStackPanel();
+        var lowerStack = new HorizontalStackPanel();
 
-        var layout = new SingleItemLayout<TreeView>(this);
-        this.ChildrenLayout = layout;
-        layout.Child = this._treeView;
+        _titleBar = upperStack;
+        _contentRow = lowerStack;
+
+        _expandToggle = new Image();
+        _titleLabel = new Label(styleName);
+
+        _spacer = new Widget();
+        _content = new ContentPanel();
+
+        stack.HorizontalAlignment = HorizontalAlignment.Stretch;
+        upperStack.HorizontalAlignment = HorizontalAlignment.Stretch;
+        lowerStack.HorizontalAlignment = HorizontalAlignment.Stretch;
+        StackPanel.SetProportionType(_titleLabel, ProportionType.Fill);
+        StackPanel.SetProportionType(_content, ProportionType.Fill);
 
         SetStyle(styleName);
+
+        _spacer.Width = 16;
+        _titleLabel.SingleLine = true;
+
+        upperStack.Widgets.Add(_expandToggle);
+        upperStack.Widgets.Add(_titleLabel);
+
+        lowerStack.Widgets.Add(_spacer);
+        lowerStack.Widgets.Add(_content);
+
+        stack.Widgets.Add(upperStack);
+        stack.Widgets.Add(lowerStack);
+
+        var layout = new SingleItemLayout<VerticalStackPanel>(this);
+        this.ChildrenLayout = layout;
+        layout.Child = stack;
+
+        UpdateContentVisible();
+        upperStack.MouseClick += (s, ev) =>
+        {
+            this.ToggleExpand();
+        };
     }
 
     protected override void InternalSetStyle(Stylesheet stylesheet, string name)
     {
         base.InternalSetStyle(stylesheet, name);
-        _treeView.SetStyle(stylesheet, name);
         _titleLabel.SetStyle(stylesheet, name);
+    }
+
+    private void ToggleExpand()
+    {
+        this.IsExpanded = !this.IsExpanded;
+    }
+
+    private void UpdateContentVisible()
+    {
+        _contentRow.Visible = this.IsExpanded;
     }
 }
