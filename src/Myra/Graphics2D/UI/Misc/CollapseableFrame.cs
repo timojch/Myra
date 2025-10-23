@@ -13,8 +13,6 @@ public class CollapseableFrame : ContentControl
     private ContentPanel _content;
     private Image _expandToggle;
     private Widget _titleBar;
-    private Widget _spacer;
-    private Widget _contentRow;
     private Label _titleLabel;
 
     public override Widget Content
@@ -53,8 +51,8 @@ public class CollapseableFrame : ContentControl
 
     public int SpacerWidth
     {
-        get => _spacer.MinWidth ?? 0;
-        set => _spacer.MinWidth = value;
+        get => _content.Padding.Left;
+        set => _content.Padding = new Thickness(value, 0, 0, 0);
     }
 
     public IBrush TitleBackground
@@ -73,36 +71,28 @@ public class CollapseableFrame : ContentControl
     {
         var stack = new VerticalStackPanel();
         var upperStack = new HorizontalStackPanel();
-        var lowerStack = new HorizontalStackPanel();
 
         _titleBar = upperStack;
-        _contentRow = lowerStack;
 
         _expandToggle = new Image();
         _titleLabel = new Label(styleName);
 
-        _spacer = new Widget();
         _content = new ContentPanel();
 
         stack.HorizontalAlignment = HorizontalAlignment.Stretch;
         upperStack.HorizontalAlignment = HorizontalAlignment.Stretch;
-        lowerStack.HorizontalAlignment = HorizontalAlignment.Stretch;
         StackPanel.SetProportionType(_titleLabel, ProportionType.Fill);
         StackPanel.SetProportionType(_content, ProportionType.Fill);
 
         SetStyle(styleName);
 
-        _spacer.Width = 16;
         _titleLabel.SingleLine = true;
 
         upperStack.Widgets.Add(_expandToggle);
         upperStack.Widgets.Add(_titleLabel);
 
-        lowerStack.Widgets.Add(_spacer);
-        lowerStack.Widgets.Add(_content);
-
         stack.Widgets.Add(upperStack);
-        stack.Widgets.Add(lowerStack);
+        stack.Widgets.Add(_content);
 
         var layout = new SingleItemLayout<VerticalStackPanel>(this);
         this.ChildrenLayout = layout;
@@ -128,6 +118,6 @@ public class CollapseableFrame : ContentControl
 
     private void UpdateContentVisible()
     {
-        _contentRow.Visible = this.IsExpanded;
+        this._content.Visible = this.IsExpanded;
     }
 }
