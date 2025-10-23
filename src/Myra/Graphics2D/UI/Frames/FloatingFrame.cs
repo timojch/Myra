@@ -161,7 +161,7 @@ namespace Myra.Graphics2D.UI
                 this._subscribedDesktop = this.Desktop;
                 this._subscribedDesktop.MouseClick += this.Desktop_MouseClick;
             }
-            else
+            else if (this._subscribedDesktop is not null)
             {
                 this._subscribedDesktop.MouseClick -= this.Desktop_MouseClick;
                 this._subscribedDesktop = null;
