@@ -58,6 +58,11 @@ public class CollapseableFrame : ContentControl
         _content = new ContentPanel();
         _upperNode = _treeView.AddSubNode(_titleLabel);
         _lowerNode = _upperNode.AddSubNode(_content);
+
+        var layout = new SingleItemLayout<TreeView>(this);
+        this.ChildrenLayout = layout;
+        layout.Child = this._treeView;
+
         SetStyle(styleName);
     }
 
