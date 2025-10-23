@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Myra.Graphics2D.UI.Styles;
+using Myra.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +88,8 @@ public class CollapseableFrame : ContentControl
         SetStyle(styleName);
 
         _titleLabel.SingleLine = true;
+        _titleLabel.AutoEllipsisMethod = FontStashSharp.RichText.AutoEllipsisMethod.Word;
+        _titleLabel.AutoEllipsisString = "...";
 
         upperStack.Widgets.Add(_expandToggle);
         upperStack.Widgets.Add(_titleLabel);
