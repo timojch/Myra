@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,11 @@ public class PointerEventArgs
 {
     public int ButtonIndex { get; }
 
-    public PointerEventArgs(int buttonIndex)
+    public Point Position;
+
+    public PointerEventArgs(int buttonIndex, Point position)
     {
         this.ButtonIndex = buttonIndex;
+        this.Position = position;
     }
 }

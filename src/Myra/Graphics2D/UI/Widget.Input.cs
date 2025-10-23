@@ -388,7 +388,7 @@ namespace Myra.Graphics2D.UI
                     {
                         foreach (var click in this.Desktop.LastMouseInfo.GetClickedButtons())
                         {
-                            MouseClick?.Invoke(this, new PointerEventArgs(click));
+                            MouseClick?.Invoke(this, new PointerEventArgs(click, this.Desktop.LastMouseInfo.Position));
                         }
                     }
                     break;

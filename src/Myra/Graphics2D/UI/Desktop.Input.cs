@@ -392,7 +392,7 @@ namespace Myra.Graphics2D.UI
                 case InputEventType.MouseClick:
                     foreach (var click in this.LastMouseInfo.GetClickedButtons())
                     {
-                        MouseClick?.Invoke(this, new PointerEventArgs(click));
+                        MouseClick?.Invoke(this, new PointerEventArgs(click, this.LastMouseInfo.Position));
                     }
                     break;
             }
