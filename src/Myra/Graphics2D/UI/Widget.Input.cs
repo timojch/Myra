@@ -434,12 +434,23 @@ namespace Myra.Graphics2D.UI
         private void OnDragHandleTouchDown(object sender, EventArgs e)
         {
             var parent = Parent != null ? (ITransformable)Parent : Desktop;
-            _startPos = parent.ToLocal(new Vector2(Desktop.TouchPosition.Value.X, Desktop.TouchPosition.Value.Y));
-            _startLeftTop = new Point(Left, Top);
 
-            if (this.CanBePickedUp)
+            if (Desktop is not null)
             {
-                this.Pickup();
+                _startPos = parent.ToLocal(new Vector2(Desktop.TouchPosition.Value.X, Desktop.TouchPosition.Value.Y));
+            }
+            else if (Parent is not null)
+            {
+                _startPos = Parent.LocalTouchPosition?.ToVector2();
+            }
+
+            _startLeftTop = new Point(Left, Top);
+            if (_startPos is not null)
+            {
+                if (this.CanBePickedUp)
+                {
+                    this.Pickup();
+                }
             }
         }
 

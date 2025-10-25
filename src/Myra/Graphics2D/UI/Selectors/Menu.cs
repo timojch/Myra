@@ -9,6 +9,8 @@ using Myra.Attributes;
 using FontStashSharp;
 using Myra.Events;
 using Myra.Graphics2D.UI.Frames;
+using info.lundin.math;
+
 
 
 #if MONOGAME || FNA
@@ -30,6 +32,7 @@ namespace Myra.Graphics2D.UI
         private readonly SingleItemLayout<Grid> _layout;
         private bool _dirty = true;
         private bool _internalSetSelectedIndex = false;
+        private Point? _offsetFromParentMenu;
 
         [Browsable(false)]
         [XmlIgnore]
@@ -56,6 +59,12 @@ namespace Myra.Graphics2D.UI
         [Browsable(false)]
         [Content]
         public ObservableCollection<IMenuItem> Items { get; } = new ObservableCollection<IMenuItem>();
+
+        [Browsable(false)]
+        public bool IsSubMenu { get => this.ParentMenu is not null; }
+
+        [Browsable(false)]
+        public Menu ParentMenu { get; set; }
 
         [Category("Appearance")]
         public SpriteFontBase LabelFont
@@ -267,6 +276,8 @@ namespace Myra.Graphics2D.UI
             VerticalAlignment = VerticalAlignment.Stretch;
             HoverIndexCanBeNull = true;
 
+            AfterRender = (c) => UpdatePosition();
+
             SetStyle(styleName);
         }
 
@@ -323,6 +334,19 @@ namespace Myra.Graphics2D.UI
 
         protected virtual void UpdateWidgets()
         {
+        }
+
+        protected override void InternalArrange()
+        {
+            base.InternalArrange();
+            if (this.ParentMenu is not null)
+            {
+                _offsetFromParentMenu = this.ParentMenu.ToLocal(this.ToGlobal(Point.Zero));
+            }
+            else
+            {
+                _offsetFromParentMenu = null;
+            }
         }
 
         private void SetMenuItem(MenuItem menuItem)
@@ -577,7 +601,7 @@ namespace Myra.Graphics2D.UI
             if (menuItem != null)
             {
                 menuItem.Invoke();
-                if(menuItem.CloseAfterInvoke)
+                if (menuItem.CloseAfterInvoke)
                 {
                     Close();
                 }
@@ -747,6 +771,16 @@ namespace Myra.Graphics2D.UI
 
             InternalChild.SelectionHoverBackground = style.SelectionHoverBackground;
             InternalChild.SelectionBackground = style.SelectionBackground;
+        }
+
+        private void UpdatePosition()
+        {
+            if (_offsetFromParentMenu.HasValue && ParentMenu is not null)
+            {
+                var targetPosition = ParentMenu.ToGlobal(_offsetFromParentMenu.Value);
+                this.Left = targetPosition.X;
+                this.Top = targetPosition.Y;
+            }
         }
     }
 }

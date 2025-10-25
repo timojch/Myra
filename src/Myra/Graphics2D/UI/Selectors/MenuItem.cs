@@ -185,7 +185,15 @@ namespace Myra.Graphics2D.UI
 
 		[Browsable(false)]
 		[XmlIgnore]
-		public Menu Menu { get; set; }
+		public Menu Menu 
+		{ 
+			get; 
+			set
+			{
+				field = value;
+				this.SubMenu.ParentMenu = value;
+			}
+		}
 
 		[Browsable(false)]
 		[Content]

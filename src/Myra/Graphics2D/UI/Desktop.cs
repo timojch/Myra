@@ -366,6 +366,16 @@ namespace Myra.Graphics2D.UI
                 return;
             }
 
+            if (ContextMenu is Menu innerMenu)
+            {
+                var parentMenu = innerMenu.ParentMenu;
+                while(parentMenu is not null)
+                {
+                    Widgets.Remove(parentMenu);
+                    parentMenu = parentMenu.ParentMenu;
+                }
+            }
+
             Widgets.Remove(currentContextMenu);
             currentContextMenu.Visible = false;
 
@@ -410,7 +420,14 @@ namespace Myra.Graphics2D.UI
 
         public void ShowContextMenu(Widget menu, Point position)
         {
-            HideContextMenu();
+            if (menu is Menu innerMenu && innerMenu.IsSubMenu)
+            {
+
+            }
+            else
+            {
+                HideContextMenu();
+            }
 
             ContextMenu = menu;
             if (ContextMenu == null)
