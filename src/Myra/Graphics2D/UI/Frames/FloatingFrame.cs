@@ -116,6 +116,8 @@ namespace Myra.Graphics2D.UI
             {
                 SetStyle(styleName);
             }
+
+            this.LocationChanged += (s, ev) => this.IsWindowPlaced = true;
         }
 
         protected override void InternalArrange()
