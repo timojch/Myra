@@ -409,6 +409,10 @@ namespace Myra.Graphics2D.UI
         }
 
         [Category("Behavior")]
+        [DefaultValue(false)]
+        public bool Ghost { get; set; }
+
+        [Category("Behavior")]
         [DefaultValue(DragDirection.None)]
         public virtual DragDirection DragDirection { get; set; } = DragDirection.None;
 
@@ -1444,7 +1448,7 @@ namespace Myra.Graphics2D.UI
             return result;
         }
 
-        public virtual bool InputFallsThrough(Point localPos) => false;
+        public virtual bool InputFallsThrough(Point localPos) => Ghost;
 
         public Widget Clone()
         {
