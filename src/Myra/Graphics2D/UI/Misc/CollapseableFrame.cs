@@ -82,6 +82,7 @@ public class CollapseableFrame : ContentControl
 
         stack.HorizontalAlignment = HorizontalAlignment.Stretch;
         upperStack.HorizontalAlignment = HorizontalAlignment.Stretch;
+        _content.HorizontalAlignment = HorizontalAlignment.Stretch;
         StackPanel.SetProportionType(_titleLabel, ProportionType.Fill);
         StackPanel.SetProportionType(_content, ProportionType.Fill);
 
