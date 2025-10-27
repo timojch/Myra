@@ -273,7 +273,7 @@ namespace AssetManagementBase
 			{
 				return assetManager.LoadStaticSpriteFont(assetName);
 			}
-			else if (assetName.Contains(".ttf"))
+			else if (assetName.Contains(".ttf") || assetName.Contains(".otf"))
 			{
 
 				var parts = assetName.Split(':');
