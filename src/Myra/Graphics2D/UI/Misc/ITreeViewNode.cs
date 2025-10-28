@@ -5,6 +5,7 @@
 		int ChildNodesCount { get; }
 
 		TreeViewNode AddSubNode(Widget content);
+		TreeViewNode InsertSubNode(int index, Widget content);
 		TreeViewNode GetSubNode(int index);
 
 		void RemoveAllSubNodes();

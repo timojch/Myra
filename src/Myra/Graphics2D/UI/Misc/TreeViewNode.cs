@@ -148,7 +148,23 @@ namespace Myra.Graphics2D.UI
 			return result;
 		}
 
-		public TreeViewNode GetSubNode(int index)
+        public TreeViewNode InsertSubNode(int index, Widget content)
+        {
+            var result = new TreeViewNode(_topTree, StyleName)
+            {
+                ParentNode = this,
+                Content = content
+            };
+            Grid.SetRow(result, _childNodesStackPanel.Children.Count);
+
+            _childNodesStackPanel.Children.Insert(index, result);
+
+            UpdateMark();
+
+            return result;
+        }
+
+        public TreeViewNode GetSubNode(int index)
 		{
 			return (TreeViewNode)_childNodesStackPanel.Children[index];
 		}
