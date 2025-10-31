@@ -2,6 +2,8 @@
 using Myra.Graphics2D.UI.Styles;
 using System.Xml.Serialization;
 using Myra.Attributes;
+using System;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework.Input;
@@ -27,6 +29,10 @@ namespace Myra.Graphics2D.UI
 		[Category("Behavior")]
 		[DefaultValue(Keys.Enter)]
 		public Keys ConfirmKey { get; set; }
+
+		public event EventHandler Submit;
+
+		public event EventHandler Cancel;
 
 		public Dialog(string styleName = Stylesheet.DefaultStyleName) : base(styleName)
 		{
@@ -69,6 +75,18 @@ namespace Myra.Graphics2D.UI
 
 			buttonsPanel.Widgets.Add(ButtonCancel);
 			Children.Add(buttonsPanel);
+
+			this.Closing += (s, ev) =>
+			{
+				if (this.Result)
+				{
+					this.Submit?.Invoke(s, ev);
+				}
+				else
+				{
+					this.Cancel?.Invoke(s, ev);
+				}
+			};
 		}
 
 		public override void OnKeyDown(Keys k)
