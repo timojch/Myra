@@ -41,6 +41,7 @@ namespace Myra.Graphics2D.UI
         private Widget _focusedKeyboardWidget;
         private readonly List<Widget> _widgetsCopy = new List<Widget>();
         private Widget _previousKeyboardFocus;
+        private List<Widget> _heldWidgets = new List<Widget>();
 #if MONOGAME || PLATFORM_AGNOSTIC
         public bool HasExternalTextInput = false;
 #endif
@@ -80,7 +81,7 @@ namespace Myra.Graphics2D.UI
             }
         }
 
-        public List<Widget> HeldWidgets { get; } = new List<Widget>();
+        public IEnumerable<Widget> HeldWidgets => this._heldWidgets;
 
         public HorizontalMenu MenuBar { get; private set; }
 
@@ -308,6 +309,9 @@ namespace Myra.Graphics2D.UI
 
         public event EventHandler<CancellableEventArgs<Widget>> WidgetLosingKeyboardFocus;
         public event EventHandler<GenericEventArgs<Widget>> WidgetGotKeyboardFocus;
+
+        public event EventHandler<GenericEventArgs<Widget>> WidgetPickedUp;
+        public event EventHandler<GenericEventArgs<Widget>> WidgetDropped;
 
         public Action<Keys> KeyDownHandler;
 
@@ -579,6 +583,21 @@ namespace Myra.Graphics2D.UI
             RenderVisual();
         }
 
+        public void PickupWidget(Widget toPickup)
+        {
+            this._heldWidgets.Add(toPickup);
+            this.WidgetPickedUp.Invoke(toPickup);
+        }
+
+        public void DropWidgets(IEnumerable<Widget> toDrop)
+        {
+            this._heldWidgets.RemoveAll(toDrop.Contains);
+            foreach (var widget in toDrop)
+            {
+                this.WidgetDropped?.Invoke(widget);
+            }
+        }
+
         public Widget PredictDropTargetFor(Widget held)
             => this.PredictDropTargetFor(held, this.MousePosition);
 
@@ -617,7 +636,15 @@ namespace Myra.Graphics2D.UI
                 }
             }
 
-            this.HeldWidgets.Clear();
+            if (this._heldWidgets.Count > 0)
+            {
+                var droppedWidgets = this._heldWidgets.ToArray();
+                this._heldWidgets.Clear();
+                foreach(var widget in droppedWidgets)
+                {
+                    this.WidgetDropped.Invoke(widget);
+                }
+            }
         }
 
         private void InvalidateTransform()

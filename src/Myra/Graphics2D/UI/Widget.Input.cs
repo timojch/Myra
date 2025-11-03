@@ -396,14 +396,14 @@ namespace Myra.Graphics2D.UI
                     if (this.Desktop?.HeldWidgets.Any() ?? false)
                     {
                         var removedWidgets = new List<Widget>();
-                        foreach (var widget in this.Desktop.HeldWidgets.Where(w => this.ShouldReceiveDragDrop(w)))
+                        foreach (var widget in this.Desktop.HeldWidgets.Where(w => this.ShouldReceiveDragDrop(w)).ToArray())
                         {
                             this.DragReceived?.Invoke(this, new DragReceivedEventArgs(widget));
                             widget.InvokeDropped(new DragDroppedEventArgs(this));
                             removedWidgets.Add(widget);
                         }
 
-                        this.Desktop.HeldWidgets.RemoveAll(w => removedWidgets.Contains(w));
+                        this.Desktop.DropWidgets(removedWidgets);
                     }
                     OnTouchUp();
                     TouchUp.Invoke(this);

@@ -1412,7 +1412,7 @@ namespace Myra.Graphics2D.UI
 
         public void Pickup()
         {
-            this.Desktop.HeldWidgets.Add(this);
+            this.Desktop.PickupWidget(this);
             this.DragStarted?.Invoke(this, new EventArgs());
         }
 
