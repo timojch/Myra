@@ -565,8 +565,11 @@ namespace Myra.Graphics2D.UI
             var pos = this is HorizontalMenu ? new Point(bounds.X, bounds.Bottom) : new Point(bounds.Right, bounds.Y);
             pos = ToGlobal(pos);
 
-            Desktop.ShowContextMenu(menuItem.SubMenu, pos);
-            OpenMenuItem = menuItem;
+            if (Desktop is not null)
+            {
+                Desktop.ShowContextMenu(menuItem.SubMenu, pos);
+                OpenMenuItem = menuItem;
+            }
         }
 
         private void OnSelectedIndexChanged(object sender, EventArgs e)
