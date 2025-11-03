@@ -926,7 +926,7 @@ namespace Myra.Graphics2D.UI
 
         public Widget HitTest(Point p)
         {
-            foreach (var widget in ChildrenCopy)
+            foreach (var widget in (ChildrenCopy as IEnumerable<Widget>).Reverse())
             {
                 var result = widget.HitTest(p);
                 if (result != null)
