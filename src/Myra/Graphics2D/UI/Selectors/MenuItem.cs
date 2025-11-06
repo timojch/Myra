@@ -183,6 +183,11 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+
+        [Browsable(false)]
+        [XmlIgnore] 
+		public bool IsOpen { get => Menu.IsOpen; }
+
 		[Browsable(false)]
 		[XmlIgnore]
 		public Menu Menu 

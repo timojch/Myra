@@ -668,7 +668,7 @@ namespace Myra.Graphics2D.UI
                         continue;
                     }
 
-                    if (menuItem.UnderscoreChar == c)
+                    if (menuItem.UnderscoreChar == c && !menuItem.IsOpen)
                     {
                         Click(menuItem.Index);
                         return;
