@@ -18,12 +18,28 @@ namespace Myra.Graphics2D.UI
 		private readonly VerticalStackPanel _childNodesStackPanel;
 		private readonly ToggleButton _mark;
 		private Widget _content;
+		private Widget _spacer;
 
 		public bool IsExpanded
 		{
 			get { return _mark.IsPressed; }
 
 			set { _mark.IsPressed = value; }
+		}
+
+		public int Depth
+		{
+			get
+			{
+				if (this.ParentNode is null)
+				{
+					return 0;
+				}
+				else
+				{
+					return this.ParentNode.Depth + 1;
+				}
+			}
 		}
 
 		public ToggleButton Mark => _mark;
@@ -36,7 +52,15 @@ namespace Myra.Graphics2D.UI
 
 		internal bool RowVisible { get; set; }
 
-		public TreeViewNode ParentNode { get; internal set; }
+		public TreeViewNode ParentNode 
+		{ 
+			get; 
+			internal set
+			{
+				field = value;
+				this.UpdateSpacer();
+			}
+		}
 
 		public override Widget Content
 		{
@@ -78,7 +102,11 @@ namespace Myra.Graphics2D.UI
 				_topTree.AllNodes.Add(this);
 			}
 
-			_mark = new ToggleButton(null)
+			_spacer = new Widget();
+            this.Children.Add(_spacer);
+            this.UpdateSpacer();
+
+            _mark = new ToggleButton(null)
 			{
 				HorizontalAlignment = HorizontalAlignment.Left,
 				VerticalAlignment = VerticalAlignment.Center,
@@ -106,8 +134,9 @@ namespace Myra.Graphics2D.UI
 			{
 				Visible = false,
 			};
-			Grid.SetColumn(_childNodesStackPanel, 1);
-			Grid.SetRow(_childNodesStackPanel, 1);
+            Grid.SetRow(_childNodesStackPanel, 1);
+            Grid.SetColumn(_childNodesStackPanel, 0);
+			Grid.SetColumnSpan(_childNodesStackPanel, 3);
 
 			Children.Add(_childNodesStackPanel);
 
@@ -155,8 +184,9 @@ namespace Myra.Graphics2D.UI
                 ParentNode = this,
                 Content = content
             };
-            Grid.SetRow(result, _childNodesStackPanel.Children.Count);
 
+			Grid.SetRow(result, _childNodesStackPanel.Children.Count);
+			
             _childNodesStackPanel.Children.Insert(index, result);
 
             UpdateMark();
@@ -216,6 +246,18 @@ namespace Myra.Graphics2D.UI
 		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
 		{
 			ApplyTreeViewNodeStyle(stylesheet.TreeStyles.SafelyGetStyle(name));
+		}
+
+		private void UpdateSpacer()
+		{
+			if (this.Depth == 0)
+			{
+				this._spacer.MinWidth = 0;
+			}
+			else
+			{
+				this._spacer.MinWidth = this.Depth * this.ParentNode.Mark.Measure(new Point(1000, 1000)).X;
+			}
 		}
 	}
 }

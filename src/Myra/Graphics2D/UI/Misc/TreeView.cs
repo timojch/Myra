@@ -29,6 +29,8 @@ namespace Myra.Graphics2D.UI
 
 		public int ChildNodesCount => Children.Count;
 
+		public int Depth => 0;
+
 		internal TreeViewNode HoverRow { get; set; }
 
 		[Browsable(false)]

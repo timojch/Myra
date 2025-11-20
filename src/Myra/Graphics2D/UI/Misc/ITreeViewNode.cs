@@ -4,6 +4,8 @@
 	{
 		int ChildNodesCount { get; }
 
+		int Depth { get; }
+
 		TreeViewNode AddSubNode(Widget content);
 		TreeViewNode InsertSubNode(int index, Widget content);
 		TreeViewNode GetSubNode(int index);
