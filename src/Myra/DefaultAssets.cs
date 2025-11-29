@@ -25,21 +25,37 @@ namespace Myra
 		[Obsolete("Use DefaultStylesheet")]
 		public static Stylesheet UIStylesheet => DefaultStylesheet;
 
-		public static Stylesheet DefaultStylesheet
-		{
-			get
-			{
-				if (_defaultStylesheet != null)
-				{
-					return _defaultStylesheet;
-				}
+        public static Stylesheet DefaultStylesheet
+        {
+            get
+            {
+                if (_defaultStylesheet != null)
+                {
+                    return _defaultStylesheet;
+                }
 
-				_defaultStylesheet = AssetManager.LoadStylesheet("default_ui_skin.xmms");
-				return _defaultStylesheet;
-			}
-		}
+                _defaultStylesheet = AssetManager.LoadClassicStylesheet("default_ui_skin.xmms");
+                return _defaultStylesheet;
+            }
+        }
 
-		public static Stylesheet DefaultStylesheet2X
+        public static GenericStylesheet DefaultGenericStylesheet
+        {
+            get
+            {
+                if (field != null)
+                {
+                    return field;
+                }
+
+                field = AssetManager.LoadGenericStylesheet("default_ui_skin.xmms");
+                return field ;
+            }
+
+			private set;
+        }
+
+        public static Stylesheet DefaultStylesheet2X
 		{
 			get
 			{
@@ -48,7 +64,7 @@ namespace Myra
 					return _defaultStylesheet2x;
 				}
 
-				_defaultStylesheet2x = AssetManager.LoadStylesheet("default_ui_skin_2x.xmms");
+				_defaultStylesheet2x = AssetManager.LoadClassicStylesheet("default_ui_skin_2x.xmms");
 				return _defaultStylesheet2x;
 			}
 		}
