@@ -1226,6 +1226,12 @@ namespace Myra.Graphics2D.UI
             // SetStyle(Stylesheet.Current, name);
         }
 
+        public void SetStyle<TWidget>(string name)
+            where TWidget : Widget
+        {
+            GenericStylesheet.Current.GetStyle<TWidget>(name).ApplyTo(this);
+        }
+
         protected virtual void InternalSetStyle(Stylesheet stylesheet, string name)
         {
         }

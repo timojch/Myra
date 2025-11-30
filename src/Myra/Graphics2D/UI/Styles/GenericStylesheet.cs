@@ -92,6 +92,18 @@ public class GenericStylesheet
     public IStyle GetStyleFor(object target, string name = Stylesheet.DefaultStyleName)
     {
         var targetType = target.GetType();
+        return GetStyle(targetType, name);
+    }
+
+    public IStyle<TWidget> GetStyle<TWidget>(string name = Stylesheet.DefaultStyleName)
+        where TWidget : Widget
+    {
+        var targetType = typeof(TWidget);
+        return (IStyle<TWidget>)GetStyle(targetType, name);
+    }
+
+    public IStyle GetStyle(Type widgetType, string name = Stylesheet.DefaultStyleName)
+    {
         IDictionary<string, IStyle> styles = null;
         IStyle style = null;
         if (string.IsNullOrEmpty(name))
@@ -99,9 +111,9 @@ public class GenericStylesheet
             name = Stylesheet.DefaultStyleName;
         }
 
-        while (targetType != typeof(object) && !this.Styles.TryGetValue(targetType, out styles))
+        while (widgetType != typeof(object) && !this.Styles.TryGetValue(widgetType, out styles))
         {
-            targetType = targetType.BaseType;
+            widgetType = widgetType.BaseType;
         }
 
         if (styles is not null)

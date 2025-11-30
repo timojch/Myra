@@ -124,7 +124,7 @@ namespace Myra.Graphics2D.UI
 
             Children.Add(TitlePanel);
 
-            SetStyle(styleName);
+            SetStyle<Window>(styleName);
         }
 
         public void ApplyWindowStyle(WindowStyle style)

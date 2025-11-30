@@ -9,6 +9,8 @@ namespace Myra.Graphics2D.UI.Styles;
 public interface IStyle
 {
     void ApplyTo(Widget widget);
+
+    bool CanApplyTo(Widget widget);
 }
 
 public interface IStyle<in TWidget>
@@ -18,4 +20,6 @@ public interface IStyle<in TWidget>
     void ApplyTo(TWidget widget);
 
     void IStyle.ApplyTo(Widget widget) => this.ApplyTo((TWidget)widget);
+
+    bool IStyle.CanApplyTo(Widget widget) => widget is TWidget;
 }
