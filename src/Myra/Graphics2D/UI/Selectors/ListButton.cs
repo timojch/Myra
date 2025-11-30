@@ -42,17 +42,25 @@ namespace Myra.Graphics2D.UI
 
 				base.IsPressed = value;
 			}
-		}
+        }
 
-		public ListButton(ImageTextButtonStyle bs, ISelector selector) : base(null)
-		{
-			_selector = selector;
-			Toggleable = true;
+        public ListButton(ImageTextButtonStyle bs, ISelector selector) : base(null)
+        {
+            _selector = selector;
+            Toggleable = true;
 
-			ApplyImageTextButtonStyle(bs);
-		}
+            ApplyImageTextButtonStyle(bs);
+        }
 
-		public override void OnPressedChanged()
+        public ListButton(GenericStyle<ImageTextButton> bs, ISelector selector) : base(null)
+        {
+            _selector = selector;
+            Toggleable = true;
+
+			bs.ApplyTo(this);
+        }
+
+        public override void OnPressedChanged()
 		{
 			base.OnPressedChanged();
 

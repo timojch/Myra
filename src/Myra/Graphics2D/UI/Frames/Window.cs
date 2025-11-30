@@ -79,6 +79,10 @@ namespace Myra.Graphics2D.UI
 
         [Browsable(false)]
         [XmlIgnore]
+        public Label TitleLabel { get; }
+
+        [Browsable(false)]
+        [XmlIgnore]
         public Button CloseButton { get; private set; }
 
         public Window(string styleName = Stylesheet.DefaultStyleName)
@@ -102,6 +106,7 @@ namespace Myra.Graphics2D.UI
             _titleLabel = new Label();
             _titleLabel.AutoEllipsisMethod = FontStashSharp.RichText.AutoEllipsisMethod.Character;
             _titleLabel.AutoEllipsisString = "…";
+            TitleLabel = _titleLabel;
             StackPanel.SetProportionType(_titleLabel, ProportionType.Fill);
             TitlePanel.Widgets.Add(_titleLabel);
 

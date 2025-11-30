@@ -1,14 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Xml.Serialization;
 using Myra.Graphics2D.UI.Styles;
 using Myra.Utility;
 
 namespace Myra.Graphics2D.UI.File
 {
 	public partial class FileDialog
-	{
-		private class PathInfo
+    {
+        [Category("Appearance")]
+        [XmlIgnore]
+        public IBrush SelectionBackground
+        {
+            get => _gridFiles.SelectionBackground;
+            set => _gridFiles.SelectionBackground = value;
+        }
+
+        [Category("Appearance")]
+        [XmlIgnore]
+        public IBrush SelectionHoverBackground
+        {
+            get => _gridFiles.SelectionHoverBackground;
+            set => _gridFiles.SelectionHoverBackground = value;
+        }
+
+        [Browsable(false)]
+        [XmlIgnore]
+        public Button BackButton { get => _buttonBack; }
+
+        [Browsable(false)]
+        [XmlIgnore]
+        public Button ForwardButton { get => _buttonForward; }
+
+        [Browsable(false)]
+        [XmlIgnore]
+        public Button ParentButton { get => _buttonParent; }
+
+        private class PathInfo
 		{
 			public string Path { get; }
 			public bool IsDrive { get; }
@@ -99,8 +129,11 @@ namespace Myra.Graphics2D.UI.File
 
 		public bool AutoAddFilterExtension { get; set; }
 
+		[Category("Appearance")]
 		public IImage IconFolder { get; set; }
-		public IImage IconDrive { get; set; }
+
+        [Category("Appearance")]
+        public IImage IconDrive { get; set; }
 
 		public FileDialog(FileDialogMode mode) : base(null)
 		{

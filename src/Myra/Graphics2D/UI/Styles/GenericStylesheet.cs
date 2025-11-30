@@ -7,6 +7,7 @@ using Myra.MML;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -21,6 +22,7 @@ public class GenericStylesheet
     private static readonly Dictionary<string, string> LegacyPropertyNames = new Dictionary<string, string>();
     private static readonly Dictionary<string, string> LegacyWidgetNames = new Dictionary<string, string>();
     private static readonly Dictionary<Type, Type> PropertyTypeSpecializations = new Dictionary<Type, Type>();
+    private static readonly Dictionary<Type, string[]> IgnorableProperties = new Dictionary<Type, string[]>();
 
     private readonly Dictionary<Type, IDictionary<string, IStyle>> Styles = new();
 
@@ -59,7 +61,8 @@ public class GenericStylesheet
 
     public GenericStylesheet()
     {
-
+        var defaultWidgetStyle = new GenericStyle<Widget>();
+        this.AddStyle(defaultWidgetStyle);
     }
 
     static GenericStylesheet()
@@ -76,7 +79,9 @@ public class GenericStylesheet
         LegacyPropertyNames["ScrollPaneStyles"] = "ScrollViewerStyles";
 
         LegacyWidgetNames["CheckBox"] = "ImageTextButton";
-        LegacyWidgetNames["ComboBox"] = "ComboView";
+
+        IgnorableProperties[typeof(ComboView)] = ["LabelStyle"];
+        IgnorableProperties[typeof(ComboBox)] = ["LabelStyle"];
     }
 
     public void CombineWith(GenericStylesheet other)
@@ -89,9 +94,14 @@ public class GenericStylesheet
         var targetType = target.GetType();
         IDictionary<string, IStyle> styles = null;
         IStyle style = null;
+        if (string.IsNullOrEmpty(name))
+        {
+            name = Stylesheet.DefaultStyleName;
+        }
 
         while (targetType != typeof(object) && !this.Styles.TryGetValue(targetType, out styles))
         {
+            targetType = targetType.BaseType;
         }
 
         if (styles is not null)
@@ -100,6 +110,23 @@ public class GenericStylesheet
         }
 
         return style;
+    }
+
+    public void AddStyle(IStyle style, string name = Stylesheet.DefaultStyleName)
+    {
+        var styleType = style.GetType();
+        if (styleType.IsGenericType)
+        {
+            IDictionary<string, IStyle> dict;
+            var targetWidget = styleType.GetGenericArguments()[0];
+            if (!this.Styles.TryGetValue(targetWidget, out dict))
+            {
+                dict = new Dictionary<string, IStyle>();
+                this.Styles.Add(targetWidget, dict);
+            }
+
+            dict.Add(name, style);
+        }
     }
 
     public static GenericStylesheet LoadFromSource(string stylesheetXml,
@@ -227,7 +254,7 @@ public class GenericStylesheet
         XElement styleElement,
         LoadContext context)
     {
-        var targetType = target.GetType();
+        var targetType = target.TargetType;
 
         foreach (var xAttribute in styleElement.Attributes())
         {
@@ -245,38 +272,70 @@ public class GenericStylesheet
         foreach (var childElement in styleElement.Elements())
         {
             var name = childElement.Name.LocalName;
+            string error = $"{name} is not a styleable property of {targetType.Name}.";
+            bool success = false;
 
-            if (name.EndsWith("Style"))
+            if (target.TryGetProperty(name, out var property))
+            {
+                if (property.PropertyType.IsAssignableTo(typeof(GenericStyle)))
+                {
+                    var subStyleTarget = (GenericStyle)Activator.CreateInstance(property.PropertyType);
+                    GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
+                    target.AddAttribute(name, subStyleTarget);
+                    success = true;
+                }
+                else
+                {
+                    error = $"{name} is a full element in the stylesheet under {targetType}Style, but is not a style";
+                }
+            }
+            else if (name.EndsWith("Style"))
             {
                 var styleablePropertyName = name.Substring(0, name.Length - "Style".Length);
-                var propertyType = target.GetPropertyType(styleablePropertyName);
-                if (PropertyTypeSpecializations.TryGetValue(propertyType, out var specializedType))
+                try
                 {
-                    propertyType = specializedType;
-                }
+                    var propertyType = target.GetPropertyType(styleablePropertyName);
+                    if (PropertyTypeSpecializations.TryGetValue(propertyType, out var specializedType))
+                    {
+                        propertyType = specializedType;
+                    }
 
-                if (propertyType.IsAssignableTo(typeof(Widget)))
-                {
-                    var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([propertyType]);
-                    var subStyleTarget = Activator.CreateInstance(propertyStyleType) as GenericStyle;
-                    GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
-                    target.AddSubWidgetStyle(styleablePropertyName, (IStyle)subStyleTarget);
-                }
-                else if (target.CanHaveContent)
-                {
-                    var contentWidgetType = GenericStyle.FindWidgetType(styleablePropertyName);
-                    if (contentWidgetType is not null)
+                    if (propertyType.IsAssignableTo(typeof(Widget)))
                     {
-                        var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([contentWidgetType]);
-                        var subStyleTarget = Activator.CreateInstance(propertyStyleType) as GenericStyle;
+                        var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([propertyType]);
+                        var subStyleTarget = (GenericStyle)Activator.CreateInstance(propertyStyleType);
                         GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
-                        target.AddContentStyle(contentWidgetType, (IStyle)subStyleTarget);
+                        target.AddSubWidgetStyle(styleablePropertyName, (IStyle)subStyleTarget);
+                        success = true;
                     }
-                    else
+                    else if (target.CanHaveContent)
                     {
-                        throw new Exception($"{name} is not a styleable property or valid content type");
+                        var contentWidgetType = GenericStyle.FindWidgetType(styleablePropertyName);
+                        error = $"{name} is not a styleable property of {targetType.Name} or valid content type";
+
+                        if (contentWidgetType is not null)
+                        {
+                            var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([contentWidgetType]);
+                            var subStyleTarget = Activator.CreateInstance(propertyStyleType) as GenericStyle;
+                            GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
+                            target.AddContentStyle(contentWidgetType, (IStyle)subStyleTarget);
+                            success = true;
+                        }
                     }
                 }
+                catch (InvalidDataException e)
+                {
+                    error = e.Message;
+                }
+            }
+            else
+            {
+                error = $"Unable to process property {name} of {targetType}Style because it is a full element but not a style.";
+            }
+
+            if (!success && !(IgnorableProperties.TryGetValue(target.TargetType, out var ignorableProperties) && ignorableProperties.Contains(name)))
+            {
+                throw new Exception(error);
             }
         }
     }

@@ -13,6 +13,7 @@ using info.lundin.math;
 
 
 
+
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -40,10 +41,6 @@ namespace Myra.Graphics2D.UI
 
         [Browsable(false)]
         [XmlIgnore]
-        public MenuStyle MenuStyle { get; private set; }
-
-        [Browsable(false)]
-        [XmlIgnore]
         internal MenuItem OpenMenuItem { get; private set; }
 
         [Browsable(false)]
@@ -66,17 +63,29 @@ namespace Myra.Graphics2D.UI
         [Browsable(false)]
         public Menu ParentMenu { get; set; }
 
+        [Category("Style")]
+        public GenericStyle<Label> LabelStyle { get; set; }
+
+        [Category("Style")]
+        public GenericStyle<Label> ShortcutStyle { get; set; }
+
+        [Category("Style")]
+        public GenericStyle<Image> ImageStyle { get; set; }
+
+        [Category("Style")]
+        public GenericStyle<SeparatorWidget> SeparatorStyle { get; set; }
+
         [Category("Appearance")]
         public SpriteFontBase LabelFont
         {
             get
             {
-                return MenuStyle.LabelStyle.Font;
+                return LabelStyle.GetAttribute<SpriteFontBase>("Font");
             }
 
             set
             {
-                MenuStyle.LabelStyle.Font = value;
+                LabelStyle.AddAttribute("Font", value);
             }
         }
 
@@ -86,14 +95,18 @@ namespace Myra.Graphics2D.UI
         {
             get
             {
-                return MenuStyle.LabelStyle.TextColor;
+                return LabelStyle.GetAttribute<Color>("TextColor");
             }
 
             set
             {
-                MenuStyle.LabelStyle.TextColor = value;
+                LabelStyle.AddAttribute("TextColot", value);
             }
         }
+
+        [Category("Appearance")]
+        [StylePropertyPath("/LabelStyle/SpecialCharColor")]
+        public Color? SpecialCharColor { get; set; }
 
         [Category("Appearance")]
         public IBrush SelectionHoverBackground
@@ -366,9 +379,9 @@ namespace Myra.Graphics2D.UI
             {
                 menuItem.Shortcut.TextColor = menuItem.ShortcutColor.Value;
             }
-            else if (MenuStyle != null && MenuStyle.ShortcutStyle != null)
+            else if (ShortcutStyle != null)
             {
-                menuItem.Shortcut.TextColor = MenuStyle.ShortcutStyle.TextColor;
+                ShortcutStyle.ApplyTo(menuItem.Shortcut);
             }
 
             if (!string.IsNullOrEmpty(menuItem.ShortcutText) && !InternalChild.Widgets.Contains(menuItem.Shortcut))
@@ -385,9 +398,9 @@ namespace Myra.Graphics2D.UI
             {
                 menuItem.Label.TextColor = menuItem.Color.Value;
             }
-            else if (MenuStyle != null && MenuStyle.LabelStyle != null)
+            else if (LabelStyle != null)
             {
-                menuItem.Label.TextColor = MenuStyle.LabelStyle.TextColor;
+                LabelStyle.ApplyTo(menuItem.Label);
             }
 
             menuItem.Label.HorizontalAlignment = LabelHorizontalAlignment;
@@ -440,13 +453,13 @@ namespace Myra.Graphics2D.UI
 
                 if (Orientation == Orientation.Horizontal)
                 {
-                    menuItem.Label.ApplyLabelStyle(MenuStyle.LabelStyle);
+                    LabelStyle.ApplyTo(menuItem.Label);
                 }
                 else
                 {
-                    menuItem.ImageWidget.ApplyPressableImageStyle(MenuStyle.ImageStyle);
-                    menuItem.Label.ApplyLabelStyle(MenuStyle.LabelStyle);
-                    menuItem.Shortcut.ApplyLabelStyle(MenuStyle.ShortcutStyle);
+                    ImageStyle.ApplyTo(menuItem.ImageWidget);
+                    LabelStyle.ApplyTo(menuItem.Label);
+                    ShortcutStyle.ApplyTo(menuItem.Shortcut);
                 }
 
                 // Add only label, as other widgets(image and shortcut) would be optionally added by SetMenuItem
@@ -472,7 +485,7 @@ namespace Myra.Graphics2D.UI
                     separator = new HorizontalSeparator(null);
                 }
 
-                separator.ApplySeparatorStyle(MenuStyle.SeparatorStyle);
+                SeparatorStyle.ApplyTo(separator);
 
                 InternalChild.Widgets.Add(separator);
 
@@ -769,8 +782,6 @@ namespace Myra.Graphics2D.UI
             var clone = new MenuStyle(style);
 
             ApplyWidgetStyle(clone);
-
-            MenuStyle = clone;
 
             InternalChild.SelectionHoverBackground = style.SelectionHoverBackground;
             InternalChild.SelectionBackground = style.SelectionBackground;

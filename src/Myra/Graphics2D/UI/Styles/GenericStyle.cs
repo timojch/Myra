@@ -1,5 +1,6 @@
 ﻿using FontStashSharp;
 using FontStashSharp.RichText;
+using info.lundin.math;
 using Microsoft.Xna.Framework;
 using Myra.Graphics2D.Brushes;
 using Myra.Graphics2D.TextureAtlases;
@@ -28,6 +29,13 @@ public abstract class GenericStyle
 
     public abstract bool CanHaveContent { get; }
 
+    public abstract Type TargetType { get; }
+
+    public abstract TValue GetAttribute<TValue>(string name);
+
+    public abstract GenericStyle<TWidget> GetSubStyle<TWidget>(string name)
+        where TWidget : Widget;
+
     public abstract void AddContentStyle(Type contentType, IStyle style);
 
     public abstract void AddSubWidgetStyle(string propertyOrContentTypeName, IStyle style);
@@ -35,6 +43,8 @@ public abstract class GenericStyle
     public abstract Type GetPropertyType(string propertyOrContentTypeName);
 
     public abstract void AddAttribute(string propertyName, object value);
+
+    public abstract bool TryGetProperty(string propertyName, out PropertyInfo value);
 
     internal static Type FindWidgetType(string widgetName)
     {
@@ -72,12 +82,30 @@ public class GenericStyle<TWidget>
 
     public string TypeName { get => typeof(TWidget).Name; }
 
+    public override Type TargetType => typeof(TWidget);
+
     public override bool CanHaveContent { get => typeof(TWidget).IsAssignableTo(typeof(ContentControl)); }
 
     public bool HasContent { get => this.ContentType is not null; }
 
     public GenericStyle()
     {
+    }
+
+    public override TValue GetAttribute<TValue>(string name)
+    {
+        return (TValue)ValuePairs
+            .Where(pair => pair.Key.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+            .First()
+            .Value;
+    }
+
+    public override GenericStyle<TStyleWidget> GetSubStyle<TStyleWidget>(string name)
+    {
+        return (GenericStyle<TStyleWidget>)StylePairs
+            .Where(pair => pair.Key.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+            .First()
+            .Value;
     }
 
     public override void AddContentStyle(Type contentType, IStyle style)
@@ -178,6 +206,12 @@ public class GenericStyle<TWidget>
         return propertyInfo.PropertyType;
     }
 
+    public override bool TryGetProperty(string propertyName, out PropertyInfo value)
+    {
+        value = GenericStyle.FindProperty(typeof(TWidget), propertyName);
+        return value is not null;
+    }
+
     public void ApplyTo(TWidget widget)
     {
         foreach (var pair in this.ValuePairs)
@@ -195,7 +229,16 @@ public class GenericStyle<TWidget>
         {
             if (widget is ContentControl contentWidget)
             {
-                var content = (Widget)Activator.CreateInstance(this.ContentType);
+                Widget content;
+                try
+                {
+                    content = (Widget)Activator.CreateInstance(this.ContentType);
+                }
+                catch (MissingMethodException)
+                {
+                    var styledConstructor = this.ContentType.GetConstructor([typeof(string)]);
+                    content = (Widget)styledConstructor.Invoke([Stylesheet.DefaultStyleName]);
+                }
                 contentWidget.Content = content;
                 this.ContentStyle.ApplyTo(content);
             }
@@ -226,6 +269,12 @@ public class GenericStyle<TWidget>
     private bool IsStyleableProperty(PropertyInfo propertyInfo)
     {
         var category = propertyInfo.GetCustomAttribute<CategoryAttribute>()?.Category;
+
+        if (propertyInfo.PropertyType.IsAssignableTo(typeof(GenericStyle)))
+        {
+            return true;
+        }
+
         return category switch
         {
             "Appearance" => true,

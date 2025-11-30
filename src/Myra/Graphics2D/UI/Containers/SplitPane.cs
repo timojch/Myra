@@ -28,7 +28,11 @@ namespace Myra.Graphics2D.UI
 
 		[XmlIgnore]
 		[Browsable(false)]
-		public SplitPanelButtonStyle HandleStyle { get; private set; }
+		public GenericStyle<Button> HandleStyle { get; set; }
+
+		[Category("Appearance")]
+		[DefaultValue(6)]
+		public int? HandleSize { get; set; } = 6;
 
 		public event EventHandler ProportionsChanged;
 
@@ -215,13 +219,13 @@ namespace Myra.Graphics2D.UI
 
 			var handleSize = 0;
 
-			if (HandleStyle.HandleSize != null)
+			if (HandleSize != null)
 			{
-				handleSize = HandleStyle.HandleSize.Value;
+				handleSize = HandleSize.Value;
 			}
 			else
 			{
-				var asImage = HandleStyle.Background as IImage;
+				var asImage = HandleStyle.GetAttribute<IImage>(nameof(Widget.Background));
 				if (asImage != null)
 				{
 					handleSize = Orientation == Orientation.Horizontal
@@ -236,7 +240,7 @@ namespace Myra.Graphics2D.UI
 				if (i > 0)
 				{
 					// Add splitter
-					var handle = new Button(null)
+					var handle = new Button()
 					{
 						ReleaseOnTouchLeft = false
 					};
@@ -252,7 +256,7 @@ namespace Myra.Graphics2D.UI
 						handle.HorizontalAlignment = HorizontalAlignment.Stretch;
 					}
 
-					handle.ApplyButtonStyle(HandleStyle);
+					HandleStyle.ApplyTo(handle);
 
 					handle.PressedChanged += HandleOnPressedChanged;
 
@@ -317,7 +321,6 @@ namespace Myra.Graphics2D.UI
 		{
 			ApplyWidgetStyle(style);
 
-			HandleStyle = style.HandleStyle;
 			Reset();
 		}
 
