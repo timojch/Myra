@@ -4,7 +4,9 @@
 	{
 		public IBrush PressedBackground { get; set; }
 
-		public ButtonStyle()
+        public LabelStyle LabelStyle { get; set; }
+
+        public ButtonStyle()
 		{
 		}
 
