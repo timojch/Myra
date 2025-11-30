@@ -72,6 +72,7 @@ namespace Myra.Graphics2D.UI
 		}
 
 		[Category("Appearance")]
+		[AlsoKnownAs("Image")]
 		public IImage UncheckedImage
 		{
 			get => _uncheckedImage;
@@ -88,6 +89,7 @@ namespace Myra.Graphics2D.UI
 		}
 
 		[Category("Appearance")]
+		[AlsoKnownAs("PressedImage")]
 		public IImage CheckedImage
 		{
 			get => _checkedImage;

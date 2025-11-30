@@ -1,8 +1,10 @@
 ﻿namespace Myra.Graphics2D.UI.Styles
 {
 	public class ImageTextButtonStyle : ButtonStyle
-	{
-		public PressableImageStyle ImageStyle
+    {
+        public LabelStyle LabelStyle { get; set; }
+
+        public PressableImageStyle ImageStyle
 		{
 			get; set;
 		}
@@ -18,7 +20,8 @@
 		public ImageTextButtonStyle(ImageTextButtonStyle style) : base(style)
 		{
 			ImageStyle = style.ImageStyle != null ? new PressableImageStyle(style.ImageStyle) : null;
-		}
+            LabelStyle = style.LabelStyle != null ? new LabelStyle(style.LabelStyle) : null;
+        }
 
 		public ImageTextButtonStyle(ButtonStyle buttonStyle) : base(buttonStyle)
 		{

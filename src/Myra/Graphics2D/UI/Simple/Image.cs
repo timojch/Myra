@@ -51,6 +51,7 @@ namespace Myra.Graphics2D.UI
         }
 
         [Category("Appearance")]
+		[AlsoKnownAs("Image")]
 		public IImage Renderable
 		{
 			get
@@ -71,7 +72,8 @@ namespace Myra.Graphics2D.UI
 		}
 
 		[Category("Appearance")]
-		public IImage OverRenderable
+        [AlsoKnownAs("OverImage")]
+        public IImage OverRenderable
 		{
 			get
 			{
@@ -91,7 +93,8 @@ namespace Myra.Graphics2D.UI
 		}
 
 		[Category("Appearance")]
-		public IImage PressedRenderable
+        [AlsoKnownAs("PressedImage")]
+        public IImage PressedRenderable
 		{
 			get
 			{

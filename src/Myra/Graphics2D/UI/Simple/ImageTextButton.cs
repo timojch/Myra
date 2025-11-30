@@ -282,6 +282,8 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		public Label Label { get => _label; }
+
 		public ImageTextButton(string styleName = Stylesheet.DefaultStyleName)
 		{
 			InternalChild = new Grid

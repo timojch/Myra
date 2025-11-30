@@ -102,11 +102,6 @@ namespace Myra.Graphics2D.UI
 		public void ApplyTextButtonStyle(ButtonStyle style)
 		{
 			ApplyButtonStyle(style);
-
-			if (style.LabelStyle != null)
-			{
-				InternalChild.ApplyLabelStyle(style.LabelStyle);
-			}
 		}
 
 		public override void OnPressedChanged()

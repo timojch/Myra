@@ -15,6 +15,7 @@ namespace Myra.Graphics2D.UI
 {
 	public abstract class SeparatorWidget : Image
 	{
+		[Category("Appearance")]
 		public int Thickness { get; set; }
 
 		[Browsable(false)]

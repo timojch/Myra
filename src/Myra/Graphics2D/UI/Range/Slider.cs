@@ -128,6 +128,7 @@ namespace Myra.Graphics2D.UI
 
 		[XmlIgnore]
 		[Browsable(false)]
+		[AlsoKnownAs("Knob")]
 		public Button ImageButton => _layout.Child;
 
 		/// <summary>
