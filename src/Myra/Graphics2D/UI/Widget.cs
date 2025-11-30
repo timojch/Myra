@@ -1222,7 +1222,8 @@ namespace Myra.Graphics2D.UI
 
         public void SetStyle(string name)
         {
-            SetStyle(Stylesheet.Current, name);
+            GenericStylesheet.Current.GetStyleFor(this, name).ApplyTo(this);
+            // SetStyle(Stylesheet.Current, name);
         }
 
         protected virtual void InternalSetStyle(Stylesheet stylesheet, string name)

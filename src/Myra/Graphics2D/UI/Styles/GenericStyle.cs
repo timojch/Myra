@@ -21,42 +21,99 @@ namespace Myra.Graphics2D.UI.Styles;
 
 public abstract class GenericStyle
 {
-    public abstract void AddSubWidgetStyle(string propertyName, IStyle style);
+    private const BindingFlags PropertyBindingFlags =
+        BindingFlags.Public |
+        BindingFlags.Instance |
+        BindingFlags.FlattenHierarchy;
 
-    public abstract Type GetPropertyType(string propertyName);
+    public abstract bool CanHaveContent { get; }
+
+    public abstract void AddContentStyle(Type contentType, IStyle style);
+
+    public abstract void AddSubWidgetStyle(string propertyOrContentTypeName, IStyle style);
+
+    public abstract Type GetPropertyType(string propertyOrContentTypeName);
 
     public abstract void AddAttribute(string propertyName, object value);
+
+    internal static Type FindWidgetType(string widgetName)
+    {
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(assembly => assembly.GetTypes()
+                .Where(t => t.Name.Equals(widgetName, StringComparison.OrdinalIgnoreCase))
+                .Where(t => t.IsAssignableTo(typeof(Widget))))
+            .FirstOrDefault();
+    }
+
+    internal static PropertyInfo FindProperty(Type targetType, string propertyName)
+    {
+        var propertyInfo = targetType.GetProperties(GenericStyle.PropertyBindingFlags)
+            .Where(p => p.Name == propertyName)
+            .Concat(targetType.GetProperties(GenericStyle.PropertyBindingFlags)
+                .Where(p => p.GetCustomAttribute<AlsoKnownAsAttribute>()?.Name == propertyName))
+            .FirstOrDefault();
+
+        return propertyInfo;
+    }
 }
 
 public class GenericStyle<TWidget>
     : GenericStyle, IStyle<TWidget>
     where TWidget : Widget
 {
+
     private Dictionary<PropertyInfo, object> ValuePairs = new();
 
     private Dictionary<PropertyInfo, IStyle> StylePairs = new();
 
-    private const BindingFlags PropertyBindingFlags =
-        BindingFlags.Public |
-        BindingFlags.Instance |
-        BindingFlags.FlattenHierarchy;
-    private const BindingFlags SubWidgetBindingFlags =
-        BindingFlags.Public | BindingFlags.NonPublic |
-        BindingFlags.Instance |
-        BindingFlags.FlattenHierarchy;
+    private Type ContentType;
+
+    private IStyle ContentStyle;
 
     public string TypeName { get => typeof(TWidget).Name; }
+
+    public override bool CanHaveContent { get => typeof(TWidget).IsAssignableTo(typeof(ContentControl)); }
+
+    public bool HasContent { get => this.ContentType is not null; }
 
     public GenericStyle()
     {
     }
 
-    public override void AddSubWidgetStyle(string propertyName, IStyle style)
+    public override void AddContentStyle(Type contentType, IStyle style)
     {
-        var propertyInfo = typeof(TWidget).GetProperty(propertyName, GenericStyle<TWidget>.SubWidgetBindingFlags);
+        if (this.HasContent)
+        {
+            throw new InvalidDataException($"A style can only contain one content element.");
+        }
+
+        this.ContentType = contentType;
+        this.ContentStyle = style;
+    }
+
+    public override void AddSubWidgetStyle(string propertyOrContentTypeName, IStyle style)
+    {
+        var propertyInfo = GenericStyle.FindProperty(typeof(TWidget), propertyOrContentTypeName);
         if (propertyInfo is null)
         {
-            throw new InvalidDataException($"No property named {propertyName} could be found in {this.TypeName}.");
+            // Maybe it's content.
+            if (this.CanHaveContent)
+            {
+                var contentType = GenericStyle.FindWidgetType(propertyOrContentTypeName);
+                if (contentType is not null)
+                {
+                    this.AddContentStyle(contentType, style);
+                    return;
+                }
+                else
+                {
+                    throw new InvalidDataException($"No property or content type named {propertyOrContentTypeName} could be found in {this.TypeName}.");
+                }
+            }
+            else
+            {
+                throw new InvalidDataException($"No property named {propertyOrContentTypeName} could be found in {this.TypeName}.");
+            }
         }
 
         this.StylePairs[propertyInfo] = style;
@@ -64,7 +121,7 @@ public class GenericStyle<TWidget>
 
     public override void AddAttribute(string propertyName, object value)
     {
-        var propertyInfo = typeof(TWidget).GetProperty(propertyName, GenericStyle<TWidget>.PropertyBindingFlags);
+        var propertyInfo = GenericStyle.FindProperty(typeof(TWidget), propertyName);
         if (propertyInfo is null)
         {
             throw new InvalidDataException($"No property named {propertyName} could be found in {this.TypeName}.");
@@ -95,12 +152,27 @@ public class GenericStyle<TWidget>
         }
     }
 
-    public override Type GetPropertyType(string propertyName)
+    public override Type GetPropertyType(string propertyOrContentTypeName)
     {
-        var propertyInfo = typeof(TWidget).GetProperty(propertyName, GenericStyle<TWidget>.PropertyBindingFlags);
+        var propertyInfo = GenericStyle.FindProperty(typeof(TWidget), propertyOrContentTypeName);
         if (propertyInfo is null)
         {
-            throw new InvalidDataException($"No property named {propertyName} could be found in {this.TypeName}.");
+            if (this.CanHaveContent)
+            {
+                var contentType = GenericStyle.FindWidgetType(propertyOrContentTypeName);
+                if (contentType is not null)
+                {
+                    return contentType;
+                }
+                else
+                {
+                    throw new InvalidDataException($"No property or content type named {propertyOrContentTypeName} could be found in {this.TypeName}.");
+                }
+            }
+            else
+            {
+                throw new InvalidDataException($"No property named {propertyOrContentTypeName} could be found in {this.TypeName}.");
+            }
         }
 
         return propertyInfo.PropertyType;
@@ -117,6 +189,20 @@ public class GenericStyle<TWidget>
         {
             var target = (Widget)pair.Key.GetValue(widget);
             pair.Value.ApplyTo(target);
+        }
+
+        if (this.HasContent)
+        {
+            if (widget is ContentControl contentWidget)
+            {
+                var content = (Widget)Activator.CreateInstance(this.ContentType);
+                contentWidget.Content = content;
+                this.ContentStyle.ApplyTo(content);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Cannot add content to widget of type {widget.GetType().Name}");
+            }
         }
     }
 

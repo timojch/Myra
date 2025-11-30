@@ -20,6 +20,7 @@ public class GenericStylesheet
     private static readonly Dictionary<string, string> LegacyClassNames = new Dictionary<string, string>();
     private static readonly Dictionary<string, string> LegacyPropertyNames = new Dictionary<string, string>();
     private static readonly Dictionary<string, string> LegacyWidgetNames = new Dictionary<string, string>();
+    private static readonly Dictionary<Type, Type> PropertyTypeSpecializations = new Dictionary<Type, Type>();
 
     private readonly Dictionary<Type, IDictionary<string, IStyle>> Styles = new();
 
@@ -73,11 +74,32 @@ public class GenericStylesheet
         LegacyPropertyNames["TextBlockStyles"] = "LabelStyles";
         LegacyPropertyNames["TextFieldStyles"] = "TextBoxStyles";
         LegacyPropertyNames["ScrollPaneStyles"] = "ScrollViewerStyles";
+
+        LegacyWidgetNames["CheckBox"] = "ImageTextButton";
+        LegacyWidgetNames["ComboBox"] = "ComboView";
     }
 
     public void CombineWith(GenericStylesheet other)
     {
 
+    }
+
+    public IStyle GetStyleFor(object target, string name = Stylesheet.DefaultStyleName)
+    {
+        var targetType = target.GetType();
+        IDictionary<string, IStyle> styles = null;
+        IStyle style = null;
+
+        while (targetType != typeof(object) && !this.Styles.TryGetValue(targetType, out styles))
+        {
+        }
+
+        if (styles is not null)
+        {
+            styles.TryGetValue(name, out style);
+        }
+
+        return style;
     }
 
     public static GenericStylesheet LoadFromSource(string stylesheetXml,
@@ -171,11 +193,12 @@ public class GenericStylesheet
         }
 
         var targetTypeName = name.Substring(0, name.Length - "Styles".Length);
-        targetType = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(assembly => assembly.GetTypes()
-                .Where(t => t.Name.Equals(targetTypeName, StringComparison.OrdinalIgnoreCase))
-                .Where(t => t.IsAssignableTo(typeof(Widget))))
-            .FirstOrDefault();
+        if (LegacyWidgetNames.TryGetValue(targetTypeName, out var modernName))
+        {
+            targetTypeName = modernName;
+        }
+
+        targetType = GenericStyle.FindWidgetType(targetTypeName);
 
         if (targetType is null)
         {
@@ -227,9 +250,33 @@ public class GenericStylesheet
             {
                 var styleablePropertyName = name.Substring(0, name.Length - "Style".Length);
                 var propertyType = target.GetPropertyType(styleablePropertyName);
-                var subStyleTarget = Activator.CreateInstance(propertyType) as GenericStyle;
-                GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
-                target.AddSubWidgetStyle(styleablePropertyName, (IStyle)subStyleTarget);
+                if (PropertyTypeSpecializations.TryGetValue(propertyType, out var specializedType))
+                {
+                    propertyType = specializedType;
+                }
+
+                if (propertyType.IsAssignableTo(typeof(Widget)))
+                {
+                    var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([propertyType]);
+                    var subStyleTarget = Activator.CreateInstance(propertyStyleType) as GenericStyle;
+                    GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
+                    target.AddSubWidgetStyle(styleablePropertyName, (IStyle)subStyleTarget);
+                }
+                else if (target.CanHaveContent)
+                {
+                    var contentWidgetType = GenericStyle.FindWidgetType(styleablePropertyName);
+                    if (contentWidgetType is not null)
+                    {
+                        var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([contentWidgetType]);
+                        var subStyleTarget = Activator.CreateInstance(propertyStyleType) as GenericStyle;
+                        GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
+                        target.AddContentStyle(contentWidgetType, (IStyle)subStyleTarget);
+                    }
+                    else
+                    {
+                        throw new Exception($"{name} is not a styleable property or valid content type");
+                    }
+                }
             }
         }
     }
