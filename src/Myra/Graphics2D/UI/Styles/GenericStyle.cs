@@ -14,6 +14,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -229,23 +230,53 @@ public class GenericStyle<TWidget>
         {
             if (widget is ContentControl contentWidget)
             {
-                Widget content;
-                try
+                if (contentWidget.Content != null)
                 {
-                    content = (Widget)Activator.CreateInstance(this.ContentType);
+                    ApplyToContentRecursively(this.ContentStyle, contentWidget.Content);
                 }
-                catch (MissingMethodException)
+                else
                 {
-                    var styledConstructor = this.ContentType.GetConstructor([typeof(string)]);
-                    content = (Widget)styledConstructor.Invoke([Stylesheet.DefaultStyleName]);
+                    Widget content;
+                    try
+                    {
+                        content = (Widget)Activator.CreateInstance(this.ContentType);
+                    }
+                    catch (MissingMethodException)
+                    {
+                        var styledConstructor = this.ContentType.GetConstructor([typeof(string)]);
+                        content = (Widget)styledConstructor.Invoke([Stylesheet.DefaultStyleName]);
+                    }
+                    contentWidget.Content = content;
+                    this.ContentStyle.ApplyTo(content);
                 }
-                contentWidget.Content = content;
-                this.ContentStyle.ApplyTo(content);
             }
             else
             {
                 throw new InvalidOperationException($"Cannot add content to widget of type {widget.GetType().Name}");
             }
+        }
+    }
+
+    private static void ApplyToContentRecursively(IStyle style, Widget widget, bool throwOnError = true)
+    {
+        if (style.CanApplyTo(widget))
+        {
+            style.ApplyTo(widget);
+        }
+        else if (widget is ContentControl singleContentWidget)
+        {
+            ApplyToContentRecursively(style, singleContentWidget.Content);
+        }
+        else if (widget is Container containerWidget)
+        {
+            foreach(var child in containerWidget.Widgets)
+            {
+                ApplyToContentRecursively(style, child, false);
+            }
+        }
+        else if (throwOnError)
+        {
+            throw new Exception($"No appropriate child could be found to style within {widget.GetType().Name}");
         }
     }
 
