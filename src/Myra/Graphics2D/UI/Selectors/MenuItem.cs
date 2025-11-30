@@ -257,13 +257,13 @@ namespace Myra.Graphics2D.UI
 			}
 			else
 			{
-				var originalColor = Menu.MenuStyle.LabelStyle.TextColor;
+				var originalColor = Menu.LabelColor;
 				if (Color != null)
 				{
 					originalColor = Color.Value;
 				}
 
-				var specialCharColor = Menu.MenuStyle.SpecialCharColor;
+				var specialCharColor = Menu.SpecialCharColor;
 				var underscoreIndex = Text.IndexOf('&');
 
 				var underscoreChar = Text[underscoreIndex + 1];

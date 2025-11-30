@@ -1,4 +1,6 @@
 using Myra.Graphics2D.UI.Styles;
+using System.ComponentModel;
+
 
 
 #if MONOGAME || FNA
@@ -15,7 +17,49 @@ namespace Myra.Graphics2D.UI.ColorPicker
 	{
 		public ColorPickerPanel ColorPickerPanel { get; }
 
-		public Color Color
+        [Category("Appearance")]
+		public IImage CheckerBoard
+        {
+			get => ColorPickerPanel.CheckerBoard;
+			set => ColorPickerPanel.CheckerBoard = value;
+        }
+
+        [Category("Appearance")]
+        public IBrush SelectionBackground
+        {
+            get => ColorPickerPanel.SelectionBackground;
+            set => ColorPickerPanel.SelectionBackground = value;
+        }
+
+        [Category("Appearance")]
+        public IBrush SelectionHoverBackground
+        {
+            get => ColorPickerPanel.SelectionHoverBackground;
+            set => ColorPickerPanel.SelectionHoverBackground = value;
+        }
+
+        [Category("Appearance")]
+        public IImage Wheel
+        {
+            get => ColorPickerPanel.Wheel;
+            set => ColorPickerPanel.Wheel = value;
+        }
+
+        [Category("Appearance")]
+        public IBrush Gradient
+        {
+            get => ColorPickerPanel.Gradient;
+            set => ColorPickerPanel.Gradient = value;
+        }
+
+        [Category("Appearance")]
+        public IImage VSPickerKnob
+        {
+            get => ColorPickerPanel.VSPickerKnob;
+            set => ColorPickerPanel.VSPickerKnob = value;
+        }
+
+        public Color Color
 		{
 			get
 			{

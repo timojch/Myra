@@ -7,6 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Myra.Utility;
 using System.Reflection;
+using FontStashSharp;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -218,7 +220,7 @@ namespace Myra.Graphics2D.UI
 
 				button.Click += _listView.ButtonOnClick;
 
-				button.ApplyButtonStyle(_listView.ListBoxStyle.ListItemStyle);
+				_listView.ListItemStyle.ApplyTo(button);
 
 				return button;
 			}
@@ -261,11 +263,13 @@ namespace Myra.Graphics2D.UI
 
 		internal ComboView _parentCombo;
 
-		[Browsable(false)]
-		[XmlIgnore]
-		public ListBoxStyle ListBoxStyle { get; set; }
+        [Category("Style")]
+        public GenericStyle<ListViewButton> ListItemStyle { get; set; }
 
-		[Category("Behavior")]
+        [Category("Style")]
+        public GenericStyle<SeparatorWidget> SeparatorStyle { get; set; }
+
+        [Category("Behavior")]
 		[DefaultValue(SelectionMode.Single)]
 		public SelectionMode SelectionMode { get; set; }
 
@@ -475,7 +479,7 @@ namespace Myra.Graphics2D.UI
 			var widget = SelectedItem;
 			var p = _box.ToLocal(widget.ToGlobal(widget.Bounds.Location));
 
-			var lineHeight = ListBoxStyle.ListItemStyle.LabelStyle.Font.LineHeight;
+			var lineHeight = ListItemStyle.GetSubStyle<Label>("Label").GetAttribute<SpriteFontBase>("Font").LineHeight;
 
 			var sp = _scrollViewer.ScrollPosition;
 
@@ -502,8 +506,6 @@ namespace Myra.Graphics2D.UI
 		public void ApplyListBoxStyle(ListBoxStyle style)
 		{
 			ApplyWidgetStyle(style);
-
-			ListBoxStyle = style;
 
 			foreach (var item in Widgets)
 			{
@@ -553,7 +555,8 @@ namespace Myra.Graphics2D.UI
 			base.CopyFrom(w);
 
 			var listView = (ListView)w;
-			ListBoxStyle = listView.ListBoxStyle;
+			ListItemStyle = listView.ListItemStyle;
+			SeparatorStyle = listView.SeparatorStyle;
 			SelectionMode = listView.SelectionMode;
 
 			foreach (var child in listView.Widgets)

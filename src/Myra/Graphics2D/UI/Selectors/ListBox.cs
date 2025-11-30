@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Xml.Serialization;
 using Myra.Graphics2D.UI.Styles;
+using FontStashSharp;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -22,12 +24,13 @@ namespace Myra.Graphics2D.UI
 		private readonly VerticalStackPanel _box;
 		internal ComboBox _parentComboBox;
 
-		[Browsable(false)]
-		[XmlIgnore]
-		public ListBoxStyle ListBoxStyle
-		{
-			get; set;
-		}
+        [Browsable(false)]
+        [XmlIgnore]
+        public GenericStyle<ImageTextButton> ListItemStyle { get; set; }
+
+        [Browsable(false)]
+        [XmlIgnore]
+        public GenericStyle<SeparatorWidget> SeparatorStyle { get; set; }
 
 		[Category("Behavior")]
 		[DefaultValue(SelectionMode.Single)]
@@ -64,7 +67,7 @@ namespace Myra.Graphics2D.UI
 
 			var button = (ImageTextButton)item.Widget;
 			button.Text = item.Text;
-			button.TextColor = item.Color ?? ListBoxStyle.ListItemStyle.LabelStyle.TextColor;
+			ListItemStyle.ApplyTo(button);
 
 			InvalidateMeasure();
 		}
@@ -77,10 +80,9 @@ namespace Myra.Graphics2D.UI
 
 			if (!item.IsSeparator)
 			{
-				widget = new ListButton(ListBoxStyle.ListItemStyle, this)
+				widget = new ListButton(ListItemStyle, this)
 				{
 					Text = item.Text,
-					TextColor = item.Color ?? ListBoxStyle.ListItemStyle.LabelStyle.TextColor,
 					Tag = item,
 					HorizontalAlignment = HorizontalAlignment.Stretch,
 					VerticalAlignment = VerticalAlignment.Stretch,
@@ -93,7 +95,7 @@ namespace Myra.Graphics2D.UI
 			else
 			{
 				var separator = new HorizontalSeparator(null);
-				separator.ApplySeparatorStyle(ListBoxStyle.SeparatorStyle);
+				this.SeparatorStyle.ApplyTo(separator);
 				widget = separator;
 			}
 
@@ -218,7 +220,7 @@ namespace Myra.Graphics2D.UI
 			var widget = SelectedItem.Widget;
 			var p = _box.ToLocal(widget.ToGlobal(widget.Bounds.Location));
 
-			var lineHeight = ListBoxStyle.ListItemStyle.LabelStyle.Font.LineHeight;
+			var lineHeight = ListItemStyle.GetSubStyle<Label>("Label").GetAttribute<SpriteFontBase>(nameof(Label.Font)).LineHeight;
 
 			var sp = InternalChild.ScrollPosition;
 
@@ -246,7 +248,7 @@ namespace Myra.Graphics2D.UI
 		{
 			ApplyWidgetStyle(style);
 
-			ListBoxStyle = style;
+			// ListBoxStyle = style;
 
 			foreach (var item in Items)
 			{

@@ -73,6 +73,10 @@ namespace Myra.Graphics2D.UI
 		[XmlIgnore]
 		public ListBox ListBox => _listBox;
 
+		[Browsable(false)]
+		[XmlIgnore]
+		public Label Label => this.InternalChild.Label;
+
 		public override ObservableCollection<ListItem> Items => _listBox.Items;
 
 		public override ListItem SelectedItem { get => _listBox.SelectedItem; set => _listBox.SelectedItem = value; }
@@ -205,7 +209,7 @@ namespace Myra.Graphics2D.UI
 			if (item != null)
 			{
 				InternalChild.Text = item.Text;
-				InternalChild.TextColor = item.Color ?? _listBox.ListBoxStyle.ListItemStyle.LabelStyle.TextColor;
+				_listBox.ListItemStyle.ApplyTo(InternalChild);
 				((ImageTextButton)item.Widget).IsPressed = true;
 			}
 			else

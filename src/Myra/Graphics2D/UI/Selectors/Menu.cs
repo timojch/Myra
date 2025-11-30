@@ -34,13 +34,9 @@ namespace Myra.Graphics2D.UI
 		[XmlIgnore]
 		public abstract Orientation Orientation { get; }
 
-		[Browsable(false)]
-		[XmlIgnore]
-		public MenuStyle MenuStyle { get; private set; }
-
-		[Browsable(false)]
-		[XmlIgnore]
-		internal MenuItem OpenMenuItem { get; private set; }
+        [Browsable(false)]
+        [XmlIgnore]
+        internal MenuItem OpenMenuItem { get; private set; }
 
 		[Browsable(false)]
 		[XmlIgnore]
@@ -56,42 +52,64 @@ namespace Myra.Graphics2D.UI
 		[Content]
 		public ObservableCollection<IMenuItem> Items { get; } = new ObservableCollection<IMenuItem>();
 
-		[Category("Appearance")]
-		public SpriteFontBase LabelFont
-		{
-			get
-			{
-				return MenuStyle.LabelStyle.Font;
-			}
+        [Browsable(false)]
+        public bool IsSubMenu { get => this.ParentMenu is not null; }
 
-			set
-			{
-				MenuStyle.LabelStyle.Font = value;
-			}
-		}
+        [Browsable(false)]
+        public Menu ParentMenu { get; set; }
 
-		[Category("Appearance")]
-		[StylePropertyPath("/LabelStyle/TextColor")]
-		public Color LabelColor
-		{
-			get
-			{
-				return MenuStyle.LabelStyle.TextColor;
-			}
+        [Category("Style")]
+        public GenericStyle<Label> LabelStyle { get; set; }
 
-			set
-			{
-				MenuStyle.LabelStyle.TextColor = value;
-			}
-		}
+        [Category("Style")]
+        public GenericStyle<Label> ShortcutStyle { get; set; }
 
-		[Category("Appearance")]
-		public IBrush SelectionHoverBackground
-		{
-			get
-			{
-				return InternalChild.SelectionHoverBackground;
-			}
+        [Category("Style")]
+        public GenericStyle<Image> ImageStyle { get; set; }
+
+        [Category("Style")]
+        public GenericStyle<SeparatorWidget> SeparatorStyle { get; set; }
+
+        [Category("Appearance")]
+        public SpriteFontBase LabelFont
+        {
+            get
+            {
+                return LabelStyle.GetAttribute<SpriteFontBase>("Font");
+            }
+
+            set
+            {
+                LabelStyle.AddAttribute("Font", value);
+            }
+        }
+
+        [Category("Appearance")]
+        [StylePropertyPath("/LabelStyle/TextColor")]
+        public Color LabelColor
+        {
+            get
+            {
+                return LabelStyle.GetAttribute<Color>("TextColor");
+            }
+
+            set
+            {
+                LabelStyle.AddAttribute("TextColor", value);
+            }
+        }
+
+        [Category("Appearance")]
+        [StylePropertyPath("/LabelStyle/SpecialCharColor")]
+        public Color? SpecialCharColor { get; set; }
+
+        [Category("Appearance")]
+        public IBrush SelectionHoverBackground
+        {
+            get
+            {
+                return InternalChild.SelectionHoverBackground;
+            }
 
 			set
 			{
@@ -428,15 +446,15 @@ namespace Myra.Graphics2D.UI
 				InternalChild.Widgets.Remove(menuItem.ImageWidget);
 			}
 
-			menuItem.Shortcut.Text = menuItem.ShortcutText;
-			if (menuItem.ShortcutColor != null)
-			{
-				menuItem.Shortcut.TextColor = menuItem.ShortcutColor.Value;
-			}
-			else if (MenuStyle != null && MenuStyle.ShortcutStyle != null)
-			{
-				menuItem.Shortcut.TextColor = MenuStyle.ShortcutStyle.TextColor;
-			}
+            menuItem.Shortcut.Text = menuItem.ShortcutText;
+            if (menuItem.ShortcutColor != null)
+            {
+                menuItem.Shortcut.TextColor = menuItem.ShortcutColor.Value;
+            }
+            else if (ShortcutStyle != null)
+            {
+                ShortcutStyle.ApplyTo(menuItem.Shortcut);
+            }
 
 			if (!string.IsNullOrEmpty(menuItem.ShortcutText) && !InternalChild.Widgets.Contains(menuItem.Shortcut))
 			{
@@ -447,15 +465,15 @@ namespace Myra.Graphics2D.UI
 				InternalChild.Widgets.Remove(menuItem.Shortcut);
 			}
 
-			menuItem.Label.Text = menuItem.DisplayText;
-			if (menuItem.Color != null)
-			{
-				menuItem.Label.TextColor = menuItem.Color.Value;
-			}
-			else if (MenuStyle != null && MenuStyle.LabelStyle != null)
-			{
-				menuItem.Label.TextColor = MenuStyle.LabelStyle.TextColor;
-			}
+            menuItem.Label.Text = menuItem.DisplayText;
+            if (menuItem.Color != null)
+            {
+                menuItem.Label.TextColor = menuItem.Color.Value;
+            }
+            else if (LabelStyle != null)
+            {
+                LabelStyle.ApplyTo(menuItem.Label);
+            }
 
 			menuItem.Label.HorizontalAlignment = LabelHorizontalAlignment;
 
@@ -476,16 +494,16 @@ namespace Myra.Graphics2D.UI
 			{
 				menuItem.Changed += MenuItemOnChanged;
 
-				if (Orientation == Orientation.Horizontal)
-				{
-					menuItem.Label.ApplyLabelStyle(MenuStyle.LabelStyle);
-				}
-				else
-				{
-					menuItem.ImageWidget.ApplyPressableImageStyle(MenuStyle.ImageStyle);
-					menuItem.Label.ApplyLabelStyle(MenuStyle.LabelStyle);
-					menuItem.Shortcut.ApplyLabelStyle(MenuStyle.ShortcutStyle);
-				}
+                if (Orientation == Orientation.Horizontal)
+                {
+                    LabelStyle.ApplyTo(menuItem.Label);
+                }
+                else
+                {
+                    ImageStyle.ApplyTo(menuItem.ImageWidget);
+                    LabelStyle.ApplyTo(menuItem.Label);
+                    ShortcutStyle.ApplyTo(menuItem.Shortcut);
+                }
 
 				// Add only label, as other widgets(image and shortcut) would be optionally added by SetMenuItem
 				InternalChild.Widgets.Add(menuItem.Label);
@@ -503,7 +521,7 @@ namespace Myra.Graphics2D.UI
 					separator = new HorizontalSeparator(null);
 				}
 
-				separator.ApplySeparatorStyle(MenuStyle.SeparatorStyle);
+				separator.SetStyle(SeparatorStyle);
 
 				InternalChild.Widgets.Add(separator);
 
@@ -839,10 +857,18 @@ namespace Myra.Graphics2D.UI
 
 			ApplyWidgetStyle(clone);
 
-			MenuStyle = clone;
+            InternalChild.SelectionHoverBackground = style.SelectionHoverBackground;
+            InternalChild.SelectionBackground = style.SelectionBackground;
+        }
 
-			InternalChild.SelectionHoverBackground = style.SelectionHoverBackground;
-			InternalChild.SelectionBackground = style.SelectionBackground;
-		}
-	}
+        private void UpdatePosition()
+        {
+            if (_offsetFromParentMenu.HasValue && ParentMenu is not null)
+            {
+                var targetPosition = ParentMenu.ToGlobal(_offsetFromParentMenu.Value);
+                this.Left = targetPosition.X;
+                this.Top = targetPosition.Y;
+            }
+        }
+    }
 }
