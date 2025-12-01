@@ -80,9 +80,7 @@
 	</ListBoxStyles>
 	<ListViewStyles>
 		<ListViewStyle Background="button">
-			<ListItemStyle OverBackground="button-over" Padding="5, 0" PressedBackground="list-selection">
-				<LabelStyle Font="default-font" TextColor="white" DisabledTextColor="gray" />
-			</ListItemStyle>
+			<ListItemStyle OverBackground="button-over" Padding="5, 0" PressedBackground="list-selection" />
 			<SeparatorStyle Padding="0, 2" Image="separator-menu" Thickness="4" />
 		</ListViewStyle>
 	</ListViewStyles>
