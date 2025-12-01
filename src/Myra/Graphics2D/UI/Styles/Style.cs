@@ -21,7 +21,7 @@ using System.Xml.Linq;
 
 namespace Myra.Graphics2D.UI.Styles;
 
-public abstract class GenericStyle
+public abstract class Style
 {
     private const BindingFlags PropertyBindingFlags =
         BindingFlags.Public |
@@ -60,9 +60,9 @@ public abstract class GenericStyle
 
     internal static PropertyInfo FindProperty(Type targetType, string propertyName)
     {
-        var propertyInfo = targetType.GetProperties(GenericStyle.PropertyBindingFlags)
+        var propertyInfo = targetType.GetProperties(Style.PropertyBindingFlags)
             .Where(p => p.Name == propertyName)
-            .Concat(targetType.GetProperties(GenericStyle.PropertyBindingFlags)
+            .Concat(targetType.GetProperties(Style.PropertyBindingFlags)
                 .Where(p => p.GetCustomAttribute<AlsoKnownAsAttribute>()?.Name == propertyName))
             .FirstOrDefault();
 
@@ -71,7 +71,7 @@ public abstract class GenericStyle
 }
 
 public class GenericStyle<TWidget>
-    : GenericStyle, IStyle<TWidget>
+    : Style, IStyle<TWidget>
     where TWidget : Widget
 {
 
@@ -124,13 +124,13 @@ public class GenericStyle<TWidget>
 
     public override void AddSubWidgetStyle(string propertyOrContentTypeName, IStyle style)
     {
-        var propertyInfo = GenericStyle.FindProperty(typeof(TWidget), propertyOrContentTypeName);
+        var propertyInfo = Style.FindProperty(typeof(TWidget), propertyOrContentTypeName);
         if (propertyInfo is null)
         {
             // Maybe it's content.
             if (this.CanHaveContent)
             {
-                var contentType = GenericStyle.FindWidgetType(propertyOrContentTypeName);
+                var contentType = Style.FindWidgetType(propertyOrContentTypeName);
                 if (contentType is not null)
                 {
                     this.AddContentStyle(contentType, style);
@@ -152,7 +152,7 @@ public class GenericStyle<TWidget>
 
     public override void AddAttribute(string propertyName, object value)
     {
-        var propertyInfo = GenericStyle.FindProperty(typeof(TWidget), propertyName);
+        var propertyInfo = Style.FindProperty(typeof(TWidget), propertyName);
         if (propertyInfo is null)
         {
             throw new InvalidDataException($"No property named {propertyName} could be found in {this.TypeName}.");
@@ -185,12 +185,12 @@ public class GenericStyle<TWidget>
 
     public override Type GetPropertyType(string propertyOrContentTypeName)
     {
-        var propertyInfo = GenericStyle.FindProperty(typeof(TWidget), propertyOrContentTypeName);
+        var propertyInfo = Style.FindProperty(typeof(TWidget), propertyOrContentTypeName);
         if (propertyInfo is null)
         {
             if (this.CanHaveContent)
             {
-                var contentType = GenericStyle.FindWidgetType(propertyOrContentTypeName);
+                var contentType = Style.FindWidgetType(propertyOrContentTypeName);
                 if (contentType is not null)
                 {
                     return contentType;
@@ -211,7 +211,7 @@ public class GenericStyle<TWidget>
 
     public override bool TryGetProperty(string propertyName, out PropertyInfo value)
     {
-        value = GenericStyle.FindProperty(typeof(TWidget), propertyName);
+        value = Style.FindProperty(typeof(TWidget), propertyName);
         return value is not null;
     }
 
@@ -311,7 +311,7 @@ public class GenericStyle<TWidget>
     {
         var category = propertyInfo.GetCustomAttribute<CategoryAttribute>()?.Category;
 
-        if (propertyInfo.PropertyType.IsAssignableTo(typeof(GenericStyle)))
+        if (propertyInfo.PropertyType.IsAssignableTo(typeof(Style)))
         {
             return true;
         }

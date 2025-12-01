@@ -264,7 +264,7 @@ public class Stylesheet
         {
             Assemblies = new Dictionary<Assembly, string[]>()
                 {
-                    { typeof(GenericStyle).Assembly, new string[] { typeof(GenericStyle).Namespace } }
+                    { typeof(Style).Assembly, new string[] { typeof(Style).Namespace } }
                 },
             ResourceGetter = resourceGetter,
             NodesToIgnore = new HashSet<string>(new[] { "Designer", "Colors", "Fonts" }),
@@ -301,7 +301,7 @@ public class Stylesheet
             targetTypeName = modernName;
         }
 
-        targetType = GenericStyle.FindWidgetType(targetTypeName);
+        targetType = Style.FindWidgetType(targetTypeName);
 
         if (targetType is null)
         {
@@ -315,7 +315,7 @@ public class Stylesheet
         foreach (var styleElement in stylesElement.Elements())
         {
             var id = styleElement.Attribute(BaseContext.IdName)?.Value;
-            var styleTarget = Activator.CreateInstance(styleType) as GenericStyle;
+            var styleTarget = Activator.CreateInstance(styleType) as Style;
             styleTarget.Name = id ?? Stylesheet.DefaultStyleName;
             var parentId = $"{stylesElement.Name}/id";
             Stylesheet.PopulateStyleFromXml(styleTarget, styleElement, context, parentId);
@@ -326,7 +326,7 @@ public class Stylesheet
         return ret;
     }
 
-    private static void PopulateStyleFromXml(GenericStyle target,
+    private static void PopulateStyleFromXml(Style target,
         XElement styleElement,
         LoadContext context,
         string currentId)
@@ -362,7 +362,7 @@ public class Stylesheet
                         styleType = typeof(GenericStyle<>).MakeGenericType(styleType.GenericTypeArguments);
                     }
 
-                    var subStyleTarget = (GenericStyle)Activator.CreateInstance(styleType);
+                    var subStyleTarget = (Style)Activator.CreateInstance(styleType);
                     var childId = $"{currentId}/{name}";
                     subStyleTarget.Name = childId;
                     Stylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context, childId);
@@ -388,7 +388,7 @@ public class Stylesheet
                     if (propertyType.IsAssignableTo(typeof(Widget)))
                     {
                         var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([propertyType]);
-                        var subStyleTarget = (GenericStyle)Activator.CreateInstance(propertyStyleType);
+                        var subStyleTarget = (Style)Activator.CreateInstance(propertyStyleType);
                         var childId = $"{currentId}/{name}";
                         subStyleTarget.Name = childId;
                         Stylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context, childId);
@@ -397,13 +397,13 @@ public class Stylesheet
                     }
                     else if (target.CanHaveContent)
                     {
-                        var contentWidgetType = GenericStyle.FindWidgetType(styleablePropertyName);
+                        var contentWidgetType = Style.FindWidgetType(styleablePropertyName);
                         error = $"{name} is not a styleable property of {targetType.Name} or valid content type";
 
                         if (contentWidgetType is not null)
                         {
                             var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([contentWidgetType]);
-                            var subStyleTarget = Activator.CreateInstance(propertyStyleType) as GenericStyle;
+                            var subStyleTarget = Activator.CreateInstance(propertyStyleType) as Style;
                             var childId = $"{currentId}/{name}";
                             subStyleTarget.Name = childId;
                             Stylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context, childId);
