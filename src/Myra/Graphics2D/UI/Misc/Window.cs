@@ -226,26 +226,6 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
-		public void ApplyWindowStyle(WindowStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			if (style.TitleStyle != null)
-			{
-				_titleLabel.ApplyLabelStyle(style.TitleStyle);
-			}
-
-			if (style.CloseButtonStyle != null)
-			{
-				CloseButton.ApplyButtonStyle(style.CloseButtonStyle);
-				if (style.CloseButtonStyle.ImageStyle != null)
-				{
-					var image = (Image)CloseButton.Content;
-					image.ApplyPressableImageStyle(style.CloseButtonStyle.ImageStyle);
-				}
-			}
-		}
-
 		private void InternalShow(Desktop desktop, Point? position = null)
 		{
 			Visible = true;
@@ -315,11 +295,6 @@ namespace Myra.Graphics2D.UI
 			}
 
 			Closed.Invoke(this);
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyWindowStyle(stylesheet.WindowStyles.SafelyGetStyle(name));
 		}
 
 		protected internal override void CopyFrom(Widget w)

@@ -7,7 +7,7 @@ namespace Myra
 	public static class DefaultAssets
 	{
 		private static AssetManager _assetManager;
-		private static Stylesheet _defaultStylesheet, _defaultStylesheet2x;
+		private static ClassicStylesheet _defaultStylesheet, _defaultStylesheet2x;
 
 		private static AssetManager AssetManager
 		{
@@ -23,9 +23,9 @@ namespace Myra
 		}
 
 		[Obsolete("Use DefaultStylesheet")]
-		public static Stylesheet UIStylesheet => DefaultStylesheet;
+		public static ClassicStylesheet UIStylesheet => DefaultClassicStylesheet;
 
-        public static Stylesheet DefaultStylesheet
+        public static ClassicStylesheet DefaultClassicStylesheet
         {
             get
             {
@@ -39,7 +39,7 @@ namespace Myra
             }
         }
 
-        public static GenericStylesheet DefaultGenericStylesheet
+        public static Stylesheet DefaultStylesheet
         {
             get
             {
@@ -55,7 +55,7 @@ namespace Myra
 			private set;
         }
 
-        public static Stylesheet DefaultStylesheet2X
+        public static ClassicStylesheet DefaultClassicStylesheet2X
 		{
 			get
 			{

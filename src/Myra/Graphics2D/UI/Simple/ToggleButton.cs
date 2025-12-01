@@ -78,10 +78,5 @@ namespace Myra.Graphics2D.UI
 				SetValueByUser(!IsPressed);
 			}
 		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyButtonStyle(stylesheet.ButtonStyles.SafelyGetStyle(name));
-		}
 	}
 }

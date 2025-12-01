@@ -73,6 +73,9 @@ namespace Myra.Graphics2D.UI
 		[Category("Appearance")]
 		public IBrush SelectionHoverBackground { get; set; }
 
+		[Category("Style")]
+		public IStyle<TreeViewNode> NodeStyle { get; set; }
+
 		public event EventHandler SelectionChanged;
 
 		public TreeView(string styleName = Stylesheet.DefaultStyleName)
@@ -247,7 +250,7 @@ namespace Myra.Graphics2D.UI
 
 		public TreeViewNode AddSubNode(Widget content)
 		{
-			var result = new TreeViewNode(this, StyleName)
+			var result = new TreeViewNode(this, NodeStyle)
 			{
 				Content = content
 			};
@@ -259,7 +262,20 @@ namespace Myra.Graphics2D.UI
 			return result;
 		}
 
-		public TreeViewNode GetSubNode(int index) => (TreeViewNode)Children[index];
+        public TreeViewNode InsertSubNode(int index, Widget content)
+        {
+            var result = new TreeViewNode(this, NodeStyle)
+            {
+                Content = content
+            };
+            Grid.SetRow(result, Children.Count);
+
+            Children.Insert(index, result);
+
+            return result;
+        }
+
+        public TreeViewNode GetSubNode(int index) => (TreeViewNode)Children[index];
 
 		public void RemoveAllSubNodes()
 		{
@@ -416,20 +432,6 @@ namespace Myra.Graphics2D.UI
 				var p = path.Pop();
 				p.IsExpanded = true;
 			}
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			base.InternalSetStyle(stylesheet, name);
-			ApplyTreeViewStyle(stylesheet.TreeStyles.SafelyGetStyle(name));
-		}
-
-		public void ApplyTreeViewStyle(TreeStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			SelectionBackground = style.SelectionBackground;
-			SelectionHoverBackground = style.SelectionHoverBackground;
 		}
 
 		public TreeViewNode FindNode(Func<TreeViewNode, bool> predicate)

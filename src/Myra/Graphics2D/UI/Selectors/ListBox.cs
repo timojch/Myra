@@ -3,6 +3,10 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using Myra.Graphics2D.UI.Styles;
 using FontStashSharp;
+using System.Runtime.InteropServices.JavaScript;
+using System.Linq;
+
+
 
 
 #if MONOGAME || FNA
@@ -24,15 +28,41 @@ namespace Myra.Graphics2D.UI
 		private readonly VerticalStackPanel _box;
 		internal ComboBox _parentComboBox;
 
+        [Category("Style")]
+		[Browsable(false)]
+		[XmlIgnore]
+        public GenericStyle<ImageTextButton> ListItemStyle
+		{ 
+			get; 
+			set
+			{
+				field = value;
+
+                foreach (var item in Items.Select(i => i.Widget).OfType<ImageTextButton>())
+                {
+                    value.ApplyTo(item);
+                }
+            }
+		}
+
+        [Category("Style")]
         [Browsable(false)]
         [XmlIgnore]
-        public GenericStyle<ImageTextButton> ListItemStyle { get; set; }
+        public IStyle<SeparatorWidget> SeparatorStyle
+        {
+            get;
+            set
+            {
+                field = value;
 
-        [Browsable(false)]
-        [XmlIgnore]
-        public GenericStyle<SeparatorWidget> SeparatorStyle { get; set; }
+                foreach (var item in Items.Select(i => i.Widget).OfType<SeparatorWidget>())
+                {
+                    value.ApplyTo(item);
+                }
+            }
+        }
 
-		[Category("Behavior")]
+        [Category("Behavior")]
 		[DefaultValue(SelectionMode.Single)]
 		public override SelectionMode SelectionMode
 		{
@@ -242,37 +272,6 @@ namespace Myra.Graphics2D.UI
 			base.OnMouseWheel(delta);
 
 			InternalChild.OnMouseWheel(delta);
-		}
-
-		public void ApplyListBoxStyle(ListBoxStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			// ListBoxStyle = style;
-
-			foreach (var item in Items)
-			{
-				var asButton = item.Widget as ImageTextButton;
-				if (asButton != null)
-				{
-					asButton.ApplyImageTextButtonStyle(style.ListItemStyle);
-					if (item.Color != null)
-					{
-						asButton.TextColor = item.Color.Value;
-					}
-				}
-
-				var asSeparator = item.Widget as SeparatorWidget;
-				if (asSeparator != null)
-				{
-					asSeparator.ApplySeparatorStyle(style.SeparatorStyle);
-				}
-			}
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyListBoxStyle(stylesheet.ListBoxStyles.SafelyGetStyle(name));
 		}
 	}
 }

@@ -107,7 +107,7 @@ namespace Myra.Graphics2D.UI
 
 		public Project()
 		{
-			Stylesheet = Stylesheet.Current;
+			this.Stylesheet = Stylesheet.Current;
 		}
 
 		public static bool IsProportionName(string s)
@@ -234,7 +234,7 @@ namespace Myra.Graphics2D.UI
 			var stylesheetPathAttr = xDoc.Root.Attribute("StylesheetPath");
 			if (stylesheetPathAttr != null)
 			{
-				stylesheet = assetManager.LoadClassicStylesheet(stylesheetPathAttr.Value);
+				stylesheet = assetManager.LoadGenericStylesheet(stylesheetPathAttr.Value);
 			}
 
 			var result = new Project();

@@ -100,6 +100,16 @@
 			</CloseButtonStyle>
 		</TabControlStyle>
 	</TabControlStyles>
+	<TreeViewStyles>
+		<TreeViewStyle SelectionBackground="tree-selection" SelectionHoverBackground="button-over">
+			<NodeStyle>
+				<MarkStyle>
+					<ImageStyle Image="tree-plus" PressedImage="tree-minus" />
+				</MarkStyle>
+				<LabelStyle Font="default-font" TextColor="white" DisabledTextColor="gray" />
+			</NodeStyle>
+		</TreeViewStyle>
+	</TreeViewStyles>
 	<TreeStyles>
 		<TreeStyle SelectionBackground="tree-selection" SelectionHoverBackground="button-over">
 			<MarkStyle>

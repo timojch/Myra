@@ -438,31 +438,6 @@ namespace Myra.Graphics2D.UI
 			return true;
 		}
 
-		public void ApplySpinButtonStyle(SpinButtonStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			if (style.TextBoxStyle != null)
-			{
-				_textField.ApplyTextBoxStyle(style.TextBoxStyle);
-			}
-
-			if (style.UpButtonStyle != null)
-			{
-				_upButton.ApplyImageButtonStyle(style.UpButtonStyle);
-			}
-
-			if (style.DownButtonStyle != null)
-			{
-				_downButton.ApplyImageButtonStyle(style.DownButtonStyle);
-			}
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplySpinButtonStyle(stylesheet.SpinButtonStyles.SafelyGetStyle(name));
-		}
-
 		private void UpButtonOnUp(object sender, EventArgs eventArgs)
 		{
 			float value;

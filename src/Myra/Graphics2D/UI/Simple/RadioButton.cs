@@ -98,10 +98,5 @@ namespace Myra.Graphics2D.UI
 				asRadio.IsPressed = false;
 			}
 		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyCheckButtonStyle(stylesheet.RadioButtonStyles.SafelyGetStyle(name));
-		}
 	}
 }

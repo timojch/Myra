@@ -34,13 +34,5 @@ namespace Myra.Graphics2D.UI
 		{
 			SetStyle(styleName);
 		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			base.InternalSetStyle(stylesheet, name);
-
-			var style = stylesheet.CheckBoxStyles.SafelyGetStyle(name);
-			ApplyCheckButtonStyle(style);
-		}
 	}
 }

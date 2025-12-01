@@ -67,10 +67,5 @@ namespace Myra.Graphics2D.UI
 					break;
 			}
 		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyMenuStyle(stylesheet.VerticalMenuStyles.SafelyGetStyle(name));
-		}
 	}
 }

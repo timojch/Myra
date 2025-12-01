@@ -255,10 +255,5 @@ namespace Myra.Graphics2D.UI
 		{
 			IsPressed = false;
 		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyButtonStyle(stylesheet.ButtonStyles.SafelyGetStyle(name));
-		}
 	}
 }

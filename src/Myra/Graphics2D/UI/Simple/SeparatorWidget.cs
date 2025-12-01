@@ -27,14 +27,6 @@ namespace Myra.Graphics2D.UI
 			SetStyle(styleName);
 		}
 
-		public void ApplySeparatorStyle(SeparatorStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			Renderable = style.Image;
-			Thickness = style.Thickness;
-		}
-
 		protected override Point InternalMeasure(Point availableSize)
 		{
 			var result = Mathematics.PointZero;

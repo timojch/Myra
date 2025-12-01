@@ -521,7 +521,7 @@ namespace Myra.Graphics2D.UI
 					separator = new HorizontalSeparator(null);
 				}
 
-				separator.SetStyle(SeparatorStyle);
+				SeparatorStyle.ApplyTo(separator);
 
 				InternalChild.Widgets.Add(separator);
 
@@ -859,16 +859,6 @@ namespace Myra.Graphics2D.UI
 
             InternalChild.SelectionHoverBackground = style.SelectionHoverBackground;
             InternalChild.SelectionBackground = style.SelectionBackground;
-        }
-
-        private void UpdatePosition()
-        {
-            if (_offsetFromParentMenu.HasValue && ParentMenu is not null)
-            {
-                var targetPosition = ParentMenu.ToGlobal(_offsetFromParentMenu.Value);
-                this.Left = targetPosition.X;
-                this.Top = targetPosition.Y;
-            }
         }
     }
 }

@@ -551,39 +551,5 @@ namespace Myra.Graphics2D.UI.File
 
 			return false;
 		}
-
-		public void ApplyFileDialogStyle(FileDialogStyle style)
-		{
-			ApplyWindowStyle(style);
-
-			_buttonBack.ApplyImageButtonStyle(style.BackButtonStyle);
-			_buttonForward.ApplyImageButtonStyle(style.ForwardButtonStyle);
-			_buttonParent.ApplyImageButtonStyle(style.ParentButtonStyle);
-
-			_gridFiles.SelectionBackground = style.SelectionBackground;
-			_gridFiles.SelectionHoverBackground = style.SelectionHoverBackground;
-
-			IconDrive = style.IconDrive;
-			IconFolder = style.IconFolder;
-
-			foreach (var widget in _listPlaces.Widgets)
-			{
-				var container = widget as Container;
-				if (container == null)
-				{
-					continue;
-				}
-
-				var pathInfo = (PathInfo)container.Tag;
-				var image = (Image)container.Widgets[0];
-
-				image.Renderable = pathInfo.IsDrive ? IconDrive : IconFolder;
-			}
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyFileDialogStyle(stylesheet.FileDialogStyles.SafelyGetStyle(name));
-		}
 	}
 }

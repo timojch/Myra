@@ -172,22 +172,6 @@ namespace Myra.Graphics2D.UI
 			return Orientation == Orientation.Horizontal ? pos.X - bounds.Width / 2 : pos.Y - bounds.Height / 2;
 		}
 
-		public void ApplySliderStyle(SliderStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			if (style.KnobStyle != null)
-			{
-				ImageButton.ApplyButtonStyle(style.KnobStyle);
-
-				if (style.KnobStyle.ImageStyle != null)
-				{
-					var image = (Image)ImageButton.Content;
-					image.ApplyPressableImageStyle(style.KnobStyle.ImageStyle);
-				}
-			}
-		}
-
 		private void SyncHintWithValue()
 		{
 			Hint = (int)(MaxHint * ((_value - Minimum) / (Maximum - Minimum)));
