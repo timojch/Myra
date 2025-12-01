@@ -176,18 +176,6 @@ namespace Myra.Graphics2D.UI
 			_button.Content = SelectedItem.Clone();
 		}
 
-		public void ApplyComboViewStyle(ComboBoxStyle style)
-		{
-			if (style.ListBoxStyle != null)
-			{
-				var dropdownMaximumHeight = DropdownMaximumHeight;
-				_listView.ApplyListBoxStyle(style.ListBoxStyle);
-				DropdownMaximumHeight = dropdownMaximumHeight;
-			}
-
-			_button.ApplyButtonStyle(style);
-		}
-
 		protected override Point InternalMeasure(Point availableSize)
 		{
 			// Measure by the longest string
@@ -229,11 +217,6 @@ namespace Myra.Graphics2D.UI
 			base.OnKeyDown(k);
 
 			_listView.OnKeyDown(k);
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyComboViewStyle(stylesheet.ComboBoxStyles.SafelyGetStyle(name));
 		}
 
 		protected internal override void CopyFrom(Widget w)

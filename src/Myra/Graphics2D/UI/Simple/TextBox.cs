@@ -1586,11 +1586,6 @@ namespace Myra.Graphics2D.UI
             Font = style.Font;
         }
 
-        protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-        {
-            ApplyTextBoxStyle(stylesheet.TextBoxStyles.SafelyGetStyle(name));
-        }
-
         public float GetWidth(int index)
         {
             var glyph = _richTextLayout.GetGlyphInfoByIndex(index);

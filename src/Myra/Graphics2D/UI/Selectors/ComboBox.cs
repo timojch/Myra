@@ -217,19 +217,7 @@ namespace Myra.Graphics2D.UI
 				InternalChild.Text = string.Empty;
 			}
 		}
-
-		public void ApplyComboBoxStyle(ComboBoxStyle style)
-		{
-			if (style.ListBoxStyle != null)
-			{
-				var dropdownMaximumHeight = DropdownMaximumHeight;
-				_listBox.ApplyListBoxStyle(style.ListBoxStyle);
-				DropdownMaximumHeight = dropdownMaximumHeight;
-			}
-
-			InternalChild.ApplyImageTextButtonStyle(style);
-		}
-
+		
 		protected override Point InternalMeasure(Point availableSize)
 		{
 			// Measure by the longest string
@@ -271,11 +259,6 @@ namespace Myra.Graphics2D.UI
 			base.OnKeyDown(k);
 
 			_listBox.OnKeyDown(k);
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyComboBoxStyle(stylesheet.ComboBoxStyles.SafelyGetStyle(name));
 		}
 	}
 }

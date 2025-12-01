@@ -5,6 +5,8 @@ using Myra.Utility;
 using AssetManagementBase;
 using Myra.Graphics2D.UI;
 using System.Collections.Generic;
+using Myra.Graphics2D.UI.Specializations;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -240,13 +242,13 @@ namespace Myra
 		public static Point TooltipOffset { get; set; } = new Point(0, 20);
 		public static Func<Widget, Widget> TooltipCreator { get; set; } = w =>
 		{
-			var tooltip = new Label(null)
+			var tooltip = new Tooltip(null)
 			{
 				Text = w.Tooltip,
 				Tag = w
 			};
 
-			tooltip.ApplyLabelStyle(Stylesheet.Current.TooltipStyle);
+			Stylesheet.Current.GetStyleFor(tooltip).ApplyTo(tooltip);
 
 			return tooltip;
 		};

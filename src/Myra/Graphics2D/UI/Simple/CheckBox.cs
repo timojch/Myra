@@ -29,10 +29,5 @@ namespace Myra.Graphics2D.UI
 		{
 			Toggleable = true;
 		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyImageTextButtonStyle(stylesheet.CheckBoxStyles.SafelyGetStyle(name));
-		}
 	}
 }

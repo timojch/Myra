@@ -84,7 +84,7 @@ namespace Myra.Graphics2D.UI.Properties
 				_layout.RowsProportions.Add(new Proportion(ProportionType.Auto));
 				_layout.RowsProportions.Add(new Proportion(ProportionType.Auto));
 
-				_propertyGrid = new PropertyGrid(parent.PropertyGridStyle, category, parentProperty, parent)
+				_propertyGrid = new PropertyGrid(Stylesheet.Current.GetStyle<PropertyGrid>(parent.StyleName), category, parentProperty, parent)
 				{
 					Object = value,
 					Filter = filter,
@@ -140,6 +140,7 @@ namespace Myra.Graphics2D.UI.Properties
 					Text = header,
 				};
 				Grid.SetColumn(label, 1);
+				parent.LabelStyle.ApplyTo(label);
 				label.ApplyLabelStyle(parent.PropertyGridStyle.LabelStyle);
 
 				Children.Add(label);
@@ -163,12 +164,12 @@ namespace Myra.Graphics2D.UI.Properties
 
 			public override void InternalRender(RenderContext context)
 			{
-				if (_propertyGrid.PropertyGridStyle.SelectionHoverBackground != null && IsMouseInside)
+				if (_propertyGrid.SelectionHoverBackground != null && IsMouseInside)
 				{
 					var headerBounds = HeaderBounds;
 					if (headerBounds.Contains(ToLocal(Desktop.MousePosition)))
 					{
-						_propertyGrid.PropertyGridStyle.SelectionHoverBackground.Draw(context, headerBounds);
+						_propertyGrid.SelectionHoverBackground.Draw(context, headerBounds);
 					}
 				}
 
@@ -187,7 +188,22 @@ namespace Myra.Graphics2D.UI.Properties
 		private string _filter;
 		private Type _parentType;
 
-		[Browsable(false)]
+		[Category("Appearance")]
+        public IBrush SelectionBackground
+        {
+            get; set;
+        }
+
+        [Category("Appearance")]
+        public IBrush SelectionHoverBackground
+        {
+            get; set;
+        }
+
+		[Category("Style")]
+        public GenericStyle<Label> LabelStyle { get; set; }
+
+        [Browsable(false)]
 		[XmlIgnore]
 		public TreeStyle PropertyGridStyle { get; private set; }
 
@@ -344,7 +360,7 @@ namespace Myra.Graphics2D.UI.Properties
 		public event EventHandler<GenericEventArgs<string>> PropertyChanged;
 		public event EventHandler ObjectChanged;
 
-		private PropertyGrid(TreeStyle style, string category, Record parentProperty, PropertyGrid parentGrid = null)
+		private PropertyGrid(IStyle<PropertyGrid> style, string category, Record parentProperty, PropertyGrid parentGrid = null)
 		{
 			ChildrenLayout = _layout;
 
@@ -358,10 +374,7 @@ namespace Myra.Graphics2D.UI.Properties
 
 			Category = category;
 
-			if (style != null)
-			{
-				ApplyPropertyGridStyle(style);
-			}
+			style.ApplyTo(this);
 
 			HorizontalAlignment = HorizontalAlignment.Stretch;
 			VerticalAlignment = VerticalAlignment.Stretch;
@@ -372,11 +385,17 @@ namespace Myra.Graphics2D.UI.Properties
 			this.CustomValuesProvider = parentGrid?.CustomValuesProvider;
 		}
 
-		public PropertyGrid(TreeStyle style, string category) : this(style, category, null)
+		public PropertyGrid(IStyle<PropertyGrid> style, string category) : this(style, category, null)
 		{
 		}
 
-		public PropertyGrid(string category) : this(Stylesheet.Current.TreeStyle, category)
+		public PropertyGrid(string style, string category)
+            : this(Stylesheet.Current.GetStyle<PropertyGrid>(style), category)
+        {
+		}
+
+		public PropertyGrid(string category) 
+			: this(Stylesheet.Current.GetStyle<PropertyGrid>(Stylesheet.DefaultStyleName), category)
 		{
 		}
 
@@ -1237,7 +1256,7 @@ namespace Myra.Graphics2D.UI.Properties
 					if (value == null)
 					{
 						var tb = new Label();
-						tb.ApplyLabelStyle(PropertyGridStyle.LabelStyle);
+						LabelStyle.ApplyTo(tb);
 						tb.Text = "null";
 
 						valueWidget = tb;
@@ -1482,13 +1501,6 @@ namespace Myra.Graphics2D.UI.Properties
 
 				y++;
 			}
-		}
-
-		public void ApplyPropertyGridStyle(TreeStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			PropertyGridStyle = style;
 		}
 	}
 }

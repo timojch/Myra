@@ -251,10 +251,5 @@ namespace Myra.Graphics2D.UI
 
             Closed.Invoke(this);
         }
-
-        protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-        {
-            ApplyWidgetStyle(stylesheet.WindowStyles.SafelyGetStyle(name));
-        }
     }
 }

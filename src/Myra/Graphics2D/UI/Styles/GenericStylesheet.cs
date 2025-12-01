@@ -16,7 +16,7 @@ using System.Xml.Linq;
 
 namespace Myra.Graphics2D.UI.Styles;
 
-public class GenericStylesheet
+public class Stylesheet
 {
     private static readonly Dictionary<string, string> LegacyClassNames = new Dictionary<string, string>();
     private static readonly Dictionary<string, string> LegacyPropertyNames = new Dictionary<string, string>();
@@ -24,15 +24,15 @@ public class GenericStylesheet
     private static readonly Dictionary<Type, Type> PropertyTypeSpecializations = new Dictionary<Type, Type>();
     private static readonly Dictionary<Type, string[]> IgnorableProperties = new Dictionary<Type, string[]>();
 
-    private readonly Dictionary<Type, IDictionary<string, IStyle>> Styles = new();
+    public const string DefaultStyleName = "";
 
-    public static GenericStylesheet Current
+    public static Stylesheet Current
     {
         get
         {
             if (field is null)
             {
-                field = DefaultAssets.DefaultGenericStylesheet;
+                field = DefaultAssets.DefaultStylesheet;
             }
 
             return field;
@@ -40,6 +40,9 @@ public class GenericStylesheet
 
         set;
     }
+
+    private readonly Dictionary<Type, IDictionary<string, IStyle>> Styles = new();
+
     public TextureRegionAtlas Atlas { get; private set; }
 
     public TextureRegion WhiteRegion
@@ -59,14 +62,15 @@ public class GenericStylesheet
 
     public DesktopStyle DesktopStyle { get; set; }
 
-    public GenericStylesheet()
+    public Stylesheet()
     {
         var defaultWidgetStyle = new GenericStyle<Widget>();
         this.AddStyle(defaultWidgetStyle);
     }
 
-    static GenericStylesheet()
+    static Stylesheet()
     {
+#pragma warning disable CS0618 // Type or member is obsolete
         LegacyClassNames["TextBlockStyle"] = "LabelStyle";
         LegacyClassNames["TextFieldStyle"] = "TextBoxStyle";
         LegacyClassNames["ScrollPaneStyle"] = "ScrollViewerStyle";
@@ -82,9 +86,10 @@ public class GenericStylesheet
 
         IgnorableProperties[typeof(ComboView)] = ["LabelStyle"];
         IgnorableProperties[typeof(ComboBox)] = ["LabelStyle"];
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
-    public void CombineWith(GenericStylesheet other)
+    public void CombineWith(Stylesheet other)
     {
 
     }
@@ -141,7 +146,28 @@ public class GenericStylesheet
         }
     }
 
-    public static GenericStylesheet LoadFromSource(string stylesheetXml,
+    public string[] GetStylesByWidgetName(string name)
+    {
+        var dict = this.Styles
+            .Where(pair => pair.Key.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+            .FirstOrDefault()
+            .Value;
+
+        if (dict is null)
+        {
+            return null;
+        }
+
+        var result = new List<string>();
+        foreach (var k in dict.Keys)
+        {
+            result.Add((string)k);
+        }
+
+        return result.ToArray();
+    }
+
+    public static Stylesheet LoadFromSource(string stylesheetXml,
             TextureRegionAtlas textureRegionAtlas,
             Dictionary<string, SpriteFontBase> fonts)
     {
@@ -190,7 +216,7 @@ public class GenericStylesheet
             throw new Exception(string.Format("Type {0} isn't supported", t.Name));
         };
 
-        var result = new GenericStylesheet
+        var result = new Stylesheet
         {
             Atlas = textureRegionAtlas,
             Fonts = fonts
@@ -213,14 +239,14 @@ public class GenericStylesheet
         {
             if (child.Name.LocalName.EndsWith("Styles"))
             {
-                var dict = GenericStylesheet.LoadStylesFromXml(child, loadContext, out var targetType);
+                var dict = Stylesheet.LoadStylesFromXml(child, loadContext, out var targetType);
                 result.Styles[targetType] = dict;
             }
         }
 
         return result;
     }
-    internal static IDictionary<string, IStyle> LoadStylesFromXml(XElement stylesElement,
+    private static IDictionary<string, IStyle> LoadStylesFromXml(XElement stylesElement,
         LoadContext context,
         out Type targetType)
     {
@@ -252,11 +278,11 @@ public class GenericStylesheet
         {
             var id = styleElement.Attribute(BaseContext.IdName)?.Value;
             var styleTarget = Activator.CreateInstance(styleType) as GenericStyle;
-            GenericStylesheet.PopulateStyleFromXml(styleTarget,
-                styleElement,
-                context);
+            styleTarget.Name = id ?? Stylesheet.DefaultStyleName;
+            var parentId = $"{stylesElement.Name}/id";
+            Stylesheet.PopulateStyleFromXml(styleTarget, styleElement, context, parentId);
 
-            ret[id ?? Stylesheet.DefaultStyleName] = (IStyle)styleTarget;
+            ret[styleTarget.Name] = (IStyle)styleTarget;
         }
 
         return ret;
@@ -264,7 +290,8 @@ public class GenericStylesheet
 
     private static void PopulateStyleFromXml(GenericStyle target,
         XElement styleElement,
-        LoadContext context)
+        LoadContext context,
+        string currentId)
     {
         var targetType = target.TargetType;
 
@@ -289,10 +316,18 @@ public class GenericStylesheet
 
             if (target.TryGetProperty(name, out var property))
             {
-                if (property.PropertyType.IsAssignableTo(typeof(GenericStyle)))
+                if (property.PropertyType.IsAssignableTo(typeof(IStyle)))
                 {
-                    var subStyleTarget = (GenericStyle)Activator.CreateInstance(property.PropertyType);
-                    GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
+                    var styleType = property.PropertyType;
+                    if(styleType.IsInterface)
+                    {
+                        styleType = typeof(GenericStyle<>).MakeGenericType(styleType.GenericTypeArguments);
+                    }
+
+                    var subStyleTarget = (GenericStyle)Activator.CreateInstance(styleType);
+                    var childId = $"{currentId}/{name}";
+                    subStyleTarget.Name = childId;
+                    Stylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context, childId);
                     target.AddAttribute(name, subStyleTarget);
                     success = true;
                 }
@@ -316,7 +351,9 @@ public class GenericStylesheet
                     {
                         var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([propertyType]);
                         var subStyleTarget = (GenericStyle)Activator.CreateInstance(propertyStyleType);
-                        GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
+                        var childId = $"{currentId}/{name}";
+                        subStyleTarget.Name = childId;
+                        Stylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context, childId);
                         target.AddSubWidgetStyle(styleablePropertyName, (IStyle)subStyleTarget);
                         success = true;
                     }
@@ -329,7 +366,9 @@ public class GenericStylesheet
                         {
                             var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([contentWidgetType]);
                             var subStyleTarget = Activator.CreateInstance(propertyStyleType) as GenericStyle;
-                            GenericStylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context);
+                            var childId = $"{currentId}/{name}";
+                            subStyleTarget.Name = childId;
+                            Stylesheet.PopulateStyleFromXml(subStyleTarget, childElement, context, childId);
                             target.AddContentStyle(contentWidgetType, (IStyle)subStyleTarget);
                             success = true;
                         }

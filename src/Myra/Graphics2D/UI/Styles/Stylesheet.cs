@@ -21,22 +21,22 @@ using SolidBrush = Myra.Graphics2D.Brushes.SolidBrush;
 
 namespace Myra.Graphics2D.UI.Styles
 {
-    public class Stylesheet
+    public class ClassicStylesheet
     {
         private static readonly Dictionary<string, string> LegacyClassNames = new Dictionary<string, string>();
         private static readonly Dictionary<string, string> LegacyPropertyNames = new Dictionary<string, string>();
 
         public const string DefaultStyleName = "";
 
-        private static Stylesheet _current;
+        private static ClassicStylesheet _current;
 
-        public static Stylesheet Current
+        public static ClassicStylesheet Current
         {
             get
             {
                 if (_current == null)
                 {
-                    _current = DefaultAssets.DefaultStylesheet;
+                    _current = DefaultAssets.DefaultClassicStylesheet;
                 }
 
                 return _current;
@@ -328,7 +328,7 @@ namespace Myra.Graphics2D.UI.Styles
 
         public Dictionary<string, FlowContainerStyle> FlowContainerStyles => _flowContainerStyles;
 
-        static Stylesheet()
+        static ClassicStylesheet()
         {
             LegacyClassNames["TextBlockStyle"] = "LabelStyle";
             LegacyClassNames["TextFieldStyle"] = "TextBoxStyle";
@@ -342,7 +342,7 @@ namespace Myra.Graphics2D.UI.Styles
             LegacyPropertyNames["ScrollPaneStyles"] = "ScrollViewerStyles";
         }
 
-        public void CombineWith(Stylesheet other)
+        public void CombineWith(ClassicStylesheet other)
         {
             // Clone all dictionary properties
             other.CombineStylesTo(this, s => s.HorizontalSliderStyles);
@@ -392,7 +392,7 @@ namespace Myra.Graphics2D.UI.Styles
             styles[DefaultStyleName] = value;
         }
 
-        public static Stylesheet LoadFromSource(string stylesheetXml,
+        public static ClassicStylesheet LoadFromSource(string stylesheetXml,
             TextureRegionAtlas textureRegionAtlas,
             Dictionary<string, SpriteFontBase> fonts)
         {
@@ -441,7 +441,7 @@ namespace Myra.Graphics2D.UI.Styles
                 throw new Exception(string.Format("Type {0} isn't supported", t.Name));
             };
 
-            var result = new Stylesheet
+            var result = new ClassicStylesheet
             {
                 Atlas = textureRegionAtlas,
                 Fonts = fonts
@@ -491,7 +491,7 @@ namespace Myra.Graphics2D.UI.Styles
             return result.ToArray();
         }
 
-        private void CloneStylesTo<T>(Stylesheet destStylesheet, Func<Stylesheet, Dictionary<string, T>> stylesGetter) where T : WidgetStyle
+        private void CloneStylesTo<T>(ClassicStylesheet destStylesheet, Func<ClassicStylesheet, Dictionary<string, T>> stylesGetter) where T : WidgetStyle
         {
             var src = stylesGetter(this);
             var dest = stylesGetter(destStylesheet);
@@ -502,7 +502,7 @@ namespace Myra.Graphics2D.UI.Styles
                 dest[pair.Key] = (T)pair.Value.Clone();
             }
         }
-        private void CombineStylesTo<T>(Stylesheet destStylesheet, Func<Stylesheet, Dictionary<string, T>> stylesGetter) where T : WidgetStyle
+        private void CombineStylesTo<T>(ClassicStylesheet destStylesheet, Func<ClassicStylesheet, Dictionary<string, T>> stylesGetter) where T : WidgetStyle
         {
             var src = stylesGetter(this);
             var dest = stylesGetter(destStylesheet);
@@ -514,9 +514,9 @@ namespace Myra.Graphics2D.UI.Styles
         }
 
 
-        public Stylesheet Clone()
+        public ClassicStylesheet Clone()
         {
-            var result = new Stylesheet
+            var result = new ClassicStylesheet
             {
                 Atlas = Atlas,
                 Fonts = new Dictionary<string, SpriteFontBase>()

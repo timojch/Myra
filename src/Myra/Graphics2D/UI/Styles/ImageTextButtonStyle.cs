@@ -2,8 +2,6 @@
 {
 	public class ImageTextButtonStyle : ButtonStyle
     {
-        public LabelStyle LabelStyle { get; set; }
-
         public PressableImageStyle ImageStyle
 		{
 			get; set;

@@ -28,6 +28,8 @@ public abstract class GenericStyle
         BindingFlags.Instance |
         BindingFlags.FlattenHierarchy;
 
+    public string Name { get; set; }
+
     public abstract bool CanHaveContent { get; }
 
     public abstract Type TargetType { get; }
@@ -215,6 +217,9 @@ public class GenericStyle<TWidget>
 
     public void ApplyTo(TWidget widget)
     {
+        widget.StyledBy = this;
+        widget.StyleName = this.Name;
+
         foreach (var pair in this.ValuePairs)
         {
             pair.Key.SetValue(widget, pair.Value);
@@ -313,6 +318,7 @@ public class GenericStyle<TWidget>
             "Grid" => true,
             "Layout" => true,
             "Transform" => true,
+            "Style" => true,
             "Debug" => false,
             null => false,
             _ => throw new NotSupportedException($"Category {category} is not defined as styleable."),

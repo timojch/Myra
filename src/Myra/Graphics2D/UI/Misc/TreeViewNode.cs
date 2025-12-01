@@ -11,182 +11,186 @@ using Color = FontStashSharp.FSColor;
 
 namespace Myra.Graphics2D.UI
 {
-	public class TreeViewNode : ContentControl, ITreeViewNode
-	{
-		private readonly GridLayout _layout = new GridLayout();
-		private readonly TreeView _topTree;
-		private readonly VerticalStackPanel _childNodesStackPanel;
-		private readonly ToggleButton _mark;
-		private Widget _content;
-		private Widget _spacer;
+    public class TreeViewNode : ContentControl, ITreeViewNode
+    {
+        private readonly GridLayout _layout = new GridLayout();
+        private readonly TreeView _topTree;
+        private readonly VerticalStackPanel _childNodesStackPanel;
+        private readonly ToggleButton _mark;
+        private Widget _content;
+        private Widget _spacer;
 
-		public bool IsExpanded
-		{
-			get { return _mark.IsPressed; }
+        public bool IsExpanded
+        {
+            get { return _mark.IsPressed; }
 
-			set { _mark.IsPressed = value; }
-		}
+            set { _mark.IsPressed = value; }
+        }
 
-		public int Depth
-		{
-			get
-			{
-				if (this.ParentNode is null)
-				{
-					return 0;
-				}
-				else
-				{
-					return this.ParentNode.Depth + 1;
-				}
-			}
-		}
+        public int Depth
+        {
+            get
+            {
+                if (this.ParentNode is null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return this.ParentNode.Depth + 1;
+                }
+            }
+        }
 
-		public ToggleButton Mark => _mark;
+        public ToggleButton Mark => _mark;
 
-		internal VerticalStackPanel ChildNodesGrid => _childNodesStackPanel;
+        internal VerticalStackPanel ChildNodesGrid => _childNodesStackPanel;
 
-		public int ContentHeight => _layout.GetRowHeight(0);
+        public int ContentHeight => _layout.GetRowHeight(0);
 
-		public int ChildNodesCount => _childNodesStackPanel.Children.Count;
+        public int ChildNodesCount => _childNodesStackPanel.Children.Count;
 
-		internal bool RowVisible { get; set; }
+        internal bool RowVisible { get; set; }
 
-		public TreeViewNode ParentNode 
-		{ 
-			get; 
-			internal set
-			{
-				field = value;
-				this.UpdateSpacer();
-			}
-		}
+        public TreeViewNode ParentNode
+        {
+            get;
+            internal set
+            {
+                field = value;
+                this.UpdateSpacer();
+            }
+        }
 
-		public override Widget Content
-		{
-			get => _content;
+        public override Widget Content
+        {
+            get => _content;
 
-			set
-			{
-				if (_content == value)
-				{
-					return;
-				}
+            set
+            {
+                if (_content == value)
+                {
+                    return;
+                }
 
-				if (_content != null)
-				{
-					Children.Remove(_content);
-				}
+                if (_content != null)
+                {
+                    Children.Remove(_content);
+                }
 
-				_content = value;
+                _content = value;
 
-				if (_content != null)
-				{
-					Grid.SetColumn(_content, 1);
-					Children.Add(_content);
-				}
-			}
-		}
+                if (_content != null)
+                {
+                    Grid.SetColumn(_content, 1);
+                    Children.Add(_content);
+                }
+            }
+        }
 
+        internal TreeViewNode(TreeView topTree, IStyle<TreeViewNode> style)
+        {
+            _layout.ColumnSpacing = 2;
+            _layout.RowSpacing = 2;
+            ChildrenLayout = _layout;
 
-		internal TreeViewNode(TreeView topTree, string styleName = Stylesheet.DefaultStyleName)
-		{
-			_layout.ColumnSpacing = 2;
-			_layout.RowSpacing = 2;
-			ChildrenLayout = _layout;
+            _topTree = topTree;
 
-			_topTree = topTree;
+            if (_topTree != null)
+            {
+                _topTree.AllNodes.Add(this);
+            }
 
-			if (_topTree != null)
-			{
-				_topTree.AllNodes.Add(this);
-			}
-
-			_spacer = new Widget();
+            _spacer = new Widget();
             this.Children.Add(_spacer);
             this.UpdateSpacer();
 
             _mark = new ToggleButton(null)
-			{
-				HorizontalAlignment = HorizontalAlignment.Left,
-				VerticalAlignment = VerticalAlignment.Center,
-				Content = new Image()
-			};
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                Content = new Image()
+            };
 
-			_mark.PressedChanged += (s, a) =>
-			{
-				_childNodesStackPanel.Visible = _mark.IsPressed;
-			};
+            _mark.PressedChanged += (s, a) =>
+            {
+                _childNodesStackPanel.Visible = _mark.IsPressed;
+            };
 
-			Children.Add(_mark);
+            Children.Add(_mark);
 
-			HorizontalAlignment = HorizontalAlignment.Stretch;
-			VerticalAlignment = VerticalAlignment.Stretch;
+            HorizontalAlignment = HorizontalAlignment.Stretch;
+            VerticalAlignment = VerticalAlignment.Stretch;
 
-			_layout.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
-			_layout.ColumnsProportions.Add(new Proportion(ProportionType.Fill));
+            _layout.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
+            _layout.ColumnsProportions.Add(new Proportion(ProportionType.Fill));
 
-			_layout.RowsProportions.Add(new Proportion(ProportionType.Auto));
-			_layout.RowsProportions.Add(new Proportion(ProportionType.Auto));
+            _layout.RowsProportions.Add(new Proportion(ProportionType.Auto));
+            _layout.RowsProportions.Add(new Proportion(ProportionType.Auto));
 
-			// Second is yet another grid holding child nodes
-			_childNodesStackPanel = new VerticalStackPanel
-			{
-				Visible = false,
-			};
+            // Second is yet another grid holding child nodes
+            _childNodesStackPanel = new VerticalStackPanel
+            {
+                Visible = false,
+            };
             Grid.SetRow(_childNodesStackPanel, 1);
             Grid.SetColumn(_childNodesStackPanel, 0);
-			Grid.SetColumnSpan(_childNodesStackPanel, 3);
+            Grid.SetColumnSpan(_childNodesStackPanel, 3);
 
-			Children.Add(_childNodesStackPanel);
+            Children.Add(_childNodesStackPanel);
 
-			SetStyle(styleName);
+            style.ApplyTo(this);
 
-			UpdateMark();
-		}
+            UpdateMark();
+        }
 
-		private void MarkOnUp(object sender, EventArgs args)
-		{
-			_childNodesStackPanel.Visible = false;
-		}
+        internal TreeViewNode(TreeView topTree, string styleName = Stylesheet.DefaultStyleName)
+            : this(topTree, Stylesheet.Current.GetStyle<TreeViewNode>(styleName))
+        {
+        }
 
-		protected virtual void UpdateMark()
-		{
-			_mark.Visible = _childNodesStackPanel.Children.Count > 0;
-		}
+        private void MarkOnUp(object sender, EventArgs args)
+        {
+            _childNodesStackPanel.Visible = false;
+        }
 
-		public virtual void RemoveAllSubNodes()
-		{
-			_childNodesStackPanel.Children.Clear();
-			UpdateMark();
-		}
+        protected virtual void UpdateMark()
+        {
+            _mark.Visible = _childNodesStackPanel.Children.Count > 0;
+        }
 
-		public TreeViewNode AddSubNode(Widget content)
-		{
-			var result = new TreeViewNode(_topTree, StyleName)
-			{
-				ParentNode = this,
-				Content = content
-			};
-			Grid.SetRow(result, _childNodesStackPanel.Children.Count);
+        public virtual void RemoveAllSubNodes()
+        {
+            _childNodesStackPanel.Children.Clear();
+            UpdateMark();
+        }
 
-			_childNodesStackPanel.Children.Add(result);
+        public TreeViewNode AddSubNode(Widget content)
+        {
+            var result = new TreeViewNode(_topTree, (IStyle<TreeViewNode>)this.StyledBy)
+            {
+                ParentNode = this,
+                Content = content
+            };
+            Grid.SetRow(result, _childNodesStackPanel.Children.Count);
 
-			UpdateMark();
+            _childNodesStackPanel.Children.Add(result);
 
-			return result;
-		}
+            UpdateMark();
+
+            return result;
+        }
 
         public TreeViewNode InsertSubNode(int index, Widget content)
         {
-            var result = new TreeViewNode(_topTree, StyleName)
+            var result = new TreeViewNode(_topTree, (IStyle<TreeViewNode>)this.StyledBy)
             {
                 ParentNode = this,
                 Content = content
             };
 
-			Grid.SetRow(result, _childNodesStackPanel.Children.Count);
-			
+            Grid.SetRow(result, _childNodesStackPanel.Children.Count);
+
             _childNodesStackPanel.Children.Insert(index, result);
 
             UpdateMark();
@@ -195,69 +199,49 @@ namespace Myra.Graphics2D.UI
         }
 
         public TreeViewNode GetSubNode(int index)
-		{
-			return (TreeViewNode)_childNodesStackPanel.Children[index];
-		}
+        {
+            return (TreeViewNode)_childNodesStackPanel.Children[index];
+        }
 
-		public void RemoveSubNode(TreeViewNode subNode)
-		{
-			_childNodesStackPanel.Children.Remove(subNode);
-			_topTree.AllNodes.Remove(subNode);
-			if (_topTree != null)
-			{
-				if (_topTree.SelectedNode == subNode)
-				{
-					_topTree.SelectedNode = null;
-				}
+        public void RemoveSubNode(TreeViewNode subNode)
+        {
+            _childNodesStackPanel.Children.Remove(subNode);
+            _topTree.AllNodes.Remove(subNode);
+            if (_topTree != null)
+            {
+                if (_topTree.SelectedNode == subNode)
+                {
+                    _topTree.SelectedNode = null;
+                }
 
-				if (_topTree.HoverRow == subNode)
-				{
-					_topTree.HoverRow = null;
-				}
-			}
-		}
+                if (_topTree.HoverRow == subNode)
+                {
+                    _topTree.HoverRow = null;
+                }
+            }
+        }
 
-		public void RemoveSubNodeAt(int index)
-		{
-			var subNode = (TreeViewNode)_childNodesStackPanel.Children[index];
-			_childNodesStackPanel.Children.RemoveAt(index);
-			_topTree.AllNodes.Remove(subNode);
-			if (_topTree.SelectedNode == subNode)
-			{
-				_topTree.SelectedNode = null;
-			}
-		}
+        public void RemoveSubNodeAt(int index)
+        {
+            var subNode = (TreeViewNode)_childNodesStackPanel.Children[index];
+            _childNodesStackPanel.Children.RemoveAt(index);
+            _topTree.AllNodes.Remove(subNode);
+            if (_topTree.SelectedNode == subNode)
+            {
+                _topTree.SelectedNode = null;
+            }
+        }
 
-		public void ApplyTreeViewNodeStyle(TreeStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			if (style.MarkStyle != null)
-			{
-				_mark.ApplyButtonStyle(style.MarkStyle);
-				if (style.MarkStyle.ImageStyle != null)
-				{
-					var image = (Image)_mark.Content;
-					image.ApplyPressableImageStyle(style.MarkStyle.ImageStyle);
-				}
-			}
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyTreeViewNodeStyle(stylesheet.TreeStyles.SafelyGetStyle(name));
-		}
-
-		private void UpdateSpacer()
-		{
-			if (this.Depth == 0)
-			{
-				this._spacer.MinWidth = 0;
-			}
-			else
-			{
-				this._spacer.MinWidth = this.Depth * this.ParentNode.Mark.Measure(new Point(1000, 1000)).X;
-			}
-		}
-	}
+        private void UpdateSpacer()
+        {
+            if (this.Depth == 0)
+            {
+                this._spacer.MinWidth = 0;
+            }
+            else
+            {
+                this._spacer.MinWidth = this.Depth * this.ParentNode.Mark.Measure(new Point(1000, 1000)).X;
+            }
+        }
+    }
 }

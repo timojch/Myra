@@ -317,11 +317,6 @@ namespace Myra.Graphics2D.UI
 			Font = style.Font;
 		}
 
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyLabelStyle(stylesheet.LabelStyles.SafelyGetStyle(name));
-		}
-
 		protected internal override void CopyFrom(Widget w)
 		{
 			base.CopyFrom(w);

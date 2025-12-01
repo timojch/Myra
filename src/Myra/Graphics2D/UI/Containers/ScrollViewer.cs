@@ -659,11 +659,6 @@ namespace Myra.Graphics2D.UI
 			_startBoundsPos = null;
 		}
 
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyScrollViewerStyle(stylesheet.ScrollViewerStyles.SafelyGetStyle(name));
-		}
-
 		public override bool InputFallsThrough(Point localPos)
 		{
 			if (Background != null)

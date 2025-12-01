@@ -127,31 +127,6 @@ namespace Myra.Graphics2D.UI
             SetStyle<Window>(styleName);
         }
 
-        public void ApplyWindowStyle(WindowStyle style)
-        {
-            ApplyWidgetStyle(style);
-
-            if (style.TitleStyle != null)
-            {
-                _titleLabel.ApplyLabelStyle(style.TitleStyle);
-            }
-
-            if (style.CloseButtonStyle != null)
-            {
-                CloseButton.ApplyButtonStyle(style.CloseButtonStyle);
-                if (style.CloseButtonStyle.ImageStyle != null)
-                {
-                    var image = (Image)CloseButton.Content;
-                    image.ApplyPressableImageStyle(style.CloseButtonStyle.ImageStyle);
-                }
-            }
-        }
-
-        protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-        {
-            ApplyWindowStyle(stylesheet.WindowStyles.SafelyGetStyle(name));
-        }
-
         protected internal override void CopyFrom(Widget w)
         {
             base.CopyFrom(w);

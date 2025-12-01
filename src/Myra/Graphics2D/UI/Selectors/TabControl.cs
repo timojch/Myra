@@ -353,11 +353,6 @@ namespace Myra.Graphics2D.UI
             ApplyWidgetStyle(style);
         }
 
-        protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-        {
-            ApplyTabControlStyle(stylesheet.TabControlStyles.SafelyGetStyle(name));
-        }
-
         protected internal override void CopyFrom(Widget w)
         {
             base.CopyFrom(w);

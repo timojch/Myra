@@ -217,33 +217,5 @@ namespace Myra.Graphics2D.UI
 				_topTree.SelectedRow = null;
 			}
 		}
-
-		public void ApplyTreeNodeStyle(TreeStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			if (style.MarkStyle != null)
-			{
-				_mark.ApplyButtonStyle(style.MarkStyle);
-				if (style.MarkStyle.ImageStyle != null)
-				{
-					var image = (Image)_mark.Content;
-					image.ApplyPressableImageStyle(style.MarkStyle.ImageStyle);
-				}
-
-
-				_label.ApplyLabelStyle(style.LabelStyle);
-			}
-
-			TreeStyle = style;
-
-			SelectionBackground = style.SelectionBackground;
-			SelectionHoverBackground = style.SelectionHoverBackground;
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyTreeNodeStyle(stylesheet.TreeStyles.SafelyGetStyle(name));
-		}
 	}
 }

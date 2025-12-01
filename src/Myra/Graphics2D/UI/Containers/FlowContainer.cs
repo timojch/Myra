@@ -199,11 +199,6 @@ namespace Myra.Graphics2D.UI
             this.Wrap = style.Wrap;
         }
 
-        protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-        {
-            ApplyFlowContainerStyle(stylesheet.FlowContainerStyles.SafelyGetStyle(name));
-        }
-
         public class ControlPoint
         {
             public Widget AnchorWidget;

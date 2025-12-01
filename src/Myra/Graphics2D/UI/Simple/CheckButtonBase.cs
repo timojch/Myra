@@ -162,21 +162,6 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
-		public void ApplyCheckButtonStyle(ImageTextButtonStyle style)
-		{
-			ApplyButtonStyle(style);
-
-			if (style.ImageStyle != null)
-			{
-				_check.ApplyPressableImageStyle(style.ImageStyle);
-
-				UncheckedImage = style.ImageStyle.Image;
-				CheckedImage = style.ImageStyle.PressedImage;
-			}
-
-			CheckContentSpacing = style.ImageTextSpacing;
-		}
-
 		private void UpdateChildren()
 		{
 			Children.Clear();

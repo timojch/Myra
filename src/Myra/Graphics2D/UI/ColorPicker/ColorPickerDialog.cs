@@ -94,17 +94,5 @@ namespace Myra.Graphics2D.UI.ColorPicker
 				ColorPickerPanel.UserColors[i] = new Color(color.R, color.G, color.B, alpha);
 			}
 		}
-
-		public void ApplyColorPickerDialogStyle(ColorPickerDialogStyle style)
-		{
-			ApplyWindowStyle(style);
-
-			ColorPickerPanel.ApplyColorPickerDialogStyle(style);
-		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyColorPickerDialogStyle(stylesheet.ColorPickerDialogStyles.SafelyGetStyle(name));
-		}
 	}
 }

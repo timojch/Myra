@@ -8,6 +8,8 @@ namespace Myra.Graphics2D.UI.Styles;
 
 public interface IStyle
 {
+    string Name { get; }
+
     void ApplyTo(Widget widget);
 
     bool CanApplyTo(Widget widget);

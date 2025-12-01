@@ -109,12 +109,6 @@ public class CollapseableFrame : ContentControl
         };
     }
 
-    protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-    {
-        base.InternalSetStyle(stylesheet, name);
-        _titleLabel.SetStyle(stylesheet, name);
-    }
-
     private void ToggleExpand()
     {
         this.IsExpanded = !this.IsExpanded;

@@ -398,10 +398,5 @@ namespace Myra.Graphics2D.UI
 			_image.IsPressed = IsPressed;
 			_label.IsPressed = IsPressed;
 		}
-
-		protected override void InternalSetStyle(Stylesheet stylesheet, string name)
-		{
-			ApplyImageTextButtonStyle(new ImageTextButtonStyle(stylesheet.ButtonStyles.SafelyGetStyle(name)));
-		}
 	}
 }

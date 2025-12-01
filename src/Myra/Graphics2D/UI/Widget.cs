@@ -71,6 +71,13 @@ namespace Myra.Graphics2D.UI
         [DefaultValue(Stylesheet.DefaultStyleName)]
         public string StyleName { get; set; }
 
+        /// <summary>
+        /// The last style which styled this widget.
+        /// </summary>
+        [XmlIgnore]
+        [Browsable(false)]
+        public IStyle StyledBy { get; set; }
+
         [Category("Layout")]
         [DefaultValue(0)]
         public int Left
@@ -1213,27 +1220,19 @@ namespace Myra.Graphics2D.UI
         public void SetStyle(Stylesheet stylesheet, string name)
         {
             StyleName = name;
-
-            if (StyleName != null)
-            {
-                InternalSetStyle(stylesheet, StyleName);
-            }
+            stylesheet.GetStyleFor(this, name).ApplyTo(this);
         }
 
         public void SetStyle(string name)
         {
-            GenericStylesheet.Current.GetStyleFor(this, name).ApplyTo(this);
+            Stylesheet.Current.GetStyleFor(this, name).ApplyTo(this);
             // SetStyle(Stylesheet.Current, name);
         }
 
         public void SetStyle<TWidget>(string name)
             where TWidget : Widget
         {
-            GenericStylesheet.Current.GetStyle<TWidget>(name).ApplyTo(this);
-        }
-
-        protected virtual void InternalSetStyle(Stylesheet stylesheet, string name)
-        {
+            Stylesheet.Current.GetStyle<TWidget>(name).ApplyTo(this);
         }
 
         protected void FireKeyDown(Keys k)
