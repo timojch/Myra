@@ -76,7 +76,7 @@ namespace Myra.Graphics2D.UI
         /// </summary>
         [XmlIgnore]
         [Browsable(false)]
-        public IStyle StyledBy { get; set; }
+        public IStyle StyledBy { get; private set; }
 
         [Category("Layout")]
         [DefaultValue(0)]
@@ -750,6 +750,8 @@ namespace Myra.Graphics2D.UI
             }
         }
 
+        public event EventHandler StyleChanged;
+
         internal Transform Transform
         {
             get
@@ -1193,46 +1195,28 @@ namespace Myra.Graphics2D.UI
             }
         }
 
-        public void ApplyWidgetStyle(WidgetStyle style)
-        {
-            Width = style.Width;
-            Height = style.Height;
-            MinWidth = style.MinWidth;
-            MinHeight = style.MinHeight;
-            MaxWidth = style.MaxWidth;
-            MaxHeight = style.MaxHeight;
-
-            Background = style.Background;
-            OverBackground = style.OverBackground;
-            DisabledBackground = style.DisabledBackground;
-            FocusedBackground = style.FocusedBackground;
-
-            Border = style.Border;
-            OverBorder = style.OverBorder;
-            DisabledBorder = style.DisabledBorder;
-            FocusedBorder = style.FocusedBorder;
-
-            Margin = style.Margin;
-            BorderThickness = style.BorderThickness;
-            Padding = style.Padding;
-        }
-
         public void SetStyle(Stylesheet stylesheet, string name)
         {
-            StyleName = name;
-            stylesheet.GetStyleFor(this, name).ApplyTo(this);
+            SetStyle(stylesheet.GetStyleFor(this, name));
         }
 
         public void SetStyle(string name)
         {
-            Stylesheet.Current.GetStyleFor(this, name).ApplyTo(this);
-            // SetStyle(Stylesheet.Current, name);
+            SetStyle(Stylesheet.Current, name);
         }
 
         public void SetStyle<TWidget>(string name)
             where TWidget : Widget
         {
-            Stylesheet.Current.GetStyle<TWidget>(name).ApplyTo(this);
+            this.SetStyle(Stylesheet.Current.GetStyle<TWidget>(name));
+        }
+
+        public void SetStyle(IStyle style)
+        {
+            style.ApplyTo(this);
+            this.StyleName = style.Name;
+            this.StyledBy = style;
+            this.StyleChanged.Invoke();
         }
 
         protected void FireKeyDown(Keys k)

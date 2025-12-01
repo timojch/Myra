@@ -95,10 +95,10 @@ namespace Myra.Graphics2D.UI.Properties
 
 				// Mark
 				var markImage = new Image();
-				var imageStyle = parent.PropertyGridStyle.MarkStyle.ImageStyle;
+				var imageStyle = parent.MarkStyle;
 				if (imageStyle != null)
 				{
-					markImage.ApplyPressableImageStyle(imageStyle);
+					markImage.SetStyle(imageStyle);
 				}
 
 				_mark = new ToggleButton(null)
@@ -140,8 +140,7 @@ namespace Myra.Graphics2D.UI.Properties
 					Text = header,
 				};
 				Grid.SetColumn(label, 1);
-				parent.LabelStyle.ApplyTo(label);
-				label.ApplyLabelStyle(parent.PropertyGridStyle.LabelStyle);
+				label.SetStyle(parent.LabelStyle);
 
 				Children.Add(label);
 
@@ -200,14 +199,13 @@ namespace Myra.Graphics2D.UI.Properties
             get; set;
         }
 
-		[Category("Style")]
+        [Category("Style")]
         public GenericStyle<Label> LabelStyle { get; set; }
 
-        [Browsable(false)]
-		[XmlIgnore]
-		public TreeStyle PropertyGridStyle { get; private set; }
+        [Category("Style")]
+        public GenericStyle<Image> MarkStyle { get; set; }
 
-		[Browsable(false)]
+        [Browsable(false)]
 		[XmlIgnore]
 		public object Object
 		{
@@ -374,7 +372,7 @@ namespace Myra.Graphics2D.UI.Properties
 
 			Category = category;
 
-			style.ApplyTo(this);
+			this.SetStyle(style);
 
 			HorizontalAlignment = HorizontalAlignment.Stretch;
 			VerticalAlignment = VerticalAlignment.Stretch;
@@ -1256,7 +1254,7 @@ namespace Myra.Graphics2D.UI.Properties
 					if (value == null)
 					{
 						var tb = new Label();
-						LabelStyle.ApplyTo(tb);
+						tb.SetStyle(LabelStyle);
 						tb.Text = "null";
 
 						valueWidget = tb;

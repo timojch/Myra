@@ -64,16 +64,6 @@ namespace Myra.Graphics2D.UI
 			SetStyle(styleName);
 		}
 
-		public void ApplyProgressBarStyle(ProgressBarStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			if (style.Filler == null)
-				return;
-
-			Filler = style.Filler;
-		}
-
 		public override void InternalRender(RenderContext context)
 		{
 			base.InternalRender(context);

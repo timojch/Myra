@@ -21,7 +21,7 @@ namespace Myra.Tests
 			var oldStylesheet = Stylesheet.Current.Clone();
 
 			// Remove all styles, including default one from the stylesheet
-			Stylesheet.Current.LabelStyles.Clear();
+			Stylesheet.Current.GetStylesFor<Label>().Clear();
 
 			Assert.Throws<Exception>(() =>
 			{

@@ -248,7 +248,7 @@ namespace Myra
 				Tag = w
 			};
 
-			Stylesheet.Current.GetStyleFor(tooltip).ApplyTo(tooltip);
+			tooltip.SetStyle(Stylesheet.DefaultStyleName);
 
 			return tooltip;
 		};

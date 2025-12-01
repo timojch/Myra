@@ -99,11 +99,6 @@ namespace Myra.Graphics2D.UI
 			SetStyle(styleName);
 		}
 
-		public void ApplyTextButtonStyle(ButtonStyle style)
-		{
-			ApplyButtonStyle(style);
-		}
-
 		public override void OnPressedChanged()
 		{
 			base.OnPressedChanged();

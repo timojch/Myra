@@ -106,22 +106,6 @@ namespace Myra.Graphics2D.UI
 			SetStyle(styleName);
 		}
 
-		public void ApplyImageButtonStyle(ImageButtonStyle style)
-		{
-			ApplyButtonStyle(style);
-
-			var imageStyle = style.ImageStyle;
-
-			if (imageStyle != null)
-			{
-				InternalChild.ApplyWidgetStyle(imageStyle);
-
-				Image = imageStyle.Image;
-				OverImage = imageStyle.OverImage;
-				PressedImage = imageStyle.PressedImage;
-			}
-		}
-
 		public override void OnPressedChanged()
 		{
 			base.OnPressedChanged();

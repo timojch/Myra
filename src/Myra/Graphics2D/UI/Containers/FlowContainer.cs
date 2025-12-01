@@ -187,18 +187,6 @@ namespace Myra.Graphics2D.UI
 
         }
 
-        public void ApplyFlowContainerStyle(FlowContainerStyle style)
-        {
-            this.ApplyWidgetStyle(style);
-
-            this.IndentSize = style.IndentSize;
-            this.LineSpacing = style.LineSpacing;
-            this.HorizontalSpacing = style.HorizontalSpacing;
-            this.MinLineHeight = style.MinLineHeight;
-            this.MaxLineHeight = style.MaxLineHeight;
-            this.Wrap = style.Wrap;
-        }
-
         public class ControlPoint
         {
             public Widget AnchorWidget;

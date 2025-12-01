@@ -13,6 +13,8 @@ public interface IStyle
     void ApplyTo(Widget widget);
 
     bool CanApplyTo(Widget widget);
+
+    IStyle Clone();
 }
 
 public interface IStyle<in TWidget>

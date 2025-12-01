@@ -94,6 +94,24 @@ public class Stylesheet
 
     }
 
+    public IDictionary<string, IStyle> GetStylesFor(Type type)
+    {
+        if (!this.Styles.TryGetValue(type, out var dict))
+        {
+            dict = new Dictionary<string, IStyle>();
+            this.Styles[type] = dict;
+            return dict;
+        }
+
+        return dict;
+    }
+
+    public IDictionary<string, IStyle> GetStylesFor<TWidget>()
+        where TWidget : Widget
+    {
+        return this.GetStylesFor(typeof(TWidget));
+    }
+
     public IStyle GetStyleFor(object target, string name = Stylesheet.DefaultStyleName)
     {
         var targetType = target.GetType();
@@ -167,6 +185,26 @@ public class Stylesheet
         return result.ToArray();
     }
 
+    public Stylesheet Clone()
+    {
+        var ret = new Stylesheet();
+        foreach(var widgetTypePair in this.Styles)
+        {
+            var dict = new Dictionary<string, IStyle>();
+            ret.Styles.Add(widgetTypePair.Key, dict);
+            foreach(var stylePair in widgetTypePair.Value)
+            {
+                dict.Add(stylePair.Key, stylePair.Value.Clone());
+            }
+        }
+
+        ret.Atlas = this.Atlas;
+        ret.Fonts = this.Fonts;
+        ret.DesktopStyle = this.DesktopStyle;
+
+        return ret;
+    }
+
     public static Stylesheet LoadFromSource(string stylesheetXml,
             TextureRegionAtlas textureRegionAtlas,
             Dictionary<string, SpriteFontBase> fonts)
@@ -226,7 +264,7 @@ public class Stylesheet
         {
             Assemblies = new Dictionary<Assembly, string[]>()
                 {
-                    { typeof( WidgetStyle ).Assembly, new string[] { typeof( WidgetStyle ).Namespace } }
+                    { typeof(GenericStyle).Assembly, new string[] { typeof(GenericStyle).Namespace } }
                 },
             ResourceGetter = resourceGetter,
             NodesToIgnore = new HashSet<string>(new[] { "Designer", "Colors", "Fonts" }),
@@ -235,7 +273,7 @@ public class Stylesheet
             Colors = colors
         };
 
-        foreach(var child in xDoc.Root.Elements())
+        foreach (var child in xDoc.Root.Elements())
         {
             if (child.Name.LocalName.EndsWith("Styles"))
             {
@@ -319,7 +357,7 @@ public class Stylesheet
                 if (property.PropertyType.IsAssignableTo(typeof(IStyle)))
                 {
                     var styleType = property.PropertyType;
-                    if(styleType.IsInterface)
+                    if (styleType.IsInterface)
                     {
                         styleType = typeof(GenericStyle<>).MakeGenericType(styleType.GenericTypeArguments);
                     }

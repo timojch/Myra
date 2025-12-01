@@ -134,9 +134,9 @@ namespace Myra.Graphics2D.UI
         {
             var item = (TabItem)sender;
 
-            var label = item.LabelWidget;
+            var label = item.Display.Label;
             label.Text = item.Text;
-            TabItemStyle.GetSubStyle<Label>("Label").ApplyTo(label);
+            item.Display.SetStyle(TabItemStyle);
 
             if (SelectedItem == item)
             {
@@ -236,7 +236,7 @@ namespace Myra.Graphics2D.UI
 
             display.Click += ButtonOnClick;
 
-            item.Button = display;
+            item.Display = display;
 
             if (!CloseableTabs)
             {
@@ -262,7 +262,7 @@ namespace Myra.Graphics2D.UI
                 var style = TabItemStyle;
                 if (CloseButtonStyle != null)
                 {
-                    CloseButtonStyle.ApplyTo(closeButton);
+                    closeButton.SetStyle(CloseButtonStyle);
                 }
 
                 topItemPanel.Widgets.Add(closeButton);
@@ -298,7 +298,7 @@ namespace Myra.Graphics2D.UI
         {
             item.Changed -= ItemOnChanged;
 
-            var index = GetButtonIndex(item.Button);
+            var index = GetButtonIndex(item.Display);
             if (index < 0)
             {
                 return;
@@ -346,11 +346,6 @@ namespace Myra.Graphics2D.UI
             }
 
             SelectedIndex = index;
-        }
-
-        public void ApplyTabControlStyle(TabControlStyle style)
-        {
-            ApplyWidgetStyle(style);
         }
 
         protected internal override void CopyFrom(Widget w)

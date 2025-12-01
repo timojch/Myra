@@ -574,24 +574,5 @@ namespace Myra.Graphics2D.UI.ColorPicker
 
             colorHSV = hsv;
         }
-
-        public void ApplyColorPickerDialogStyle(ColorPickerDialogStyle style)
-        {
-            foreach (var image in _userColorBackgrounds)
-            {
-                image.Renderable = style.CheckerBoard;
-            }
-
-            _colorBackground.Renderable = style.CheckerBoard;
-
-            _userColors.SelectionHoverBackground = style.SelectionHoverBackground;
-            _userColors.SelectionBackground = style.SelectionBackground;
-
-            _colorWheel.Renderable = style.Wheel;
-            _vPicker.Background = style.Gradient;
-
-            var vsPickerKnob = (Image)_vPicker.ImageButton.Content;
-            vsPickerKnob.Renderable = vsPickerKnob.OverRenderable = vsPickerKnob.PressedRenderable = style.VSPickerKnob;
-        }
     }
 }

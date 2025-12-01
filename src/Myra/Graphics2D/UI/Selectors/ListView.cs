@@ -224,7 +224,7 @@ namespace Myra.Graphics2D.UI
 
                 button.Click += _listView.ButtonOnClick;
 
-                _listView.ListItemStyle.ApplyTo(button);
+                button.SetStyle(_listView.ListItemStyle);
 
                 return button;
             }
@@ -276,7 +276,7 @@ namespace Myra.Graphics2D.UI
                 field = value;
                 foreach (var item in Widgets.OfType<ListViewButton>())
                 {
-                    value.ApplyTo(item);
+                    item.SetStyle(value);
                 }
             }
         }
@@ -516,11 +516,6 @@ namespace Myra.Graphics2D.UI
             base.OnMouseWheel(delta);
 
             _scrollViewer.OnMouseWheel(delta);
-        }
-
-        public void ApplyListBoxStyle(ListBoxStyle style)
-        {
-            ApplyWidgetStyle(style);
         }
 
         private Widget GetChildByIndex(int index)

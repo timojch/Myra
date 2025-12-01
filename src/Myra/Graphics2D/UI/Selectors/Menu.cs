@@ -381,7 +381,7 @@ namespace Myra.Graphics2D.UI
             }
             else if (ShortcutStyle != null)
             {
-                ShortcutStyle.ApplyTo(menuItem.Shortcut);
+                menuItem.Shortcut.SetStyle(ShortcutStyle);
             }
 
             if (!string.IsNullOrEmpty(menuItem.ShortcutText) && !InternalChild.Widgets.Contains(menuItem.Shortcut))
@@ -400,7 +400,7 @@ namespace Myra.Graphics2D.UI
             }
             else if (LabelStyle != null)
             {
-                LabelStyle.ApplyTo(menuItem.Label);
+                menuItem.Label.SetStyle(LabelStyle);
             }
 
             menuItem.Label.HorizontalAlignment = LabelHorizontalAlignment;
@@ -453,13 +453,13 @@ namespace Myra.Graphics2D.UI
 
                 if (Orientation == Orientation.Horizontal)
                 {
-                    LabelStyle.ApplyTo(menuItem.Label);
+                    menuItem.Label.SetStyle(LabelStyle);
                 }
                 else
                 {
-                    ImageStyle.ApplyTo(menuItem.ImageWidget);
-                    LabelStyle.ApplyTo(menuItem.Label);
-                    ShortcutStyle.ApplyTo(menuItem.Shortcut);
+                    menuItem.ImageWidget.SetStyle(ImageStyle);
+                    menuItem.Label.SetStyle(LabelStyle);
+                    menuItem.Shortcut.SetStyle(ShortcutStyle);
                 }
 
                 // Add only label, as other widgets(image and shortcut) would be optionally added by SetMenuItem
@@ -485,7 +485,7 @@ namespace Myra.Graphics2D.UI
                     separator = new HorizontalSeparator(null);
                 }
 
-                SeparatorStyle.ApplyTo(separator);
+                separator.SetStyle(SeparatorStyle);
 
                 InternalChild.Widgets.Add(separator);
 
@@ -775,16 +775,6 @@ namespace Myra.Graphics2D.UI
         public void InvalidateMenuContent()
         {
             _dirty = true;
-        }
-
-        public void ApplyMenuStyle(MenuStyle style)
-        {
-            var clone = new MenuStyle(style);
-
-            ApplyWidgetStyle(clone);
-
-            InternalChild.SelectionHoverBackground = style.SelectionHoverBackground;
-            InternalChild.SelectionBackground = style.SelectionBackground;
         }
 
         private void UpdatePosition()

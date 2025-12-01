@@ -460,17 +460,6 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
-		public void ApplyScrollViewerStyle(ScrollViewerStyle style)
-		{
-			HorizontalScrollBackground = style.HorizontalScrollBackground;
-			HorizontalScrollKnob = style.HorizontalScrollKnob;
-			VerticalScrollBackground = style.VerticalScrollBackground;
-			VerticalScrollKnob = style.VerticalScrollKnob;
-			CornerBackground = style.CornerBackground;
-
-			ApplyWidgetStyle(style);
-		}
-
 		protected override Point InternalMeasure(Point availableSize)
 		{
 			if (Content == null)
