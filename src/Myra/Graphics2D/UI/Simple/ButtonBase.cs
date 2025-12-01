@@ -244,13 +244,6 @@ namespace Myra.Graphics2D.UI
 			return result;
 		}
 
-		public void ApplyButtonStyle(ButtonStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			PressedBackground = style.PressedBackground;
-		}
-
 		private void DesktopTouchUp(object sender, EventArgs args)
 		{
 			IsPressed = false;

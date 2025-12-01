@@ -82,8 +82,6 @@ namespace Myra.Graphics2D.UI
 
 		public TreeNode ParentNode { get; internal set; }
 
-		public TreeStyle TreeStyle { get; private set; }
-
 		[Category("Appearance")]
 		public IBrush SelectionBackground
 		{

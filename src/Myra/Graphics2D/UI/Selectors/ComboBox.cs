@@ -209,7 +209,7 @@ namespace Myra.Graphics2D.UI
 			if (item != null)
 			{
 				InternalChild.Text = item.Text;
-				_listBox.ListItemStyle.ApplyTo(InternalChild);
+				InternalChild.SetStyle(_listBox.ListItemStyle);
 				((ImageTextButton)item.Widget).IsPressed = true;
 			}
 			else

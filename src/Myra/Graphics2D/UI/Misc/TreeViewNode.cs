@@ -125,7 +125,7 @@ namespace Myra.Graphics2D.UI
 
             Children.Add(_childNodesStackPanel);
 
-            style.ApplyTo(this);
+            this.SetStyle(style);
 
             UpdateMark();
         }

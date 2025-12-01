@@ -374,23 +374,6 @@ namespace Myra.Graphics2D.UI
 			_textPosition = value;
 		}
 
-		public void ApplyImageTextButtonStyle(ImageTextButtonStyle style)
-		{
-			ApplyButtonStyle(style);
-
-			if (style.ImageStyle != null)
-			{
-				_image.ApplyPressableImageStyle(style.ImageStyle);
-			}
-
-			if (style.LabelStyle != null)
-			{
-				_label.ApplyLabelStyle(style.LabelStyle);
-			}
-
-			ImageTextSpacing = style.ImageTextSpacing;
-		}
-
 		public override void OnPressedChanged()
 		{
 			base.OnPressedChanged();

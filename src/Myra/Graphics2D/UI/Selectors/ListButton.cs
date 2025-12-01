@@ -44,14 +44,6 @@ namespace Myra.Graphics2D.UI
 			}
         }
 
-        public ListButton(ImageTextButtonStyle bs, ISelector selector) : base(null)
-        {
-            _selector = selector;
-            Toggleable = true;
-
-            ApplyImageTextButtonStyle(bs);
-        }
-
         public ListButton(IStyle<ImageTextButton> bs, ISelector selector) : base(null)
         {
             _selector = selector;

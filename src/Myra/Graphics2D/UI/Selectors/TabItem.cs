@@ -5,6 +5,8 @@ using System.Xml.Serialization;
 using Myra.Attributes;
 using Myra.Utility;
 using Myra.MML;
+using Myra.Graphics2D.UI.Selectors;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -21,7 +23,7 @@ namespace Myra.Graphics2D.UI
 		private Widget _content;
 		private string _text;
 		private Color? _color;
-		private ListViewButton _button;
+		private TabItemDisplay _button;
 
 		public string Text
 		{
@@ -96,7 +98,7 @@ namespace Myra.Graphics2D.UI
 
 		[Browsable(false)]
 		[XmlIgnore]
-		internal ListViewButton Button
+		internal TabItemDisplay Display
 		{
 			get => _button;
 			set
@@ -119,18 +121,6 @@ namespace Myra.Graphics2D.UI
 				}
 			}
 		}
-
-		[Browsable(false)]
-		[XmlIgnore]
-		private HorizontalStackPanel Panel => (HorizontalStackPanel)Button.Content;
-
-		[Browsable(false)]
-		[XmlIgnore]
-		internal Image ImageWidget => (Image)Panel.Widgets[0];
-
-		[Browsable(false)]
-		[XmlIgnore]
-		internal Label LabelWidget => (Label)Panel.Widgets[1];
 
 		[Browsable(false)]
 		[XmlIgnore]

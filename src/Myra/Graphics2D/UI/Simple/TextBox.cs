@@ -1507,20 +1507,6 @@ namespace Myra.Graphics2D.UI
 			_richTextLayout.Width = _wrap ? width : default(int?);
 		}
 
-		public void ApplyTextBoxStyle(TextBoxStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			TextColor = style.TextColor;
-			DisabledTextColor = style.DisabledTextColor;
-			FocusedTextColor = style.FocusedTextColor;
-
-			Cursor = style.Cursor;
-			Selection = style.Selection;
-
-			Font = style.Font;
-		}
-
 		public float GetWidth(int index)
 		{
 			var glyph = _richTextLayout.GetGlyphInfoByIndex(index);

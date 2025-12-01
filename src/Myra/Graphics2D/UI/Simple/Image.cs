@@ -188,15 +188,6 @@ namespace Myra.Graphics2D.UI
             }
 		}
 
-		public void ApplyPressableImageStyle(PressableImageStyle imageStyle)
-		{
-			ApplyWidgetStyle(imageStyle);
-
-			Renderable = imageStyle.Image;
-			OverRenderable = imageStyle.OverImage;
-			PressedRenderable = imageStyle.PressedImage;
-		}
-
 		protected internal override void CopyFrom(Widget w)
 		{
 			base.CopyFrom(w);

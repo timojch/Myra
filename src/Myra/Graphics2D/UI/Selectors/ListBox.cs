@@ -40,7 +40,7 @@ namespace Myra.Graphics2D.UI
 
                 foreach (var item in Items.Select(i => i.Widget).OfType<ImageTextButton>())
                 {
-                    value.ApplyTo(item);
+                    item.SetStyle(value);
                 }
             }
 		}
@@ -57,7 +57,7 @@ namespace Myra.Graphics2D.UI
 
                 foreach (var item in Items.Select(i => i.Widget).OfType<SeparatorWidget>())
                 {
-                    value.ApplyTo(item);
+                    item.SetStyle(value);
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace Myra.Graphics2D.UI
 
 			var button = (ImageTextButton)item.Widget;
 			button.Text = item.Text;
-			ListItemStyle.ApplyTo(button);
+			button.SetStyle(ListItemStyle);
 
 			InvalidateMeasure();
 		}

@@ -295,17 +295,6 @@ namespace Myra.Graphics2D.UI
             }
         }
 
-        public void ApplyLabelStyle(LabelStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			TextColor = style.TextColor;
-			DisabledTextColor = style.DisabledTextColor;
-			OverTextColor = style.OverTextColor;
-			PressedTextColor = style.PressedTextColor;
-			Font = style.Font;
-		}
-
 		protected internal override void CopyFrom(Widget w)
 		{
 			base.CopyFrom(w);

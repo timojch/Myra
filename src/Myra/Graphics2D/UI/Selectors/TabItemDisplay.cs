@@ -14,6 +14,8 @@ public class TabItemDisplay : ListViewButton
 
     public Label Label { get; }
 
+    public Panel Panel { get => (Panel)this.Content; }
+
     public TabItemDisplay(TabItem item, GenericStyle<TabItemDisplay> style)
     {
         Image = new Image
@@ -35,7 +37,7 @@ public class TabItemDisplay : ListViewButton
         panel.Widgets.Add(Image);
         panel.Widgets.Add(Label);
 
-        style.ApplyTo(this);
+        this.SetStyle(style);
 
         HorizontalAlignment = HorizontalAlignment.Stretch;
 		VerticalAlignment = VerticalAlignment.Stretch;

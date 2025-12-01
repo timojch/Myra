@@ -217,9 +217,6 @@ public class GenericStyle<TWidget>
 
     public void ApplyTo(TWidget widget)
     {
-        widget.StyledBy = this;
-        widget.StyleName = this.Name;
-
         foreach (var pair in this.ValuePairs)
         {
             pair.Key.SetValue(widget, pair.Value);
@@ -228,7 +225,7 @@ public class GenericStyle<TWidget>
         foreach (var pair in this.StylePairs)
         {
             var target = (Widget)pair.Key.GetValue(widget);
-            pair.Value.ApplyTo(target);
+            target.SetStyle(pair.Value);
         }
 
         if (this.HasContent)
@@ -252,7 +249,7 @@ public class GenericStyle<TWidget>
                         content = (Widget)styledConstructor.Invoke([Stylesheet.DefaultStyleName]);
                     }
                     contentWidget.Content = content;
-                    this.ContentStyle.ApplyTo(content);
+                    content.SetStyle(this.ContentStyle);
                 }
             }
             else
@@ -266,7 +263,7 @@ public class GenericStyle<TWidget>
     {
         if (style.CanApplyTo(widget))
         {
-            style.ApplyTo(widget);
+            widget.SetStyle(style);
         }
         else if (widget is ContentControl singleContentWidget)
         {
@@ -289,6 +286,9 @@ public class GenericStyle<TWidget>
     {
         var clone = new GenericStyle<TWidget>();
 
+        clone.ContentStyle = this.ContentStyle;
+        clone.ContentType = this.ContentType;
+
         foreach (var valuePair in this.ValuePairs)
         {
             clone.AddAttribute(valuePair.Key.Name, valuePair.Value);
@@ -300,6 +300,11 @@ public class GenericStyle<TWidget>
         }
 
         return clone;
+    }
+
+    IStyle IStyle.Clone()
+    {
+        return this.Clone();
     }
 
     private bool IsStyleableProperty(PropertyInfo propertyInfo)

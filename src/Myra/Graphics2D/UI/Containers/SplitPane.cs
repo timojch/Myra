@@ -41,6 +41,8 @@ namespace Myra.Graphics2D.UI
 			ChildrenLayout = _layout;
 			_widgets.CollectionChanged += WidgetsOnCollectionChanged;
 
+			StyleChanged += (s, ev) => Reset();
+
 			SetStyle(styleName);
 		}
 
@@ -256,7 +258,7 @@ namespace Myra.Graphics2D.UI
 						handle.HorizontalAlignment = HorizontalAlignment.Stretch;
 					}
 
-					HandleStyle.ApplyTo(handle);
+					handle.SetStyle(HandleStyle);
 
 					handle.PressedChanged += HandleOnPressedChanged;
 
@@ -315,13 +317,6 @@ namespace Myra.Graphics2D.UI
 			}
 
 			FireProportionsChanged();
-		}
-
-		public void ApplySplitPaneStyle(SplitPaneStyle style)
-		{
-			ApplyWidgetStyle(style);
-
-			Reset();
 		}
 
 		protected internal override void CopyFrom(Widget w)
