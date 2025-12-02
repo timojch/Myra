@@ -191,7 +191,7 @@ public class Stylesheet
         foreach(var widgetTypePair in this.Styles)
         {
             var dict = new Dictionary<string, IStyle>();
-            ret.Styles.Add(widgetTypePair.Key, dict);
+            ret.Styles[widgetTypePair.Key] = dict;
             foreach(var stylePair in widgetTypePair.Value)
             {
                 dict.Add(stylePair.Key, stylePair.Value.Clone());

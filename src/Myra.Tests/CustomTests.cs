@@ -18,18 +18,24 @@ namespace Myra.Tests
 		public void NoDefaultStyleLabel()
 		{
 			// Store current stylesheet
-			var oldStylesheet = Stylesheet.Current.Clone();
+			var oldStylesheet = Stylesheet.Current;
 
-			// Remove all styles, including default one from the stylesheet
-			Stylesheet.Current.GetStylesFor<Label>().Clear();
+			try
+            {
+				Stylesheet.Current = Stylesheet.Current.Clone();
+                // Remove all styles, including default one from the stylesheet
+                Stylesheet.Current.GetStylesFor<Label>().Clear();
 
-			Assert.Throws<Exception>(() =>
+                Assert.Throws<KeyNotFoundException>(() =>
+				{
+					var label = new Label("blue");
+				});
+			}
+			finally
 			{
-				var label = new Label("blue");
-			});
-
-			// Restore the stylesheet for other tests to work
-			Stylesheet.Current = oldStylesheet;
+				// Restore the stylesheet for other tests to work
+				Stylesheet.Current = oldStylesheet;
+			}
 		}
 
 		/// <summary>
