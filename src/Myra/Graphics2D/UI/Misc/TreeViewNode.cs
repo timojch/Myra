@@ -1,5 +1,7 @@
 ﻿using System;
 using Myra.Graphics2D.UI.Styles;
+using Myra.Graphics2D.Brushes;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -73,7 +75,7 @@ namespace Myra.Graphics2D.UI
 
                 if (_content != null)
                 {
-                    Grid.SetColumn(_content, 1);
+                    Grid.SetColumn(_content, 2);
                     Children.Add(_content);
                 }
             }
@@ -110,6 +112,7 @@ namespace Myra.Graphics2D.UI
             VerticalAlignment = VerticalAlignment.Stretch;
 
             _layout.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
+            _layout.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
             _layout.ColumnsProportions.Add(new Proportion(ProportionType.Fill));
 
             _layout.RowsProportions.Add(new Proportion(ProportionType.Auto));
@@ -123,11 +126,7 @@ namespace Myra.Graphics2D.UI
 			Grid.SetColumn(_childNodesStackPanel, 1);
 			Grid.SetRow(_childNodesStackPanel, 1);
 
-            Children.Add(_childNodesStackPanel);
-
             this.SetStyle(style);
-
-            UpdateMark();
         }
 
         internal TreeViewNode(TreeView topTree, string styleName = Stylesheet.DefaultStyleName)
