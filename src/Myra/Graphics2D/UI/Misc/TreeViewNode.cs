@@ -1,5 +1,7 @@
 ﻿using System;
 using Myra.Graphics2D.UI.Styles;
+using Myra.Graphics2D.Brushes;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -82,7 +84,7 @@ namespace Myra.Graphics2D.UI
 
                 if (_content != null)
                 {
-                    Grid.SetColumn(_content, 1);
+                    Grid.SetColumn(_content, 2);
                     Children.Add(_content);
                 }
             }
@@ -101,9 +103,12 @@ namespace Myra.Graphics2D.UI
                 _topTree.AllNodes.Add(this);
             }
 
-            _spacer = new Widget();
+            _spacer = new Widget
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
             this.Children.Add(_spacer);
-            this.UpdateSpacer();
 
             _mark = new ToggleButton(null)
             {
@@ -123,6 +128,7 @@ namespace Myra.Graphics2D.UI
             VerticalAlignment = VerticalAlignment.Stretch;
 
             _layout.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
+            _layout.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
             _layout.ColumnsProportions.Add(new Proportion(ProportionType.Fill));
 
             _layout.RowsProportions.Add(new Proportion(ProportionType.Auto));
@@ -133,15 +139,20 @@ namespace Myra.Graphics2D.UI
             {
                 Visible = false,
             };
+
+            Children.Add(_childNodesStackPanel);
+
+            Grid.SetColumn(_mark, 1);
             Grid.SetRow(_childNodesStackPanel, 1);
             Grid.SetColumn(_childNodesStackPanel, 0);
             Grid.SetColumnSpan(_childNodesStackPanel, 3);
 
-            Children.Add(_childNodesStackPanel);
-
             this.SetStyle(style);
 
+            UpdateSpacer();
             UpdateMark();
+
+            // this.Arrange(new Rectangle(0, 0, 1280, 800));
         }
 
         internal TreeViewNode(TreeView topTree, string styleName = Stylesheet.DefaultStyleName)
@@ -156,7 +167,13 @@ namespace Myra.Graphics2D.UI
 
         protected virtual void UpdateMark()
         {
-            _mark.Visible = _childNodesStackPanel.Children.Count > 0;
+            var markVisible = _childNodesStackPanel.Children.Count > 0;
+            if (_mark.Visible != markVisible)
+            {
+                _mark.Visible = markVisible;
+                InvalidateArrange();
+                Arrange(this.ActualBounds);
+            }
         }
 
         public virtual void RemoveAllSubNodes()
@@ -238,9 +255,9 @@ namespace Myra.Graphics2D.UI
             {
                 this._spacer.MinWidth = 0;
             }
-            else
+            else if (this.Mark is not null)
             {
-                this._spacer.MinWidth = this.Depth * this.ParentNode.Mark.Measure(new Point(1000, 1000)).X;
+                this._spacer.MinWidth = this.Depth * this.Mark.Measure(new Point(1000, 1000)).X;
             }
         }
     }
