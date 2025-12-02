@@ -6,6 +6,8 @@ using System.Xml.Serialization;
 using Myra.MML;
 using Myra.Graphics2D.UI.Properties;
 using Myra.Attributes;
+using System.Collections.Generic;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -1169,7 +1171,8 @@ namespace Myra.Graphics2D.UI
 
         public void SetStyle(Stylesheet stylesheet, string name)
         {
-            SetStyle(stylesheet.GetStyleFor(this, name));
+            var style = stylesheet.GetStyleFor(this, name);
+            SetStyle(style ?? throw new KeyNotFoundException($"A style named {name} could not be found for widget {this.GetType().Name}"));
         }
 
         public void SetStyle(string name)
