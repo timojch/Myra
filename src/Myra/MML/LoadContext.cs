@@ -85,7 +85,7 @@ namespace Myra.MML
 
             var baseObject = obj as BaseObject;
 
-            List<PropertyInfo> complexProperties, simpleProperties;
+            IList<PropertyInfo> complexProperties, simpleProperties;
             ParseProperties(type, false, out complexProperties, out simpleProperties);
 
             foreach (var attr in el.Attributes())
@@ -272,10 +272,15 @@ namespace Myra.MML
                 BaseObject baseObject,
                 Type type,
                 THandler handler,
-                IList<PropertyInfo> complexProperties,
-                IList<PropertyInfo> simpleProperties)
+                IList<PropertyInfo> complexProperties = null,
+                IList<PropertyInfo> simpleProperties = null)
             where THandler : class
         {
+            if (complexProperties is null)
+            {
+                ParseProperties(type, false, out complexProperties, out simpleProperties);
+            }
+
             var childName = child.Name.ToString();
             if (NodesToIgnore != null && NodesToIgnore.Contains(childName))
             {

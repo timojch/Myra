@@ -65,7 +65,7 @@ namespace Myra.MML
 
 			var baseObject = obj as BaseObject;
 
-			List<PropertyInfo> complexProperties, simpleProperties;
+			IList<PropertyInfo> complexProperties, simpleProperties;
 			ParseProperties(type, true, out complexProperties, out simpleProperties);
 
 			var el = new XElement(tagName ?? type.Name);

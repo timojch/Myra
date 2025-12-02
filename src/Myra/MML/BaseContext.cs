@@ -39,8 +39,8 @@ namespace Myra.MML
 		}
 
 		protected static void ParseProperties(Type type, bool checkSkipSave,
-			out List<PropertyInfo> complexProperties, 
-			out List<PropertyInfo> simpleProperties)
+			out IList<PropertyInfo> complexProperties, 
+			out IList<PropertyInfo> simpleProperties)
 		{
 			complexProperties = new List<PropertyInfo>();
 			simpleProperties = new List<PropertyInfo>();

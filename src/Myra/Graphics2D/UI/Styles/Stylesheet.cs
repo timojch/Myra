@@ -188,11 +188,11 @@ public class Stylesheet
     public Stylesheet Clone()
     {
         var ret = new Stylesheet();
-        foreach(var widgetTypePair in this.Styles)
+        foreach (var widgetTypePair in this.Styles)
         {
             var dict = new Dictionary<string, IStyle>();
             ret.Styles[widgetTypePair.Key] = dict;
-            foreach(var stylePair in widgetTypePair.Value)
+            foreach (var stylePair in widgetTypePair.Value)
             {
                 dict.Add(stylePair.Key, stylePair.Value.Clone());
             }
@@ -279,6 +279,12 @@ public class Stylesheet
             {
                 var dict = Stylesheet.LoadStylesFromXml(child, loadContext, out var targetType);
                 result.Styles[targetType] = dict;
+            }
+
+            if (child.Name == nameof(DesktopStyle))
+            {
+                var property = typeof(Stylesheet).GetProperty(nameof(DesktopStyle));
+                loadContext.LoadFromChildElement<object>(child, null, result, null, typeof(Stylesheet), null);
             }
         }
 

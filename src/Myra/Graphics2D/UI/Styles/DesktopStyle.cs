@@ -4,7 +4,8 @@
 	{
 		public IBrush Background
 		{
-			get; set;
+			get; 
+			set;
 		}
 	}
 }

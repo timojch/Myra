@@ -4,6 +4,7 @@
 		<Font Id="default-font" File="Inter-Regular.ttf" Size="20"/>
 		<Font Id="tooltip-font" File="Inter-Regular.ttf" Size="16"/>
 	</Fonts>
+	<DesktopStyle Background="Transparent" />
 	<LabelStyles>
 		<LabelStyle Font="default-font" TextColor="white" DisabledTextColor="gray" />
 	</LabelStyles>
