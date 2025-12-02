@@ -115,8 +115,6 @@ namespace Myra.Graphics2D.UI.File
 
 			
 			Title = "Open File...";
-			Left = 658;
-			Top = 131;
 			Width = 600;
 			Height = 400;
 			Content = verticalStackPanel1;
