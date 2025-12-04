@@ -28,7 +28,7 @@ namespace Myra.Graphics2D.UI
 
 		[XmlIgnore]
 		[Browsable(false)]
-		public GenericStyle<Button> HandleStyle { get; set; }
+		public Style<Button> HandleStyle { get; set; }
 
 		[Category("Appearance")]
 		[DefaultValue(6)]

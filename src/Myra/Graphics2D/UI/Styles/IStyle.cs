@@ -26,4 +26,8 @@ public interface IStyle<in TWidget>
     void IStyle.ApplyTo(Widget widget) => this.ApplyTo((TWidget)widget);
 
     bool IStyle.CanApplyTo(Widget widget) => widget is TWidget;
+
+    TProperty GetAttribute<TProperty>(string name);
+
+    void AddAttribute(string name, object property);
 }

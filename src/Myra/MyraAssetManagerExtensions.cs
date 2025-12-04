@@ -292,6 +292,6 @@ namespace AssetManagementBase
             throw new Exception(string.Format("Can't load font '{0}'", assetName));
         }
 
-        public static Stylesheet LoadGenericStylesheet(this AssetManager assetManager, string assetName) => assetManager.UseLoader(_stylesheetLoader, assetName);
+        public static Stylesheet LoadStylesheet(this AssetManager assetManager, string assetName) => assetManager.UseLoader(_stylesheetLoader, assetName);
     }
 }

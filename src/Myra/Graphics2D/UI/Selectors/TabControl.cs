@@ -23,11 +23,11 @@ namespace Myra.Graphics2D.UI
 
         [Browsable(false)]
         [XmlIgnore]
-        public GenericStyle<TabItemDisplay> TabItemStyle { get; set; }
+        public Style<TabItemDisplay> TabItemStyle { get; set; }
 
         [Browsable(false)]
         [XmlIgnore]
-        public GenericStyle<Button> CloseButtonStyle { get; set; }
+        public Style<Button> CloseButtonStyle { get; set; }
 
         [Browsable(false)]
         [XmlIgnore]

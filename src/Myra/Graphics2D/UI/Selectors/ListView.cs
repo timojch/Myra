@@ -268,7 +268,7 @@ namespace Myra.Graphics2D.UI
         internal ComboView _parentCombo;
 
         [Category("Style")]
-        public GenericStyle<ListViewButton> ListItemStyle
+        public Style<ListViewButton> ListItemStyle
         {
             get; 
             set
@@ -282,7 +282,7 @@ namespace Myra.Graphics2D.UI
         }
 
         [Category("Style")]
-        public GenericStyle<SeparatorWidget> SeparatorStyle { get; set; }
+        public Style<SeparatorWidget> SeparatorStyle { get; set; }
 
         [Category("Behavior")]
         [DefaultValue(SelectionMode.Single)]

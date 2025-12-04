@@ -64,13 +64,12 @@ public class Stylesheet
 
     public Stylesheet()
     {
-        var defaultWidgetStyle = new GenericStyle<Widget>();
+        var defaultWidgetStyle = new Style<Widget>();
         this.AddStyle(defaultWidgetStyle);
     }
 
     static Stylesheet()
     {
-#pragma warning disable CS0618 // Type or member is obsolete
         LegacyClassNames["TextBlockStyle"] = "LabelStyle";
         LegacyClassNames["TextFieldStyle"] = "TextBoxStyle";
         LegacyClassNames["ScrollPaneStyle"] = "ScrollViewerStyle";
@@ -84,6 +83,7 @@ public class Stylesheet
 
         LegacyWidgetNames["CheckBox"] = "ImageTextButton";
 
+#pragma warning disable CS0618 // Type or member is obsolete
         IgnorableProperties[typeof(ComboView)] = ["LabelStyle"];
         IgnorableProperties[typeof(ComboBox)] = ["LabelStyle"];
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -91,7 +91,19 @@ public class Stylesheet
 
     public void CombineWith(Stylesheet other)
     {
+        foreach (var widgetTypePair in other.Styles)
+        {
+            if (!this.Styles.TryGetValue(widgetTypePair.Key, out var dict))
+            {
+                dict = new Dictionary<string, IStyle>();
+                this.Styles[widgetTypePair.Key] = dict;
+            }
 
+            foreach (var stylePair in widgetTypePair.Value)
+            {
+                dict[stylePair.Key] = stylePair.Value;
+            }
+        }
     }
 
     public IDictionary<string, IStyle> GetStylesFor(Type type)
@@ -314,7 +326,7 @@ public class Stylesheet
             throw new Exception($"Could not parse styles for {name} because no matching type was found.");
         }
 
-        var styleType = typeof(GenericStyle<>).MakeGenericType(targetType);
+        var styleType = typeof(Style<>).MakeGenericType(targetType);
 
         var ret = new Dictionary<string, IStyle>();
 
@@ -365,7 +377,7 @@ public class Stylesheet
                     var styleType = property.PropertyType;
                     if (styleType.IsInterface)
                     {
-                        styleType = typeof(GenericStyle<>).MakeGenericType(styleType.GenericTypeArguments);
+                        styleType = typeof(Style<>).MakeGenericType(styleType.GenericTypeArguments);
                     }
 
                     var subStyleTarget = (Style)Activator.CreateInstance(styleType);
@@ -393,7 +405,7 @@ public class Stylesheet
 
                     if (propertyType.IsAssignableTo(typeof(Widget)))
                     {
-                        var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([propertyType]);
+                        var propertyStyleType = typeof(Style<>).MakeGenericType([propertyType]);
                         var subStyleTarget = (Style)Activator.CreateInstance(propertyStyleType);
                         var childId = $"{currentId}/{name}";
                         subStyleTarget.Name = childId;
@@ -408,7 +420,7 @@ public class Stylesheet
 
                         if (contentWidgetType is not null)
                         {
-                            var propertyStyleType = typeof(GenericStyle<>).MakeGenericType([contentWidgetType]);
+                            var propertyStyleType = typeof(Style<>).MakeGenericType([contentWidgetType]);
                             var subStyleTarget = Activator.CreateInstance(propertyStyleType) as Style;
                             var childId = $"{currentId}/{name}";
                             subStyleTarget.Name = childId;

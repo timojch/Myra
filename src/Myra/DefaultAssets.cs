@@ -33,7 +33,7 @@ namespace Myra
                     return field;
                 }
 
-                field = AssetManager.LoadGenericStylesheet("default_ui_skin.xmms");
+                field = AssetManager.LoadStylesheet("default_ui_skin.xmms");
                 return field ;
             }
 
@@ -49,7 +49,7 @@ namespace Myra
                     return field;
                 }
 
-                field = AssetManager.LoadGenericStylesheet("default_ui_skin_2x.xmms");
+                field = AssetManager.LoadStylesheet("default_ui_skin_2x.xmms");
                 return field;
             }
 

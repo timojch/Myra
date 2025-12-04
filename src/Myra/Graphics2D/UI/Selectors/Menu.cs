@@ -59,16 +59,16 @@ namespace Myra.Graphics2D.UI
         public Menu ParentMenu { get; set; }
 
         [Category("Style")]
-        public GenericStyle<Label> LabelStyle { get; set; }
+        public Style<Label> LabelStyle { get; set; }
 
         [Category("Style")]
-        public GenericStyle<Label> ShortcutStyle { get; set; }
+        public Style<Label> ShortcutStyle { get; set; }
 
         [Category("Style")]
-        public GenericStyle<Image> ImageStyle { get; set; }
+        public Style<Image> ImageStyle { get; set; }
 
         [Category("Style")]
-        public GenericStyle<SeparatorWidget> SeparatorStyle { get; set; }
+        public Style<SeparatorWidget> SeparatorStyle { get; set; }
 
         [Category("Appearance")]
         public SpriteFontBase LabelFont
