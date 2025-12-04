@@ -5,4 +5,5 @@
   <Project Path="samples/Myra.Samples.AllWidgets/Myra.Samples.AllWidgets.MonoGame.csproj" />
   <Project Path="src/Myra.Tests/Myra.Tests.MonoGame.csproj" />
   <Project Path="src/Myra/Myra.MonoGame.csproj" />
+  <Project Path="src/MyraPad/MyraPad.csproj" />
 </Solution>
