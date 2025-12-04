@@ -36,7 +36,7 @@ public abstract class Style
 
     public abstract TValue GetAttribute<TValue>(string name);
 
-    public abstract GenericStyle<TWidget> GetSubStyle<TWidget>(string name)
+    public abstract Style<TWidget> GetSubStyle<TWidget>(string name)
         where TWidget : Widget;
 
     public abstract void AddContentStyle(Type contentType, IStyle style);
@@ -70,7 +70,7 @@ public abstract class Style
     }
 }
 
-public class GenericStyle<TWidget>
+public class Style<TWidget>
     : Style, IStyle<TWidget>
     where TWidget : Widget
 {
@@ -91,7 +91,7 @@ public class GenericStyle<TWidget>
 
     public bool HasContent { get => this.ContentType is not null; }
 
-    public GenericStyle()
+    public Style()
     {
     }
 
@@ -103,9 +103,9 @@ public class GenericStyle<TWidget>
             .Value;
     }
 
-    public override GenericStyle<TStyleWidget> GetSubStyle<TStyleWidget>(string name)
+    public override Style<TStyleWidget> GetSubStyle<TStyleWidget>(string name)
     {
-        return (GenericStyle<TStyleWidget>)StylePairs
+        return (Style<TStyleWidget>)StylePairs
             .Where(pair => pair.Key.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
             .First()
             .Value;
@@ -282,9 +282,9 @@ public class GenericStyle<TWidget>
         }
     }
 
-    public GenericStyle<TWidget> Clone()
+    public Style<TWidget> Clone()
     {
-        var clone = new GenericStyle<TWidget>();
+        var clone = new Style<TWidget>();
 
         clone.ContentStyle = this.ContentStyle;
         clone.ContentType = this.ContentType;

@@ -31,7 +31,7 @@ namespace Myra.Graphics2D.UI
         [Category("Style")]
 		[Browsable(false)]
 		[XmlIgnore]
-        public GenericStyle<ImageTextButton> ListItemStyle
+        public Style<ImageTextButton> ListItemStyle
 		{ 
 			get; 
 			set

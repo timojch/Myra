@@ -16,7 +16,7 @@ public class TabItemDisplay : ListViewButton
 
     public Panel Panel { get => (Panel)this.Content; }
 
-    public TabItemDisplay(TabItem item, GenericStyle<TabItemDisplay> style)
+    public TabItemDisplay(TabItem item, Style<TabItemDisplay> style)
     {
         Image = new Image
         {

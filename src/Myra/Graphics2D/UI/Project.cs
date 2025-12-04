@@ -234,7 +234,7 @@ namespace Myra.Graphics2D.UI
 			var stylesheetPathAttr = xDoc.Root.Attribute("StylesheetPath");
 			if (stylesheetPathAttr != null)
 			{
-				stylesheet = assetManager.LoadGenericStylesheet(stylesheetPathAttr.Value);
+				stylesheet = assetManager.LoadStylesheet(stylesheetPathAttr.Value);
 			}
 
 			var result = new Project();

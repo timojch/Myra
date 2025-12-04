@@ -200,10 +200,10 @@ namespace Myra.Graphics2D.UI.Properties
         }
 
         [Category("Style")]
-        public GenericStyle<Label> LabelStyle { get; set; }
+        public Style<Label> LabelStyle { get; set; }
 
         [Category("Style")]
-        public GenericStyle<Image> MarkStyle { get; set; }
+        public Style<Image> MarkStyle { get; set; }
 
         [Browsable(false)]
 		[XmlIgnore]
