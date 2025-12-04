@@ -547,7 +547,7 @@ namespace Myra.Graphics2D.UI
 
                     field = value;
 
-                    if(value is not null)
+                    if (value is not null)
                     {
                         value.TouchDown += this.OnDragHandleTouchDown;
                     }
@@ -1216,6 +1216,11 @@ namespace Myra.Graphics2D.UI
 
         public void SetStyle(IStyle style)
         {
+            if (style is null)
+            {
+                return;
+            }
+
             style.ApplyTo(this);
             this.StyleName = style.Name;
             this.StyledBy = style;
