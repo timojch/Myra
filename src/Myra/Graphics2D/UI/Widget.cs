@@ -527,18 +527,18 @@ namespace Myra.Graphics2D.UI
 		[Browsable(false)]
 		public Widget DragHandle { get; set; }
 
-		/// <summary>
-		/// Determines whether the widget had been placed on Desktop
-		/// </summary>
-		[XmlIgnore]
-		[Browsable(false)]
-		public bool IsPlaced
-		{
-			get
-			{
-				return Desktop != null;
-			}
-		}
+        /// <summary>
+        /// Determines whether the widget had been placed on Desktop
+        /// </summary>
+        [XmlIgnore]
+        [Browsable(false)]
+        public bool IsPlaced
+        {
+            get
+            {
+                return Desktop != null;
+            }
+        }
 
 		[XmlIgnore]
 		[Browsable(false)]
@@ -1188,6 +1188,11 @@ namespace Myra.Graphics2D.UI
 
         public void SetStyle(IStyle style)
         {
+            if (style is null)
+            {
+                return;
+            }
+
             style.ApplyTo(this);
             this.StyleName = style.Name;
             this.StyledBy = style;
