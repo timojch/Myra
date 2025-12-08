@@ -372,7 +372,7 @@ public class Stylesheet
 
             if (target.TryGetProperty(name, out var property))
             {
-                if (property.PropertyType.IsAssignableTo(typeof(IStyle)))
+                if (typeof(IStyle).IsAssignableFrom(property.PropertyType))
                 {
                     var styleType = property.PropertyType;
                     if (styleType.IsInterface)
@@ -403,7 +403,7 @@ public class Stylesheet
                         propertyType = specializedType;
                     }
 
-                    if (propertyType.IsAssignableTo(typeof(Widget)))
+                    if (typeof(Widget).IsAssignableFrom(propertyType))
                     {
                         var propertyStyleType = typeof(Style<>).MakeGenericType([propertyType]);
                         var subStyleTarget = (Style)Activator.CreateInstance(propertyStyleType);

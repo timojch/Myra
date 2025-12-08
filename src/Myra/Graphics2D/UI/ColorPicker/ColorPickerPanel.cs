@@ -4,7 +4,6 @@ using FontStashSharp.RichText;
 using Myra.Events;
 using Myra.Graphics2D.UI.Styles;
 using System.ComponentModel;
-using System.Runtime.InteropServices.JavaScript;
 
 
 

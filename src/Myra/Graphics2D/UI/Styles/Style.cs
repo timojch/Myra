@@ -14,7 +14,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -54,7 +53,7 @@ public abstract class Style
         return AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(assembly => assembly.GetTypes()
                 .Where(t => t.Name.Equals(widgetName, StringComparison.OrdinalIgnoreCase))
-                .Where(t => t.IsAssignableTo(typeof(Widget))))
+                .Where(t => (typeof(Widget).IsAssignableFrom(t))))
             .FirstOrDefault();
     }
 
@@ -87,7 +86,7 @@ public class Style<TWidget>
 
     public override Type TargetType => typeof(TWidget);
 
-    public override bool CanHaveContent { get => typeof(TWidget).IsAssignableTo(typeof(ContentControl)); }
+    public override bool CanHaveContent { get => typeof(ContentControl).IsAssignableFrom(typeof(TWidget)); }
 
     public bool HasContent { get => this.ContentType is not null; }
 
@@ -173,7 +172,7 @@ public class Style<TWidget>
                 throw new InvalidDataException($"A null value cannot be assigned into the property {propertyName} in {this.TypeName}");
             }
         }
-        else if (value.GetType().IsAssignableTo(propertyInfo.PropertyType))
+        else if (propertyInfo.PropertyType.IsAssignableFrom(value.GetType()))
         {
             this.ValuePairs[propertyInfo] = value;
         }
@@ -307,11 +306,15 @@ public class Style<TWidget>
         return this.Clone();
     }
 
+    void IStyle.ApplyTo(Widget widget) => this.ApplyTo((TWidget)widget);
+
+    bool IStyle.CanApplyTo(Widget widget) => widget is TWidget;
+
     private bool IsStyleableProperty(PropertyInfo propertyInfo)
     {
         var category = propertyInfo.GetCustomAttribute<CategoryAttribute>()?.Category;
 
-        if (propertyInfo.PropertyType.IsAssignableTo(typeof(Style)))
+        if (typeof(Style).IsAssignableFrom(propertyInfo.PropertyType))
         {
             return true;
         }

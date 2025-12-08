@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using Myra.Graphics2D.UI.Styles;
 using FontStashSharp;
-using System.Runtime.InteropServices.JavaScript;
 using System.Linq;
 
 

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using Myra.Utility;
 using System.Reflection;
 using FontStashSharp;
-using System.Runtime.InteropServices.JavaScript;
 using System.Linq;
 
 
