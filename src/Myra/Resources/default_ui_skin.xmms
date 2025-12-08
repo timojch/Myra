@@ -21,6 +21,11 @@
 		<ButtonStyle Background="button" OverBackground="button-over" PressedBackground="button-down"/>
 		<ButtonStyle Id="blue" Background="button-blue" OverBackground="button-blue-down" PressedBackground="button-blue-down"/>
 	</ButtonStyles>
+	<RadioButtonStyles>
+		<RadioButtonStyle Image="vis-radio-tick-disabled" PressedImage="vis-radio-tick" >
+			<LabelStyle Font="default-font" TextColor="white" />
+		</RadioButtonStyle>
+	</RadioButtonStyles>
 	<CheckBoxStyles>
 		<CheckBoxStyle Background="vis-check" OverBackground="vis-check-over" PressedBackground="vis-check-tick" >
 			<LabelStyle Font="default-font" TextColor="white" />
