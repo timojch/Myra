@@ -97,6 +97,12 @@
 			<SeparatorStyle Padding="0, 2" Image="separator-menu" Thickness="4" />
 		</ListBoxStyle>
 	</ListBoxStyles>
+	<ListViewStyles>
+		<ListViewStyle Background="button">
+			<ListItemStyle OverBackground="button-over" Padding="5, 0" PressedBackground="list-selection" />
+			<SeparatorStyle Padding="0, 2" Image="separator-menu" Thickness="4" />
+		</ListViewStyle>
+	</ListViewStyles>
 	<TabControlStyles>
 		<TabControlStyle ButtonSpacing="0">
 			<TabItemStyle OverBackground="button-over" Padding="5, 0" PressedBackground="list-selection">
