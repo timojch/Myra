@@ -239,14 +239,15 @@ public class Style<TWidget>
                 else
                 {
                     Widget content;
-                    try
+                    var styledConstructor = this.ContentType.GetConstructor([typeof(string)]);
+                    if (styledConstructor is not null)
                     {
-                        content = (Widget)Activator.CreateInstance(this.ContentType);
-                    }
-                    catch (MissingMethodException)
-                    {
-                        var styledConstructor = this.ContentType.GetConstructor([typeof(string)]);
                         content = (Widget)styledConstructor.Invoke([Stylesheet.DefaultStyleName]);
+                    }
+                    else
+                    {
+                        var defaultConstructor = this.ContentType.GetConstructor([]);
+                        content = (Widget)Activator.CreateInstance(this.ContentType);
                     }
                     contentWidget.Content = content;
                     content.SetStyle(this.ContentStyle);
