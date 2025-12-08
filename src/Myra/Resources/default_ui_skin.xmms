@@ -42,6 +42,11 @@
 			<LabelStyle Font="default-font" TextColor="white" />
 		</CheckBoxStyle>
 	</CheckBoxStyles>
+	<CheckButtonStyles>
+		<CheckButtonStyle Image="vis-check" PressedImage="vis-check-tick" >
+			<LabelStyle Font="default-font" TextColor="white" />
+		</CheckButtonStyle>
+	</CheckButtonStyles>
 	<HorizontalSliderStyles>
 		<HorizontalSliderStyle Background="slider">
 			<KnobStyle>
@@ -79,6 +84,11 @@
 			</ListBoxStyle>
 		</ComboBoxStyle>
 	</ComboBoxStyles>
+	<ComboViewStyles>
+		<ComboViewStyle Background="default-select">
+			<LabelStyle Font="default-font" TextColor="white" />
+		</ComboViewStyle>
+	</ComboViewStyles>
 	<ListBoxStyles>
 		<ListBoxStyle Background="button">
 			<ListItemStyle OverBackground="button-over" Padding="5, 0" PressedBackground="list-selection">
