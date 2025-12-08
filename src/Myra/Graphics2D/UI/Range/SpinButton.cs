@@ -215,6 +215,14 @@ namespace Myra.Graphics2D.UI
 
 		[XmlIgnore]
 		[Browsable(false)]
+		public Button UpButton => _upButton;
+
+        [XmlIgnore]
+        [Browsable(false)]
+		public Button DownButton => _downButton;
+
+        [XmlIgnore]
+		[Browsable(false)]
 		public TextBox TextBox => _textField;
 
 		protected internal override bool AcceptsMouseWheel => true;
