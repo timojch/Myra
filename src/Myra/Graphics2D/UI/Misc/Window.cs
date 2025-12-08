@@ -78,6 +78,10 @@ namespace Myra.Graphics2D.UI
 		public Button CloseButton { get; private set; }
 
 		[Browsable(false)]
+		[XmlIgnore]
+		public Label TitleLabel { get => _titleLabel; }
+
+		[Browsable(false)]
 		[Content]
 		public override Widget Content
 		{
