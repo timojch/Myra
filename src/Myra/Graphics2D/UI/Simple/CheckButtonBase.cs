@@ -145,6 +145,7 @@ namespace Myra.Graphics2D.UI
 			base.OnPressedChanged();
 
 			_check.IsPressed = IsPressed;
+			UpdateImage();
 		}
 
 		public override void OnKeyDown(Keys k)
