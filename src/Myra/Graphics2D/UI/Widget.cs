@@ -1450,19 +1450,29 @@ namespace Myra.Graphics2D.UI
 
         public Widget Clone()
         {
-            // Firstly try to use parameterless constructor
             var type = GetType();
-            var constructor = type.GetConstructor(Type.EmptyTypes);
-
             Widget result;
-            if (constructor != null)
+
+            // First, try to use copy constructor
+            var copyConstructor = type.GetConstructor([type]);
+            if (copyConstructor is not null)
             {
-                result = (Widget)constructor.Invoke(new object[0]);
+                result = (Widget)copyConstructor.Invoke([this]);
             }
             else
             {
-                // Then string constructor
-                result = (Widget)Activator.CreateInstance(GetType(), (string)null);
+                // Second try to use parameterless constructor
+                var constructor = type.GetConstructor(Type.EmptyTypes);
+
+                if (constructor != null)
+                {
+                    result = (Widget)constructor.Invoke(new object[0]);
+                }
+                else
+                {
+                    // Then string constructor
+                    result = (Widget)Activator.CreateInstance(GetType(), (string)null);
+                }
             }
 
             result.CopyFrom(this);
