@@ -161,6 +161,9 @@
 			<SeparatorStyle Padding="0, 2" Image="separator-menu" Thickness="4" />
 		</VerticalMenuStyle>
 	</VerticalMenuStyles>
+	<FloatingFrameStyles>
+		<FloatingFrameStyle Background="window" Padding="5"/>
+	</FloatingFrameStyles>
 	<WindowStyles>
 		<WindowStyle Background="window" Padding="5">
 			<TitleLabelStyle Font="default-font" TextColor="white" />
