@@ -250,6 +250,11 @@ namespace Myra.Graphics2D.UI
 			}
 		}
 
+		public static string EscapeRichText(string original)
+		{
+			return original.Replace("/", "//");
+		}
+
 		private static string BuildRtlError(Exception ex)
 		{
 			return "RTL Error: " + ex.Message;

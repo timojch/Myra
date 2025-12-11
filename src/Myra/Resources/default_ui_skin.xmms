@@ -12,7 +12,7 @@
 		<LabelStyle Background="default-pane" Padding="5" Font="tooltip-font" TextColor="white" />
 	</TooltipStyles>
 	<TextBoxStyles>
-		<TextBoxStyle Background="textfield" TextColor="white" DisabledTextColor="gray" Font="default-font" Cursor="cursor" Selection="selection" />
+		<TextBoxStyle Font="default-font" TextColor="white" DisabledTextColor="gray" Background="textfield" Cursor="cursor" Selection="selection" />
 	</TextBoxStyles>
 	<ScrollViewerStyles>
 		<ScrollViewerStyle HorizontalScrollBackground="scroll-horizontal" HorizontalScrollKnob="scroll-knob-horizontal" VerticalScrollBackground="scroll" VerticalScrollKnob="scroll-knob-vertical" CornerBackground="scroll-corner" />
