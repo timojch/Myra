@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Myra.Graphics2D.UI.Layouts;
+
 public class CustomLayout : ILayout
 {
     public ControlPointsCollection ControlPoints { get; } = new ControlPointsCollection();
@@ -54,7 +55,7 @@ public class CustomLayout : ILayout
         var availableSize = bounds.Size;
         this.Calculate(widgets, ref availableSize, out var widgetTopLefts, true);
 
-        foreach(var pair in widgets.Index())
+        foreach (var pair in widgets.Index())
         {
             var widget = pair.Item;
             var widgetRect = widgetTopLefts[pair.Index];
@@ -81,6 +82,11 @@ public class CustomLayout : ILayout
                 var size = widgetDefaultSizes[pair.Index];
                 var widget = pair.Item;
 
+                if (!widget.Visible)
+                {
+                    continue;
+                }
+
                 var constraint = this.GetPositionConstraint(widget);
                 var topLeft = constraint.Item1.Evaluate(totalSize) - constraint.Item2.Evaluate(size);
                 var bottomLeft = topLeft + size;
@@ -98,7 +104,7 @@ public class CustomLayout : ILayout
                         necessaryDelta.X = 0;
                         scaleImpact.X = 1;
                     }
-                    
+
                     if (scaleImpact.Y == 0)
                     {
                         necessaryDelta.Y = 0;
