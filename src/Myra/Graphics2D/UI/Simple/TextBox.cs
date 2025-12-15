@@ -488,6 +488,11 @@ namespace Myra.Graphics2D.UI
             if (!Multiline && ch == '\n')
                 return;
 
+            if (_cursorIndex < 0)
+            {
+                _cursorIndex = 0;
+            }
+
             if (InsertMode && !(SelectStart != SelectEnd) && CursorPosition < Length)
             {
                 UndoStack.MakeReplace(Text, CursorPosition, 1, 1);
