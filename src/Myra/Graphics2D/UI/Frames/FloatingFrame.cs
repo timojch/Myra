@@ -53,12 +53,16 @@ namespace Myra.Graphics2D.UI
                 if (value != null)
                 {
                     StackPanel.SetProportionType(value, ProportionType.Fill);
-                    Children.Insert(Children.Count, value);
+                    Children.Insert(ContentIndex, value);
                 }
 
                 _content = value;
             }
         }
+
+        [Browsable(false)]
+        [XmlIgnore]
+        public virtual int ContentIndex { get => Children.Count; }
 
         [Browsable(false)]
         [XmlIgnore]

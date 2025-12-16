@@ -34,6 +34,8 @@ namespace Myra.Graphics2D.UI
 
 		public event EventHandler Cancel;
 
+        public override int ContentIndex => 1;
+
 		public Dialog(string styleName = Stylesheet.DefaultStyleName) : base(styleName)
 		{
 			ConfirmKey = Keys.Enter;
