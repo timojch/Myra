@@ -204,16 +204,16 @@ namespace Myra.Graphics2D.UI
                         if (ContainsGlobalPoint(Desktop.MousePosition))
                         {
                             LocalMousePosition = ToLocal(Desktop.MousePosition);
+
+                            if (Desktop.LastMouseInfo.GetClickedButtons().Any())
+                            {
+                                InputEventsManager.Queue(this, InputEventType.MouseClick);
+                            }
                         }
                         else
                         {
                             LocalMousePosition = null;
                             inputContext.ParentContainsMouse = false;
-                        }
-
-                        if (Desktop.LastMouseInfo.GetClickedButtons().Any())
-                        {
-                            InputEventsManager.Queue(this, InputEventType.MouseClick);
                         }
                     }
                     else
