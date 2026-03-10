@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Myra.Graphics2D.UI
+{
+    public class DecoratedContentPanel : ContentControl
+    {
+        private PrimaryItemLayout<Widget> _layout;
+
+        public override Widget Content
+        {
+            get => this._layout.Child;
+            set => this._layout.Child = value;
+        }
+
+        public DecoratedContentPanel()
+        {
+            this._layout = new PrimaryItemLayout<Widget>(this);
+            this.ChildrenLayout = this._layout;
+        }
+    }
+}

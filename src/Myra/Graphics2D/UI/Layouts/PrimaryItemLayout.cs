@@ -18,14 +18,24 @@ public class PrimaryItemLayout<T> : ILayout where T : Widget
         get;
         set
         {
-            if (field is not null && Children.Contains(field))
+            if (value is null)
             {
-                var childPosition = Children.IndexOf(field);
-                Children[childPosition] = value;
+                if (field is not null && Children.Contains(field))
+                {
+                    Children.Remove(field);
+                }
             }
             else
             {
-                Children.Add(value);
+                if (field is not null && Children.Contains(field))
+                {
+                    var childPosition = Children.IndexOf(field);
+                    Children[childPosition] = value;
+                }
+                else
+                {
+                    Children.Add(value);
+                }
             }
 
             field = value;
@@ -56,5 +66,4 @@ public class PrimaryItemLayout<T> : ILayout where T : Widget
             Child.Arrange(bounds);
         }
     }
-}
 }

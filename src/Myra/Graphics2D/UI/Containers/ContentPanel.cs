@@ -8,7 +8,7 @@ namespace Myra.Graphics2D.UI
 {
     public class ContentPanel : ContentControl
     {
-        private PrimaryItemLayout<Widget> _layout;
+        private SingleItemLayout<Widget> _layout;
 
         public override Widget Content
         {
@@ -18,7 +18,7 @@ namespace Myra.Graphics2D.UI
 
         public ContentPanel()
         {
-            this._layout = new PrimaryItemLayout<Widget>(this);
+            this._layout = new SingleItemLayout<Widget>(this);
             this.ChildrenLayout = this._layout;
         }
     }
