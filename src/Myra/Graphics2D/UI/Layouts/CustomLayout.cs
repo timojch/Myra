@@ -89,7 +89,7 @@ public class CustomLayout : ILayout
 
                 var constraint = this.GetPositionConstraint(widget);
                 var topLeft = constraint.Item1.Evaluate(totalSize) - constraint.Item2.Evaluate(size);
-                var bottomLeft = topLeft + size;
+                var bottomRight = topLeft + size;
                 if (doSizeConstraints && this.SizeConstraints.TryGetValue(widget, out var sizeConstraint))
                 {
                     var controlPointCurrent = sizeConstraint.Item2.Evaluate(size);
@@ -115,12 +115,12 @@ public class CustomLayout : ILayout
 
                     size = new Point((int)(size.X * scale.X), (int)(size.Y * scale.Y));
                     topLeft = constraint.Item1.Evaluate(totalSize) - constraint.Item2.Evaluate(size);
-                    bottomLeft = topLeft + size;
+                    bottomRight = topLeft + size;
                 }
 
                 var shadowTopLeft = constraint.Item1.EvaluateShadow(totalSize) - constraint.Item2.EvaluateShadow(size);
 
-                var minimumSize = bottomLeft - shadowTopLeft;
+                var minimumSize = bottomRight - shadowTopLeft;
                 var shrinkage = totalSize - minimumSize;
 
                 widgetPositions[pair.Index] = new Rectangle(topLeft, size);
