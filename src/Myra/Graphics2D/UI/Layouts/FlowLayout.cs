@@ -74,6 +74,12 @@ namespace Myra.Graphics2D.UI
                         funcHandleControlPoint(cp);
                     }
 
+                    if (!widget.Visible)
+                    {
+                        yield return new Tuple<Widget, Rectangle>(widget, new Rectangle(cursorPos, Point.Zero));
+                        continue;
+                    }
+
                     var measure = widget.Measure(new Point(availableSize.X - cursorPos.X, MaxLineHeight));
 
                     if (this.Wrap && cursorPos.X + measure.X > availableSize.X)
