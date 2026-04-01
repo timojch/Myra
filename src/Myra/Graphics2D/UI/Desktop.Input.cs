@@ -102,6 +102,7 @@ namespace Myra.Graphics2D.UI
         private Point _mousePosition;
         private Point? _touchPosition;
         private float _mouseWheelDelta;
+        private bool _keyDownHandled;
 
         public Point PreviousMousePosition { get; private set; }
         public Point? PreviousTouchPosition { get; private set; }
@@ -289,12 +290,14 @@ namespace Myra.Graphics2D.UI
                 var key = (Keys)i;
                 if (_downKeys[i] && !_lastDownKeys[i])
                 {
-                    if (key == Keys.Tab)
-                    {
-                        FocusNextWidget();
-                    }
-
                     KeyDownHandler?.Invoke(key);
+                    if(!_keyDownHandled)
+                    {
+                        if (key == Keys.Tab)
+                        {
+                            FocusNextWidget();
+                        }
+                    }
 
                     _lastKeyDown = now;
                     _keyDownCount = 0;

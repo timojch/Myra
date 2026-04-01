@@ -882,7 +882,12 @@ namespace Myra.Graphics2D.UI
 
         public void OnKeyDown(Keys key)
         {
+            _keyDownHandled = false;
             KeyDown.Invoke(key);
+            if (_keyDownHandled)
+            {
+                return;
+            }
 
             if (IsMenuBarActive)
             {
@@ -893,6 +898,11 @@ namespace Myra.Graphics2D.UI
                 if (_focusedKeyboardWidget != null)
                 {
                     _focusedKeyboardWidget.OnKeyDown(key);
+
+                    if (_keyDownHandled)
+                    {
+                        return;
+                    }
 
 #if STRIDE
 					var ch = key.ToChar(IsKeyDown(Keys.LeftShift) ||
@@ -993,6 +1003,11 @@ namespace Myra.Graphics2D.UI
 
             ReleaseUnmanagedResources();
             GC.SuppressFinalize(this);
+        }
+
+        public void SwallowKeyDown()
+        {
+            _keyDownHandled = true;
         }
 
         ~Desktop()
