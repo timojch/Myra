@@ -870,6 +870,10 @@ namespace Myra.Graphics2D.UI
                         if (!Desktop.IsControlDown)
                         {
                             var newPosition = CursorPosition;
+                            if (newPosition < 0)
+                            {
+                                newPosition = 0;
+                            }
 
                             while (newPosition < Length && Text[newPosition] != '\n')
                             {
