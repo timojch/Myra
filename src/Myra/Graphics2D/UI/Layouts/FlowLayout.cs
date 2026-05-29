@@ -22,6 +22,8 @@ namespace Myra.Graphics2D.UI
 
         public bool Wrap = true;
 
+        public bool FlowLabels = true;
+
         public IEnumerable<Tuple<Widget, Rectangle>> GetArrangedRectangles(IEnumerable<Widget> widgets, Point availableSize)
         {
             if (!widgets.Any())
@@ -80,19 +82,50 @@ namespace Myra.Graphics2D.UI
                         continue;
                     }
 
-                    var measure = widget.Measure(new Point(availableSize.X - cursorPos.X, MaxLineHeight));
-
-                    if (this.Wrap && cursorPos.X + measure.X > availableSize.X)
+                    Point measure;
+                    Point insertPos;
+                    Point endPos;
+                    if (FlowLabels && widget is Label label)
                     {
-                        // Doesn't fit. If we aren't already at the start of a new line, move to a new line.
-                        if (itemsOnCurrentLine > 0)
+                        var lineHeight = label.Font.MeasureString("Q").Y;
+                        label.Indent = cursorPos.X;
+                        insertPos = new Point(0, cursorPos.Y);
+                        measure = label.Measure(new Point(availableSize.X, MaxLineHeight));
+                        endPos = new Point(label.FinalLineWidth, cursorPos.Y + measure.Y - (int)lineHeight);
+
+                        if (this.Wrap && endPos.X > availableSize.X)
                         {
-                            funcNewLine();
+                            // Doesn't fit. If we aren't already at the start of a new line, move to a new line.
+                            if (itemsOnCurrentLine > 0)
+                            {
+                                funcNewLine();
+                                
+                                // Re-measure after the newline.
+                                label.Indent = 0;
+                                insertPos = new Point(0, cursorPos.Y);
+                                measure = label.Measure(new Point(availableSize.X, MaxLineHeight));
+                                endPos = new Point(label.FinalLineWidth, cursorPos.Y + measure.Y - (int)lineHeight);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        insertPos = cursorPos;
+                        measure = widget.Measure(new Point(availableSize.X - cursorPos.X, MaxLineHeight));
+                        endPos = new Point(cursorPos.X + measure.X, cursorPos.Y);
+
+                        if (this.Wrap && endPos.X > availableSize.X)
+                        {
+                            // Doesn't fit. If we aren't already at the start of a new line, move to a new line.
+                            if (itemsOnCurrentLine > 0)
+                            {
+                                funcNewLine();
+                            }
                         }
                     }
 
-                    yield return new Tuple<Widget, Rectangle>(widget, new Rectangle(cursorPos, measure));
-                    cursorPos += new Point(measure.X + this.HorizontalSpacing, 0);
+                    yield return new Tuple<Widget, Rectangle>(widget, new Rectangle(insertPos, measure));
+                    cursorPos = new Point(endPos.X + this.HorizontalSpacing, endPos.Y);
                     isHorizontalSpaceSkipped = false;
                     currentLineHeight = Math.Min(Math.Max(currentLineHeight, measure.Y), this.MaxLineHeight);
                     itemsOnCurrentLine++;

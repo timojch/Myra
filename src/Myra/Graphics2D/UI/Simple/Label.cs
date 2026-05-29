@@ -4,6 +4,8 @@ using System;
 using FontStashSharp;
 using Myra.Utility;
 using FontStashSharp.RichText;
+using System.Xml.Serialization;
+
 
 #if MONOGAME || FNA
 using Microsoft.Xna.Framework;
@@ -49,6 +51,23 @@ namespace Myra.Graphics2D.UI
 		}
 
 		[Category("Appearance")]
+		[DefaultValue(0)]
+		public int Indent
+        {
+            get => this._richText.Indent;
+            set
+            {
+                if (_richText.Indent == value)
+                {
+                    return;
+                }
+
+                _richText.Indent = value;
+                InvalidateMeasure();
+            }
+        }
+
+        [Category("Appearance")]
 		[DefaultValue(null)]
 		public string Text
 		{
@@ -169,6 +188,13 @@ namespace Myra.Graphics2D.UI
 		public Color? OverTextColor
 		{
 			get; set;
+		}
+
+		[XmlIgnore]
+		[Browsable(false)]
+		public int FinalLineWidth
+		{
+			get => this._richText.FinalLineWidth;
 		}
 
 		internal Color? PressedTextColor
@@ -329,5 +355,11 @@ namespace Myra.Graphics2D.UI
 			OverTextColor= label.OverTextColor;
 			PressedTextColor= label.PressedTextColor;
 		}
-	}
+
+        public override bool InputFallsThrough(Point localPos)
+        {
+            var line = this._richText.GetLineByY(localPos.Y);
+			return !(line.GetGlyphIndexByX(localPos.X).HasValue);
+        }
+    }
 }
