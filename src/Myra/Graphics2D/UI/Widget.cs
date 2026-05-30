@@ -1400,6 +1400,11 @@ namespace Myra.Graphics2D.UI
         public bool ContainsGlobalPoint(Point globalPos)
         {
             var localPos = ToLocal(globalPos);
+            return ContainsLocalPoint(localPos);
+        }
+
+        public virtual bool ContainsLocalPoint(Point localPos)
+        {
             return BorderBounds.Contains(localPos);
         }
 

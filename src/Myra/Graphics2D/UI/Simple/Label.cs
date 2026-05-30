@@ -356,10 +356,15 @@ namespace Myra.Graphics2D.UI
 			PressedTextColor= label.PressedTextColor;
 		}
 
-        public override bool InputFallsThrough(Point localPos)
+        public override bool ContainsLocalPoint(Point localPos)
         {
-            var line = this._richText.GetLineByY(localPos.Y);
-			return !(line.GetGlyphIndexByX(localPos.X).HasValue);
+            if(base.ContainsLocalPoint(localPos))
+            {
+                var line = this._richText.GetLineByY(localPos.Y);
+                return (line.GetGlyphIndexByX(localPos.X).HasValue);
+            }
+
+			return false;
         }
     }
 }
