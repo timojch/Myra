@@ -87,7 +87,7 @@ namespace Myra.Graphics2D.UI
                     Point endPos;
                     if (FlowLabels && widget is Label label)
                     {
-                        var lineHeight = label.Font.MeasureString("Q").Y;
+                        var lineHeight = label.Font.LineHeight;
                         label.Indent = cursorPos.X;
                         insertPos = new Point(0, cursorPos.Y);
                         measure = label.Measure(new Point(availableSize.X, MaxLineHeight));
